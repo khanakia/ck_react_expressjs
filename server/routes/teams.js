@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.put('/:id', function(req, res, next) {
-	model.findOneAndUpdate({_id: req.params.id}, req.query, {upsert:true}, function(err, doc){
+	model.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
     if (err) return res.send(500, { error: err });
     return res.send("succesfully saved");
 	});

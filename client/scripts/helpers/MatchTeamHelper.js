@@ -1,23 +1,24 @@
-export default class AccountHelper {
+export default class MatchTeamHelper {
 
 	static index(data) {
 		return axios({
 	    method: 'get',
-	      url: "/accounts"
+	      url: "/match_teams",
+	      params: data
 	    })
 	}
 
 	static show(id) {
 		return axios({
 	    method: 'get',
-	      url: "/accounts/"+id
+	      url: "/match_teams/"+id
 	    })
 	}
 
 	static store(data) {
 		return axios({
 	    method: 'post',
-	      url: "/accounts",
+	      url: "/match_teams",
 	      data: data
 	    })
 	}
@@ -25,7 +26,7 @@ export default class AccountHelper {
 	static update(id,data) {
 		return axios({
 	      method: 'put',
-	      url: "/accounts/" + id,
+	      url: "/match_teams/" + id,
 	      data: data
 	    })
 	}
@@ -34,16 +35,16 @@ export default class AccountHelper {
 	static delete(id) {
 		return axios({
 	      method: 'delete',
-	      url: "/accounts/"+id
+	      url: "/match_teams/"+id
 	    })
 	}
 
-	static save(data, id=null) {
-		// const dataJson = URI.parseQuery(data)
-		if(id) {
-			var ajaxObj = AccountHelper.update(id,data)
+	static save(data) {
+		const dataJson = URI.parseQuery(data)
+		if(dataJson._id) {
+			var ajaxObj = MatchHelper.update(dataJson._id,data)
 		} else {
-			var ajaxObj = AccountHelper.store(data)
+			var ajaxObj = MatchHelper.store(data)
 		}
 		return ajaxObj;
 	}

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 
 import ComboBox from './ComboBox.jsx'
 
-class ComboBoxMember extends ComboBox {
+class ComboBoxMatch extends ComboBox {
   constructor(props) {
     super(props)
   }
@@ -15,10 +15,11 @@ class ComboBoxMember extends ComboBox {
     onSelect: function() {},
     selectedValue: null,
     width: 225,
-    url: '/accounts',
+    name: 'match',
+    url: '/matches',
     valueMember: '_id',
-    displayMember: 'account_name'
+    displayMember: 'match_name'
   }
 }
 
-export default ComboBoxMember;
+export default ComboBoxMatch;

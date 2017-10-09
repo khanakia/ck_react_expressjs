@@ -2,7 +2,8 @@
 var mongoose = require('mongoose');
 
 var tableSchema = mongoose.Schema({
-    name: String
+	created_at: { type: Date, default: Date.now },
+    name: { type: String, required: true },
 });
 
 /* global db */

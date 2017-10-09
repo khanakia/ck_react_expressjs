@@ -7,15 +7,18 @@
   "scripts": {
     "start": "DEBUG=express:* nodemon ./bin/www"
   },
-
   "nodemonConfig": {
-    "ignore": ["public/*"]
+    "ignore": [
+      "public/*"
+    ]
   },
   "dependencies": {
+    "async": "^2.5.0",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
+    "lodash": "^4.17.4",
     "mongodb": "^2.2.31",
     "mongoose": "^4.11.12",
     "morgan": "~1.8.1",

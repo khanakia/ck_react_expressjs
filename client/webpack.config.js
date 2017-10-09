@@ -118,6 +118,8 @@ const config = {
 
          new WebpackBuildNotifierPlugin({
             title: "CkApp",
+            successSound: "Submarine",
+            failureSound: "Ping"
             // logo: path.resolve("./img/favicon.png"),
             // suppressSuccess: true
         })

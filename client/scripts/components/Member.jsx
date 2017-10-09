@@ -1,31 +1,78 @@
 import React, { Component } from "react";
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
-import JqxComboBox from './jqwidgets-react/react_jqxcombobox.js';
+// import JqxComboBox from './jqwidgets-react/react_jqxcombobox.js';
 
-import ComboBoxMember from './controls/ComboBoxMember.jsx'
+// import ComboBoxMember from './controls/ComboBoxMember.jsx'
+
+import MemberForm from './controls/MemberForm.jsx'
 import AccountHelper from '../helpers/AccountHelper'
 
 class Member extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isNew: true,
+      item: {
+        limit: 0,
+        sess_comm: 0,
+        match_comm: 0,
+        lk_comm: 0,
+        player_comm: 0,
+        khada_comm: 0,
+        cup_comm: 0,
+        tfr_sess_comm: 0,
+        tfr_match_comm: 0,
+        tfr_lk_comm: 0,
+        tfr_player_comm:0,
+        tfr_khada_comm: 0,
+        tfr_cup_comm: 0,
+        patti: []
+      }
+    }
+  }
 
-  formSubmit(e) {
+  formSubmit = (e) => {
     e.preventDefault()
     var _this = this;
-    // if(! $(this.refs.form).valid()) {
+    // if(! $(this.refs.memberForm.refs.form).valid()) {
     //   return false;
     // }
 
-    let selectedMember = this.refs.memberDdl.refs.JqxComboBox.getSelectedItem();
-
-    console.log(selectedMember)
-
-    let data = jQuery(this.refs.form).serialize()
-    console.log(data);
-    AccountHelper.store(data).then(function (response) {
+    let data = jQuery(e.target).serialize()
+    // console.log(data);
+    AccountHelper.save(data, this.state.item._id).then(function (response) {
       console.log(response);
       _this.refreshComponent()
-    })
+    }).catch(function (error) {
+      if(error.response.data.cerror) {
+        toastr.error(error.response.data.cerror)  
+      } else {
+        toastr.error("Validation failed.")
+      }
+    });
     
+  }
+
+  resetPage() {
+    this.setState({
+      isNew: true,
+      item: {
+        sess_comm: 0,
+        match_comm: 0,
+        lk_comm: 0,
+        player_comm: 0,
+        khada_comm: 0,
+        cup_comm: 0,
+        tfr_sess_comm: 0,
+        tfr_match_comm: 0,
+        tfr_lk_comm: 0,
+        tfr_player_comm:0,
+        tfr_khada_comm: 0,
+        tfr_cup_comm: 0,
+        patti: []
+      } 
+    })
   }
 
   componentDidMount() {
@@ -34,11 +81,13 @@ class Member extends Component {
 
   refreshComponent() {
      this.refs.jqxgrid.updatebounddata();
-     this.refs.memberDdl.memberDataAdapter.dataBind()
+     this.refs.memberForm.refresh()
+     // this.refs.memberDdl.memberDataAdapter.dataBind()
   }
 
   
   render() {  
+    // console.log("This State", this.state.isNew)
     var _this = this;
     let source =
           {
@@ -51,8 +100,7 @@ class Member extends Component {
               url: '/accounts',
 
               updaterow: (rowid, rowdata, commit) => {
-                AccountHelper.update({
-                  id: rowdata.uid,
+                AccountHelper.update(rowdata.uid, {
                   account_name: rowdata.account_name
                 })
                 commit(true);
@@ -76,201 +124,44 @@ class Member extends Component {
                         })
 
                     }
+                },
+                {
+                    text: 'Edit', datafield: 'Edit', columntype: 'button', width:50, filterable: false,
+                    cellsrenderer: () => {
+                        return 'Edit';
+                    }, buttonclick: (row) => {
+                        let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                        // console.log(dataRecord.uid)
+                        AccountHelper.show(dataRecord.uid).then(function(res){
+                          console.log(res.data)
+                          _this.setState({
+                            isNew: false,
+                            item: res.data
+                          })
+                        })
+
+                    }
                 }
             ];
+      
       return (
           <div>
             <h3>Member</h3>
 
             <div className="uk-grid" >
-                <div className="uk-width-1-2">
+                <div className="uk-width-1-4">
                     <JqxGrid
                       ref="jqxgrid"
-                      width={850} height={400} source={dataAdapter} pageable={true}
+                      width={400} height={600} source={dataAdapter} pageable={true}
                       sortable={true} altrows={true} enabletooltips={true}
                       editable={true} columns={columns}
                        filterable={true} showfilterrow={true}
                     />
                 </div>
                 <div className="uk-width-1-2">
-                  <form className="uk-form-stacked" ref="form" onSubmit={(e) => this.formSubmit(e)}>
-                      <div className="uk-margin">
-                        <label className="uk-form-label">Name</label>
-                        <div className="uk-form-controls">
-                            <input className="uk-input error-hide required" id="form-stacked-text" type="text" name="account_name" />
-                        </div>
-                      </div>
-                      <div className="uk-margin">
-                        <div className="uk-grid">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Sess Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" max="100" defaultValue="0" name="sess_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Match Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="match_comm"/>
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >LK Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="lk_comm"/>
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Player Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="player_comm"/>
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Khada Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="khada_comm"/>
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Cup Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="cup_comm" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="uk-margin">
-                        <label className="uk-form-label">Transfer Comm. To:</label>
-                        <div className="uk-form-controls">
-                            <ComboBoxMember ref="memberDdl" inputName="tfr_comm_to" />
-                        </div>
-                      </div>
-
-                      <div className="uk-margin">
-                        <div className="uk-grid">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Sess Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_sess_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Match Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_match_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >LK Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_lk_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Player Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_player_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Khada Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_khada_comm" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >Cup Comm:</label>
-                            <div className="uk-form-controls">
-                                <input className="uk-input error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="tfr_cup_comm" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="uk-margin">
-                        <div className="uk-grid">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >S.N.</label>
-                          </div>
-                          <div className="uk-width-1-3 uk-padding-remove-left">
-                            <label className="uk-form-label" >Patti Under:</label>
-                          </div>
-                          <div className="uk-width-1-6 uk-padding-remove-left">
-                            <label className="uk-form-label" >Patti (%):</label>
-                          </div>
-                        </div>
-                        <div className="uk-grid uk-margin-small-top">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >1</label>
-                          </div>
-                          <div className="uk-width-1-3 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <ComboBoxMember ref="pattiMemberDDL[1]" inputName="patti[0][account_id]" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <input className="uk-input uk-form-small error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="patti[0][comm]" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="uk-grid uk-margin-small-top">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >2</label>
-                          </div>
-                          <div className="uk-width-1-3 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <ComboBoxMember ref="pattiMemberDDL[1]" inputName="patti[1][account_id]" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <input className="uk-input uk-form-small error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="patti[1][comm]" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="uk-grid uk-margin-small-top">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >3</label>
-                          </div>
-                          <div className="uk-width-1-3 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <ComboBoxMember ref="pattiMemberDDL[1]" inputName="patti[2][account_id]" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <input className="uk-input uk-form-small error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="patti[2][comm]" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="uk-grid uk-margin-small-top">
-                          <div className="uk-width-1-6">
-                            <label className="uk-form-label" >4</label>
-                          </div>
-                          <div className="uk-width-1-3 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <ComboBoxMember ref="pattiMemberDDL[1]" inputName="patti[3][account_id]" />
-                            </div>
-                          </div>
-                          <div className="uk-width-1-6 uk-padding-remove-left">
-                            <div className="uk-form-controls">
-                                <input className="uk-input uk-form-small error-hide required number" id="form-stacked-text" type="number" defaultValue="0" name="patti[3][comm]" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="uk-margin uk-text-right">
-                        <button className="uk-button uk-button-primary" type="submit">Save</button>
-                      </div>
-                  </form>
+                  <MemberForm ref="memberForm" item={this.state.item} onSubmit={(e) => this.formSubmit(e)} cancelFormClick={() => this.resetPage()} />
                 </div>
             </div>
-
-            
           </div>
       );
   }

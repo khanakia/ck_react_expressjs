@@ -26,15 +26,15 @@ class Header extends React.Component {
                     <li><Link to={'/'}>Home</Link></li>
                     <li>Master
                         <ul>
-                            <li><Link to={'/member'}>Parties (F1)</Link></li>
-                            <li><Link to={'/team'}>Teams (F2)</Link></li>
-                            <li><Link to={'/state'}>State (ALT+S)</Link></li>
+                            <li><Link to={'/members'}>Parties (F1)</Link></li>
+                            <li><Link to={'/teams'}>Teams (F2)</Link></li>
+                            <li><Link to={'/states'}>State (ALT+S)</Link></li>
                         </ul>
                     </li>
                     <li>Match
                         <ul>
-                            <li><Link to={'/match_master'}>Match Master (F3)</Link></li>
-                            <li><Link to={'/match_entry'}>Match Entry (F4)</Link></li>
+                            <li><Link to={'/matches'}>Match Master (F3)</Link></li>
+                            <li><Link to={'/match_entries'}>Match Entry (F4)</Link></li>
                             <li><Link to={'/match_entry'}>Match Declaration (F5)</Link></li>
                         </ul>
                     </li>

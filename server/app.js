@@ -25,11 +25,14 @@ global.db = mongoose.createConnection(uri);
 
 
 var index = require('./routes/index');
+var demo = require('./routes/demo');
 var users = require('./routes/users');
 var states = require('./routes/states');
 var teams = require('./routes/teams');
 var accounts = require('./routes/accounts');
-// var matches = require('./routes/matches');
+var matches = require('./routes/matches');
+var match_teams = require('./routes/match_teams');
+var match_entries = require('./routes/match_entries');
 
 var app = express();
 
@@ -46,11 +49,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/demo', demo);
 app.use('/users', users);
 app.use('/states', states);
 app.use('/teams', teams);
 app.use('/accounts', accounts);
-// app.use('/matches', matches);
+app.use('/matches', matches);
+app.use('/match_teams', match_teams);
+app.use('/match_entries', match_entries);
 
 
 // catch 404 and forward to error handler

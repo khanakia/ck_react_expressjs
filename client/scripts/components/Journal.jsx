@@ -2,21 +2,19 @@ import React, { Component } from "react";
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
 
-import TeamHelper from '../helpers/TeamHelper'
+import StateHelper from '../helpers/StateHelper'
 
-class State extends Component {
+class Journal extends Component {
 
   formSubmit() {
     var _this = this;
     const stateName = this.refs.name.value
-    TeamHelper.store({
+    StateHelper.store({
       name: stateName
     }).then(function (response) {
       console.log(response);
       _this.refreshComponent()
-    }).catch(function (error) {
-      toastr.error("Please fill all the required fields.")
-    });
+    })
     return false;
   }
 
@@ -34,10 +32,10 @@ class State extends Component {
               ],
    
               id: '_id',
-              url: '../teams',
+              url: '../states',
 
               updaterow: (rowid, rowdata, commit) => {
-                TeamHelper.update({
+                StateHelper.update({
                   id: rowdata.uid,
                   name: rowdata.name
                 })
@@ -57,7 +55,7 @@ class State extends Component {
                     }, buttonclick: (row) => {
                         let dataRecord = this.refs.jqxgrid.getrowdata(row);
                         console.log(dataRecord.uid)
-                        TeamHelper.delete(dataRecord.uid).then(function(res){
+                        StateHelper.delete(dataRecord.uid).then(function(res){
                           _this.refreshComponent()
                         })
 
@@ -66,11 +64,11 @@ class State extends Component {
             ];
       return (
           <div>
-            <h3>Team</h3>
+            <h3>States</h3>
             <form ref="form" onSubmit={() => this.formSubmit()}>
               <div className="uk-margin">
                 <div>
-                  <input type="text" className="uk-input uk-form-width-medium uk-form-small required error-hide" placeholder="Name" ref="name" />
+                  <input type="text" className="uk-input uk-form-width-medium uk-form-small required error-hide" placeholder="State Name" ref="name" />
                   <button className="uk-button uk-button-default uk-form-small" type="submit">Save</button>
                 </div>
               </div>
@@ -78,7 +76,7 @@ class State extends Component {
 
             <JqxGrid
               ref="jqxgrid"
-              width={400} height={600} source={dataAdapter} pageable={true}
+              width={850} height={400} source={dataAdapter} pageable={true}
               sortable={true} altrows={true} enabletooltips={true}
               editable={true} columns={columns}
                filterable={true} showfilterrow={true}
@@ -88,4 +86,4 @@ class State extends Component {
   }
 }
 
-export default State;
+export default Journal;

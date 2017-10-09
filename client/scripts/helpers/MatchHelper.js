@@ -1,23 +1,23 @@
-export default class AccountHelper {
+export default class MatchHelper {
 
 	static index(data) {
 		return axios({
 	    method: 'get',
-	      url: "/accounts"
+	      url: "/matches"
 	    })
 	}
 
 	static show(id) {
 		return axios({
 	    method: 'get',
-	      url: "/accounts/"+id
+	      url: "/matches/"+id
 	    })
 	}
 
 	static store(data) {
 		return axios({
 	    method: 'post',
-	      url: "/accounts",
+	      url: "/matches",
 	      data: data
 	    })
 	}
@@ -25,7 +25,7 @@ export default class AccountHelper {
 	static update(id,data) {
 		return axios({
 	      method: 'put',
-	      url: "/accounts/" + id,
+	      url: "/matches/" + id,
 	      data: data
 	    })
 	}
@@ -34,16 +34,16 @@ export default class AccountHelper {
 	static delete(id) {
 		return axios({
 	      method: 'delete',
-	      url: "/accounts/"+id
+	      url: "/matches/"+id
 	    })
 	}
 
 	static save(data, id=null) {
 		// const dataJson = URI.parseQuery(data)
 		if(id) {
-			var ajaxObj = AccountHelper.update(id,data)
+			var ajaxObj = MatchHelper.update(id,data)
 		} else {
-			var ajaxObj = AccountHelper.store(data)
+			var ajaxObj = MatchHelper.store(data)
 		}
 		return ajaxObj;
 	}

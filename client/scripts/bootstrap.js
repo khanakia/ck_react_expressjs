@@ -28,6 +28,10 @@ import Layout from './components/Layout.jsx'
 import State from './components/State.jsx'
 import Team from './components/Team.jsx'
 import Member from './components/Member.jsx'
+import Match from './components/Match.jsx'
+import Journal from './components/Journal.jsx'
+import MatchEntries from './components/MatchEntries.jsx'
+import MatchEntry from './components/MatchEntry.jsx'
 // import observableTodoStore from './components/Todo.jsx'
 
 
@@ -46,9 +50,15 @@ const Root = () => (
       <Switch>
         <Layout>
 		    <Route exact path="/" component={Home}/>
-		    <Route path="/state" component={State}/>
-        <Route path="/team" component={Team}/>
-        <Route path="/member" component={Member}/>
+		    <Route path="/states" component={State}/>
+        <Route path="/teams" component={Team}/>
+        <Route exact path="/members" component={Member}/>
+        <Route path="/members/:id" component={Member}/>
+        <Route exact path="/matches" component={Match}/>
+        <Route path="/matches/:id" component={Match}/>
+        <Route path="/journals" component={Journal}/>
+        <Route exact path="/match_entries" component={MatchEntries}/>
+        <Route path="/match_entries/:id" component={MatchEntry}/>
 	      </Layout>
       </Switch>
       

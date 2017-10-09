@@ -19,5 +19,27 @@ input.error {
   display: none !important;
 }
 
+.uk-width-1-12 {
+  width: calc(100% * 1 / 12.001);
+}
+
+@media screen and (max-width: 1200px) {
+  .uk-width-1-12 {
+    width: calc(100% * 1 / 7.001);
+  }
+}
+
+.uk-padding-left-5 {
+  padding-left: 5px !important;
+}
+
+.uk-padding-right-5 {
+  padding-right: 5px !important;
+}
+
+.v-align-middle {
+  vertical-align: middle;
+}
+
 
 /*# sourceMappingURL=index.min.css.map*/
