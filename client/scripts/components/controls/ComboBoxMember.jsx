@@ -13,6 +13,7 @@ class ComboBoxMember extends ComboBox {
     width: 225,
     onChange: function(){},
     onSelect: function() {},
+     onClose: function() {},
     selectedValue: null,
     width: 225,
     url: '/accounts',

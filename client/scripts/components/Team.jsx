@@ -1,91 +1,93 @@
 import React, { Component } from "react";
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
-
 import TeamHelper from '../helpers/TeamHelper'
+import {APP_URL_TEAMS} from '../Constant'
+class Team extends Component {
 
-class State extends Component {
+    onSubmit = (e) => {
+        e.preventDefault()
+        if(! $(e.target).valid()) {
+          return false;
+        }
 
-  formSubmit() {
-    var _this = this;
-    const stateName = this.refs.name.value
-    TeamHelper.store({
-      name: stateName
-    }).then(function (response) {
-      console.log(response);
-      _this.refreshComponent()
-    }).catch(function (error) {
-      toastr.error("Please fill all the required fields.")
-    });
-    return false;
-  }
+        let data = jQuery(e.target).serialize()
+        TeamHelper.store(data).then( (res) => {
+            this.refreshComponent()
+        }).catch( (error) => {
+            toastr.error("Please fill all the required fields.")
+        });
+        return false;
+    }
 
-  refreshComponent() {
-     this.refs.jqxgrid.updatebounddata();
-  }
-  
-  render() {  
-    var _this = this;
-    let source =
-          {
-              datatype: 'json',
-              datafields: [
-                  { name: 'name', type: 'string' },
-              ],
-   
-              id: '_id',
-              url: '../teams',
+    refreshComponent() {
+        this.refs.jqxgrid.updatebounddata();
+    }
 
-              updaterow: (rowid, rowdata, commit) => {
+    render() {
+        let source = {
+            datatype: 'json',
+            datafields: [
+                { name: 'team_name', type: 'string' },
+            ],
+
+            id: '_id',
+            url: APP_URL_TEAMS,
+
+            updaterow: (rowid, rowdata, commit) => {
                 TeamHelper.update({
-                  id: rowdata.uid,
-                  name: rowdata.name
+                    id: rowdata.uid,
+                    name: rowdata.name
                 })
                 commit(true);
-              },
-          };
-     
-      let dataAdapter = new $.jqx.dataAdapter(source);
+            },
+        };
 
-      let columns =
-            [
-                { text: 'Name', datafield: 'name', width: 250 },
-                {
-                    text: 'Delete', datafield: 'Delete', columntype: 'button', width:50, filterable: false,
-                    cellsrenderer: () => {
-                        return 'Delete';
-                    }, buttonclick: (row) => {
-                        let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                        console.log(dataRecord.uid)
-                        TeamHelper.delete(dataRecord.uid).then(function(res){
-                          _this.refreshComponent()
-                        })
+        let dataAdapter = new $.jqx.dataAdapter(source);
 
-                    }
+        let columns = [
+            { text: 'Name', datafield: 'team_name', width: 250 },
+            {
+                text: 'Delete',
+                datafield: 'Delete',
+                columntype: 'button',
+                width: 50,
+                filterable: false,
+                cellsrenderer: () => {
+                    return 'Delete';
+                },
+                buttonclick: (row) => {
+                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                    // console.log(dataRecord.uid)
+                    TeamHelper.delete(dataRecord.uid).then( (res) => {
+                        this.refreshComponent()
+                    })
+
                 }
-            ];
-      return (
-          <div>
-            <h3>Team</h3>
-            <form ref="form" onSubmit={() => this.formSubmit()}>
-              <div className="uk-margin">
-                <div>
-                  <input type="text" className="uk-input uk-form-width-medium uk-form-small required error-hide" placeholder="Name" ref="name" />
-                  <button className="uk-button uk-button-default uk-form-small" type="submit">Save</button>
-                </div>
-              </div>
-            </form>
+            }
+        ];
+        return (
+            <div>
+                <h3>Team</h3>
+                <form ref="form" onSubmit={this.onSubmit} className="mb-1">
+                    <div className="row">
+                        <div className="col-md-2">
+                            <div className="input-group">
+                                <input type="text" className="form-control form-control-sm required error-hide" placeholder="Name" ref="name" name="team_name" />
+                                <span className="input-group-btn">
+                                  <button className="btn btn-primary btn-sm" type="submit">Save</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <JqxGrid ref="jqxgrid" width={400} height={600} source={dataAdapter} 
+                            pageable={true} sortable={true} altrows={true} enabletooltips={true} 
+                            editable={true} columns={columns} filterable={true} showfilterrow={true} />
+            </div>
 
-            <JqxGrid
-              ref="jqxgrid"
-              width={400} height={600} source={dataAdapter} pageable={true}
-              sortable={true} altrows={true} enabletooltips={true}
-              editable={true} columns={columns}
-               filterable={true} showfilterrow={true}
-            />
-          </div>
-      );
-  }
+        );
+    }
 }
 
-export default State;
+export default Team;

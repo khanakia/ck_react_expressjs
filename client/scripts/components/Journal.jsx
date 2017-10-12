@@ -1,89 +1,56 @@
 import React, { Component } from "react";
 
-import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
+import ComboBoxMember from './controls/ComboBoxMember.jsx'
+import JournalEntryForm from './Journal/JournalEntryForm.jsx'
+import JournalEntryGrid from './Journal/JournalEntryGrid.jsx'
 
-import StateHelper from '../helpers/StateHelper'
+
+import JournalEntryHelper from "helpers/JournalEntryHelper"
 
 class Journal extends Component {
 
-  formSubmit() {
-    var _this = this;
-    const stateName = this.refs.name.value
-    StateHelper.store({
-      name: stateName
-    }).then(function (response) {
-      console.log(response);
-      _this.refreshComponent()
-    })
-    return false;
-  }
+    onCloseComboMember = () => {
+        const accountId = (this.refs.comboMember.getSelectedValue())
+        console.log(accountId)
+        this.props.history.push("/journals/" + accountId)
+       
+    }
 
-  refreshComponent() {
-     this.refs.jqxgrid.updatebounddata();
-  }
-  
-  render() {  
-    var _this = this;
-    let source =
-          {
-              datatype: 'json',
-              datafields: [
-                  { name: 'name', type: 'string' },
-              ],
-   
-              id: '_id',
-              url: '../states',
 
-              updaterow: (rowid, rowdata, commit) => {
-                StateHelper.update({
-                  id: rowdata.uid,
-                  name: rowdata.name
-                })
-                commit(true);
-              },
-          };
-     
-      let dataAdapter = new $.jqx.dataAdapter(source);
+    componentDidMount() {
+        this.refs.comboMember.setSelectedValue(this.props.match.params.id)
+    }
 
-      let columns =
-            [
-                { text: 'Name', datafield: 'name', width: 250 },
-                {
-                    text: 'Delete', datafield: 'Delete', columntype: 'button', width:50, filterable: false,
-                    cellsrenderer: () => {
-                        return 'Delete';
-                    }, buttonclick: (row) => {
-                        let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                        console.log(dataRecord.uid)
-                        StateHelper.delete(dataRecord.uid).then(function(res){
-                          _this.refreshComponent()
-                        })
+    onFormSubmitted = () => {
+        console.log("FORM SUBMITTED")
+        this.refs.entryGrid.refresh()
+    }
 
-                    }
-                }
-            ];
-      return (
-          <div>
-            <h3>States</h3>
-            <form ref="form" onSubmit={() => this.formSubmit()}>
-              <div className="uk-margin">
-                <div>
-                  <input type="text" className="uk-input uk-form-width-medium uk-form-small required error-hide" placeholder="State Name" ref="name" />
-                  <button className="uk-button uk-button-default uk-form-small" type="submit">Save</button>
+
+    render() {  
+        const id = this.props.match.params.id
+
+        return (
+            <div>
+                <h3>Journal</h3>
+                <div className="uk-margin">
+                    Select Account: <ComboBoxMember 
+                        field_id="from_account_id" ref="comboMember" onClose={this.onCloseComboMember}  />
                 </div>
-              </div>
-            </form>
 
-            <JqxGrid
-              ref="jqxgrid"
-              width={850} height={400} source={dataAdapter} pageable={true}
-              sortable={true} altrows={true} enabletooltips={true}
-              editable={true} columns={columns}
-               filterable={true} showfilterrow={true}
-            />
-          </div>
-      );
-  }
+                { id ?
+                    <div>
+                        <div className="mt-3 mb-1">
+                            <JournalEntryForm accountId={id} onFormSubmitted={this.onFormSubmitted} />
+                        </div>    
+                        <JournalEntryGrid ref="entryGrid" accountId={id} key={id} />
+                    </div>
+                    : ''
+                }
+                
+            </div>
+        );
+    }
 }
 
 export default Journal;

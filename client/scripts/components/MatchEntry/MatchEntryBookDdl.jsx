@@ -10,39 +10,67 @@ class MatchEntryBookDdl extends Component {
     super(props);
     this.state = {
         matchId: this.props.matchId,
-        matchTeams: [],
         count: 1,
-        scount: 0
+        // scount: this.props.scount
     }
   }
 
     static defaultProps = {
+        scount: 0,
         matchId: null,
-        matchTeams: []
     }
 
     componentDidMount() {
+        this.sendAjax()
+    }
+
+
+    getSelectedValue() {
+        var item = this.refs.dropdown.getSelectedItem();
+        if(item) return item.value;
+        return null;
+    }
+
+    sendAjax = () => {
         MatchEntryHelper.count_book(this.props.matchId).then((res) => {
             console.log(res)
             this.setState({
                 count: res.data.count,
-                scount: this.state.scount+1
             })
         })
     }
 
+    componentWillUpdate(nextProps, nextState) {
+      // console.log('Component WILL UPDATE!');
+      // console.log(this.props.scount, nextProps.scount);
+      if(this.props.scount!==nextProps.scount) {
+        this.sendAjax()
+      }
+    }
     render() {
         let source = []
-        for (var i = 1; i <= this.state.count; i++) {
-            source.push(i)
+        for (var i = 0; i < this.state.count; i++) {
+            source.push(i+1)
         };
-        console.log(source)
+        // console.log("count" , this.state.count)
         return (
             <div>
-                <JqxDropDownList key={this.state.scount}
-                    width={200} height={25} source={source} selectedIndex={0}
-                
-                />
+                <table className="table table-striped table-sm">
+                  <thead className="thead-inverse">
+                    <tr>
+                      <th>Book No</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <JqxDropDownList key={this.state.count} ref="dropdown"
+                            width={"100%"} height={25} source={source} selectedIndex={0}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
         );
     }

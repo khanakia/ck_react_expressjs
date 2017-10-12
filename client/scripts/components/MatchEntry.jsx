@@ -1,67 +1,92 @@
 import React from 'react'
 
 import ComboBox from './controls/ComboBox.jsx'
-import MatchEntryForm from './MatchEntryForm.jsx'
-import MatchEntryGrid from './MatchEntryGrid.jsx'
+import MatchEntryForm from './MatchEntry/MatchEntryForm.jsx'
+import MatchEntryGrid from './MatchEntry/MatchEntryGrid.jsx'
 import MatchEntryTeamGrid from './MatchEntry/MatchEntryTeamGrid.jsx'
 import MatchEntryAvgBlock from './MatchEntry/MatchEntryAvgBlock.jsx'
 import MatchEntryBookDdl from './MatchEntry/MatchEntryBookDdl.jsx'
+import MatchDeclare from './MatchEntry/MatchDeclare.jsx'
 
 
 import MatchHelper from '../helpers/MatchHelper'
 import MatchTeamHelper from '../helpers/MatchTeamHelper'
 
 class MatchEntry extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			item: {}
-		}
-	}
-	componentDidMount() {
-		this.match_id = this.props.match.params.id
-	 	MatchHelper.show(this.props.match.params.id).then((res) => {
-	 		this.setState({item:res.data})
-	 	})
+    constructor(props) {
+        super(props)
+        this.state = {
+            item: {},
+            scount: 0
+        }
+    }
+    componentDidMount() {
+        this.match_id = this.props.match.params.id
+        MatchHelper.show(this.props.match.params.id).then((res) => {
+            this.setState({ item: res.data })
+        });
+    }
+
+    onFormSubmitted = () => {
+        this.refs.matchGrid.refresh()
+        this.refs.teamGrid.fetchData()
+    }
+
+    changeState = () => {
+        this.setState({
+            scount: this.state.scount + 1
+        })
+        // this.refs.bookddl.setState({
+        //  scount: 4
+        // })
+    }
 
 
-	 	// MatchTeamHelper.index({
-	 	// 	match_id: 'dsfsdfds'
-	 	// }).then((res) => {
-	 	// 	console.log("MATCH TEAMS" , res)
-	 	// })
-	 	console.log(this.props.match.params.id)
-  }
+    onEditButtonClick = (data) => {
+        console.log(data)
+        this.refs.matchEntryForm.edit(data)
+    }
 
-  onFormSubmitted = () => {
-  	this.refs.matchGrid.refresh()
-  }
-  render() {
-  	if(!this.state.item._id) return null;
-    return (
-      <div>
-        <h3>Match Entry</h3>
-        <div>
-        	<label className="uk-display-inline-block v-align-middle uk-padding-right-5">{this.state.item.match_name} ({this.state.item._id})</label>
-        </div>
+    getBookNo = () => {
+        return this.refs.bookddl.getSelectedValue()
+    }
 
-        <div className="uk-grid">
-	     		<div className="uk-width-1-4">
-	     			<MatchEntryAvgBlock matchId={this.state.item._id} />
-	     			<MatchEntryBookDdl matchId={this.state.item._id} />
-	     			<MatchEntryTeamGrid ref="teamGrid" matchId={this.state.item._id} />
-	     		</div>
-	     		<div className="uk-width-3-4">
-	     				<MatchEntryForm matchId={this.state.item._id} onFormSubmitted={this.onFormSubmitted}/>
-	     			<div className="uk-margin">
-     					<MatchEntryGrid ref="matchGrid" matchId={this.state.item._id} matchTeams={this.state.item.match_teams} />
-     				</div>
+    render() {
+        if (!this.state.item._id) return null;
+        return ( 
+            <div>
+                <div className="row info-heading-block">
+                    <div className="col-md-8">
+                        <label>{this.state.item.match_name} ({this.state.item._id})</label>
+                    </div>
+                    <div className="col-md-2">
+                        <label>Date:</label>
+                        {this.state.item.created_at}
+                    </div>
+                    <div className="col-md-2">
+                        <label>Match Type:</label>
+                        {this.state.item.match_type}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-2">
+                        <button onClick={this.changeState}>Change State</button>
+                        <MatchEntryBookDdl ref="bookddl" scount={this.state.scount} matchId={this.state.item._id} /> 
+                        <MatchEntryAvgBlock matchId={this.state.item._id} />
+                        <MatchEntryTeamGrid ref="teamGrid" matchId={this.state.item._id} />
 
-	     		</div>
-        </div>
-      </div>
-    );
-  }
+                    </div>
+                    <div className="col-md-10">
+                        <MatchDeclare matchId={this.state.item._id} />
+                        <MatchEntryForm ref="matchEntryForm" matchId={this.state.item._id} onFormSubmitted={this.onFormSubmitted} getBookNo={this.getBookNo} />
+                        <div className="uk-margin">
+                            <MatchEntryGrid ref="matchGrid" onEditButtonClick={this.onEditButtonClick} matchId={this.state.item._id} matchTeams={this.state.item.match_teams} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default MatchEntry;

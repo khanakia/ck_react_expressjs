@@ -1,41 +1,3 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-
-// import { LocaleProvider } from 'antd';
-// import enUS from 'antd/lib/locale-provider/en_US';
-// import { DatePicker } from 'antd';
-
-
-// function App() {
-//   return (
-//      <LocaleProvider locale={enUS}>
-//         <div style={{ margin: 100 }}>
-//           <h1>AntDesign Demo</h1>
-//           <hr /><br />
-//           <DatePicker />
-//         </div>
-
-//       </LocaleProvider>
-//   );
-// } 
-
-// ReactDOM.render(<App />, document.getElementById('root'));
-//  
-
-
-import { render } from 'react-dom'
-import Layout from './components/Layout.jsx'
-import State from './components/State.jsx'
-import Team from './components/Team.jsx'
-import Member from './components/Member.jsx'
-import Match from './components/Match.jsx'
-import Journal from './components/Journal.jsx'
-import MatchEntries from './components/MatchEntries.jsx'
-import MatchEntry from './components/MatchEntry.jsx'
-// import observableTodoStore from './components/Todo.jsx'
-
-
-
 import React from 'react'
 import {
   HashRouter as Router,
@@ -44,32 +6,54 @@ import {
   Switch
 } from 'react-router-dom'
 
+
+import { render } from 'react-dom'
+import Layout from './components/Layout.jsx'
+import Home from './components/Home.jsx'
+// import State from './components/State.jsx'
+import Team from './components/Team.jsx'
+import Account from './components/Account.jsx'
+import Journal from './components/Journal.jsx'
+import MatchType from './components/MatchType.jsx'
+import Match from './components/Match.jsx'
+import MatchEntries from './components/MatchEntries.jsx'
+import MatchEntry from './components/MatchEntry.jsx'
+import MdiMatch from './components/MdiMatch.jsx'
+import Demo from './components/Demo.jsx'
+// import observableTodoStore from './components/Todo.jsx'
+
+// const Home = () => (
+//   <div>
+//     Home
+//   </div>
+// )
+
 const Root = () => (
   <Router>
     <div>
       <Switch>
         <Layout>
-		    <Route exact path="/" component={Home}/>
-		    <Route path="/states" component={State}/>
-        <Route path="/teams" component={Team}/>
-        <Route exact path="/members" component={Member}/>
-        <Route path="/members/:id" component={Member}/>
-        <Route exact path="/matches" component={Match}/>
-        <Route path="/matches/:id" component={Match}/>
-        <Route path="/journals" component={Journal}/>
-        <Route exact path="/match_entries" component={MatchEntries}/>
-        <Route path="/match_entries/:id" component={MatchEntry}/>
-	      </Layout>
+    		<Route exact path="/" component={Home}/>
+            <Route path="/demo" component={Demo}/>
+            {/*<Route path="/states" component={State}/>*/}
+            <Route path="/teams" component={Team}/>
+            <Route exact path="/accounts" component={Account}/>
+            <Route path="/accounts/:id" component={Account}/>
+            <Route exact path="/match_types" component={MatchType}/>
+            <Route exact path="/matches" component={Match}/>
+            <Route path="/matches/:id" component={Match}/>
+            <Route exact path="/journals" component={Journal}/>
+            <Route path="/journals/:id" component={Journal}/>
+            <Route exact path="/match_entries" component={MatchEntries}/>
+            <Route path="/match_entries/match/:id" component={MatchEntry}/>
+            <Route path="/mdimatch/:id" component={MdiMatch}/>
+	    </Layout>
       </Switch>
       
     </div>
   </Router>
 )
 
-const Home = () => (
-  <div>
-    <h2>Home</h2>
-  </div>
-)
+
 
 render(<Root/>, document.getElementById('root'))

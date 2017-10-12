@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 // var db = require('./db')
 // var dbm = require('./config/dbm')
 var mongoose = require('mongoose');
+var  autoIncrement = require('mongoose-auto-increment');
 // Connect to Mongo on start
 // db.connect('mongodb://localhost:27017/ckdb', function(err) {
 //   // if (err) {
@@ -22,6 +23,7 @@ var mongoose = require('mongoose');
 // })
 var uri = 'mongodb://localhost:27017/ckdb';
 global.db = mongoose.createConnection(uri);
+autoIncrement.initialize(db);
 
 
 var index = require('./routes/index');
@@ -30,9 +32,13 @@ var users = require('./routes/users');
 var states = require('./routes/states');
 var teams = require('./routes/teams');
 var accounts = require('./routes/accounts');
+var match_types = require('./routes/match_types');
 var matches = require('./routes/matches');
 var match_teams = require('./routes/match_teams');
 var match_entries = require('./routes/match_entries');
+var journal_entries = require('./routes/journal_entries');
+var sessions = require('./routes/sessions');
+var session_entries = require('./routes/session_entries');
 
 var app = express();
 
@@ -54,9 +60,13 @@ app.use('/users', users);
 app.use('/states', states);
 app.use('/teams', teams);
 app.use('/accounts', accounts);
+app.use('/match_types', match_types);
 app.use('/matches', matches);
 app.use('/match_teams', match_teams);
 app.use('/match_entries', match_entries);
+app.use('/journal_entries', journal_entries);
+app.use('/sessions', sessions);
+app.use('/session_entries', session_entries);
 
 
 // catch 404 and forward to error handler

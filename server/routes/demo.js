@@ -3,10 +3,14 @@ var router = express.Router();
 
 var Account = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
+var MatchTypeModel = require('../model/MatchTypeModel')
 
 var MatchEntryClass = require('../class/MatchEntryClass')
 var AccountClass = require('../class/AccountClass')
 var MatchTeamClass = require('../class/MatchTeamClass')
+var MatchSummaryClass = require('../class/MatchSummaryClass')
+
+var SessionEntryClass = require('../class/SessionEntryClass')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -52,13 +56,43 @@ router.get('/', function(req, res, next) {
 // MatchEntryClass.generateTeamDataArray("59d774e3db652b22f83ff98c", null).then(function(data){
 // 	res.send(data)
 // })
-// MatchEntryClass.updateMatchEntryAfterInsert("59da25338d64b83d7d8efc9f").then(function(data){
-// 	res.send(data)
+
+
+ // MatchTeamClass.listByMatchId("59d774e3db652b22f83ff98c", function(err, data){
+ //            	res.send(data)
+ //        })
+
+
+// MatchEntryClass.updateMatchEntryAfterInsert("59de0a48050f6a70558dbb7c", function(err, data){
+// 	console.log(err)
 // })
 
- MatchTeamClass.listByMatchId("59d774e3db652b22f83ff98c", function(err, data){
-            	res.send(data)
-        })
+// MatchSummaryClass.buildSummaryByMatchEntry("59de0a48050f6a70558dbb7c");
+
+MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
+	console.log(data)
+});
+
+// MatchSummaryClass.buildMatchEntryJournal("59dc80189857c85e8d6d94ac", "59dc7ffe9857c85e8d6d94a7").then((data) => {
+// 	res.send(data)
+// })
+// MatchEntryClass.buildNetComm().then(function(data){
+// 	console.log(data)
+// 	res.send(data);
+// })
+
+// MatchEntryClass.getTeamsWinLossList().then(function(data){
+// 	console.log(data)
+// 	res.send(data);
+// })
+
+
+// SessionEntryClass.updateEntryAfterInsert("59dd91645ac08268b8b56d2e").then(function(data){
+// 	console.log(data)
+// 	// res.send(data);
+// })
+
+// SessionEntryClass.buildWinLossList();
 
 // DbClass.updateMatchEntry("59da25338d64b83d7d8efc9f",function(err,obj){
 // 	res.send(obj)
@@ -66,7 +100,15 @@ router.get('/', function(req, res, next) {
 // AccountClass.getPattiTotalPercentage("59da24d61ae1d43d7373744c", function(err,obj){
 // 	res.send(obj)
 // })
-    // res.send('respond with a resource');
+    res.send('respond with a resource');
+});
+
+router.get('/migration', function(req, res, next) {
+	MatchTypeModel.findOneAndUpdate({match_type_val: "one_day"}, {match_type_name: "One Day", match_type_val: "one_day"}, {upsert:true}).exec();
+	MatchTypeModel.findOneAndUpdate({match_type_val: "twenty"}, {match_type_name: "Twenty-20", match_type_val: "twenty"}, {upsert:true}).exec();
+	MatchTypeModel.findOneAndUpdate({match_type_val: "test"}, {match_type_name: "Test", match_type_val: "test"}, {upsert:true}).exec();
+	MatchTypeModel.findOneAndUpdate({match_type_val: "cup"}, {match_type_name: "Cup", match_type_val: "cup"}, {upsert:true}).exec();
+	res.send("Migration Done")
 });
 
 

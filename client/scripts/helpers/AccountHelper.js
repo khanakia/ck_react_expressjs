@@ -1,6 +1,6 @@
 export default class AccountHelper {
 
-	static index(data) {
+	static index() {
 		return axios({
 	    method: 'get',
 	      url: "/accounts"

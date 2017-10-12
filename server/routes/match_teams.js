@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
+
     
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchTeamClass = require('../class/MatchTeamClass')
@@ -38,6 +39,39 @@ router.post('/',function(req, res, next) {
 	    res.status(200).send(obj);
 	});
 
+});
+
+router.post('/set_winner',function(req, res, next) {
+	MatchTeamClass.setWinner(req.body.match_team_id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send({cerror: err.message})
+	})
+});
+
+router.post('/set_loser',function(req, res, next) {
+	MatchTeamClass.setLoser(req.body.match_team_id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send({cerror: err.message})
+	})
+});
+
+
+router.post('/unset_loser',function(req, res, next) {
+	MatchTeamClass.unsetLoser(req.body.match_team_id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send({cerror: err.message})
+	})
+});
+
+router.post('/undeclare_match',function(req, res, next) {
+	MatchTeamClass.undeclareMatch(req.body.match_id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send({cerror: err.message})
+	})
 });
 
 router.put('/:id', function(req, res, next) {

@@ -59,8 +59,8 @@ class MatchEntryAvgBlock extends Component {
     }
       return (
         <div>
-            <table>
-              <thead>
+            <table className="table table-striped table-sm">
+              <thead className="thead-inverse">
                 <tr>
                   <th>Avg. L</th>
                   <th>Avg. K</th>

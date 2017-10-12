@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
-    var MatchTeamClass = require('../class/MatchTeamClass')
+var MatchTeamClass = require('../class/MatchTeamClass')
     
 router.get('/', function(req, res, next) {
   MatchModel.find({}).exec(function (err, items) {
@@ -19,6 +19,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
+	// MatchModel.findOne({_id: req.params.id}).exec(function(err, docs){
+	// 	res.send(docs)
+	// })
+	// res.send("Sdfs")
 	async.parallel({
 		match: function (cb){  MatchModel.findOne({_id: req.params.id}).exec(cb) },
 		matchTeams: function (cb){ MatchTeamClass.list({match_id: req.params.id}).exec(cb) }
@@ -27,13 +31,6 @@ router.get('/:id', function(req, res, next) {
 	   ret.match_teams = result.matchTeams;
 	   res.send(ret)
 	});
-
-	
- //  MatchModel.findOne({_id: req.params.id}).exec(function (err, items) {
-	//     // res.render('members', {members: docs})
-	//     res.setHeader('Content-Type', 'application/json');
-	//     res.send(JSON.stringify(items));
-	// })
 });
 
 router.post('/',function(req, res, next) {
@@ -44,9 +41,9 @@ router.post('/',function(req, res, next) {
 	let item = new MatchModel(req.body);  
 	item.save((err, obj) => {  
 	    if (err) {
-	        res.status(500).send(err);
+	        return res.status(500).send(err);
 	    }
-	    res.status(200).send(obj);
+	    return res.status(200).send(obj);
 	});
 
 });

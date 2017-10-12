@@ -47,7 +47,7 @@ router.post('/',function(req, res, next) {
 		return res.status(401).send({cerror: "Patti Sum should be 100"});
 	}
 
-	accountItem.tfr_comm_to = _.isEmpty(accountItem.tfr_comm_to) ? null : accountItem.tfr_comm_to;
+	accountItem.match_comm_to = _.isEmpty(accountItem.match_comm_to) ? null : accountItem.match_comm_to;
 
 	// res.status(200).send(accountItem);
 	let account = new AccountModel(accountItem)
@@ -81,7 +81,7 @@ router.put('/:id', function(req, res, next) {
 		return res.status(401).send({cerror: "Patti Sum should be 100"});
 	}
 
-	accountItem.tfr_comm_to = _.isEmpty(accountItem.tfr_comm_to) ? null : accountItem.tfr_comm_to;
+	accountItem.match_comm_to = _.isEmpty(accountItem.match_comm_to) ? null : accountItem.match_comm_to;
 	
 	AccountModel.findOneAndUpdate({_id: req.params.id}, accountItem, {upsert:true}, function(err, doc){
     if (err) return res.send(500, { error: err });

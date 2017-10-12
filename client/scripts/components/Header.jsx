@@ -1,57 +1,43 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-
+import {APP_URL_ACCOUNTS, APP_URL_TEAMS, APP_URL_MATCHES, APP_URL_MATCH_ENTRIES, APP_URL_JOURNALS, APP_URL_REPORT_CONNECT } from "../Constant"
 class Header extends React.Component {
-  state = {
-    current: 'mail',
-  }
-  handleClick = (e) => {
-    console.log('click ', e);
-    this.setState({
-      current: e.key,
-    });
-  }
-
   componentDidMount() {
     $("#jqxMenu").jqxMenu({ height: 30, showTopLevelArrows: true, keyboardNavigation: true });
-
-
   }
   render() {
     return (
-        <div>
-            <div id='jqxMenu'>
+        <div className="row">
+            <div id='jqxMenu' className="jqxMenu-topmenu">
                 <ul>
-                    <li><Link to={'/'}>Home</Link></li>
+                    <li><Link to={'/'}><label className="text-danger font-weight-bold">London Betfair</label></Link></li>
                     <li>Master
                         <ul>
-                            <li><Link to={'/members'}>Parties (F1)</Link></li>
-                            <li><Link to={'/teams'}>Teams (F2)</Link></li>
-                            <li><Link to={'/states'}>State (ALT+S)</Link></li>
+                            <li><Link to={APP_URL_ACCOUNTS}>Parties (F1)</Link></li>
+                            <li><Link to={APP_URL_TEAMS}>Teams (F2)</Link></li>
                         </ul>
                     </li>
                     <li>Match
                         <ul>
-                            <li><Link to={'/matches'}>Match Master (F3)</Link></li>
-                            <li><Link to={'/match_entries'}>Match Entry (F4)</Link></li>
-                            <li><Link to={'/match_entry'}>Match Declaration (F5)</Link></li>
+                            <li><Link to={APP_URL_MATCHES}>Match Master (F3)</Link></li>
+                            <li><Link to={APP_URL_MATCH_ENTRIES}>Match Entry (F4)</Link></li>
                         </ul>
                     </li>
-                   <li>Setlling
+                   <li>Ledger
                         <ul>
-                            <li><Link to={'/ledger_journal'}>Journal</Link></li>
+                            <li><Link to={APP_URL_JOURNALS}>Journal</Link></li>
                         </ul>
                     </li>
                     <li>Reports
                         <ul>
-                          <li><Link to={'/ledger_journal'}>Connect Report (F6)</Link></li>
-                          <li><Link to={'/ledger_journal'}>Journal</Link></li>
+                          <li><Link to={APP_URL_REPORT_CONNECT}>Connect Report (F6)</Link></li>
                         </ul>
                     </li>
-                    <li>Tools
+                    <li>Utilities
                         <ul>
                             <li><Link to={'/ledger_journal'}>Backup</Link></li>
+                            <li><Link to={'/ledger_journal'}>Remove All Records</Link></li>
                         </ul>
                     </li>
                 </ul>

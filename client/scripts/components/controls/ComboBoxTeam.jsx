@@ -13,11 +13,12 @@ class ComboBoxTeam extends ComboBox {
     width: 225,
     onChange: function(){},
     onSelect: function() {},
+    onClose: function() {},
     selectedValue: null,
     width: 225,
     url: '/teams',
     valueMember: '_id',
-    displayMember: 'name'
+    displayMember: 'team_name'
   }
 }
 

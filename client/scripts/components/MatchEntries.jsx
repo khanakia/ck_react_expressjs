@@ -1,6 +1,10 @@
+/*
+  This page will show all the matches which is not declared yet so user can enter to particular match to add entries
+*/
 import React from 'react'
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
+import {URL_MATCHES, URL_MATCH_ENTRIES_MATCH, APP_URL_MDI_MATCH} from '../Constant';
 
 class MatchEntries extends React.Component {
   render() {
@@ -13,7 +17,7 @@ class MatchEntries extends React.Component {
           ],
 
           id: '_id',
-          url: '../matches',
+          url: URL_MATCHES,
 
           updaterow: (rowid, rowdata, commit) => {
             MatchHelper.update(rowdata.uid, {
@@ -34,13 +38,16 @@ class MatchEntries extends React.Component {
                 return 'Select';
             }, buttonclick: (row) => {
                 let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                console.log(dataRecord.uid)
-                // window.location.href="/#/"
-                _this.props.history.push("/match_entries/"+dataRecord.uid)
-
-
-                // _this.context.router.history.push('/my-new-location')
-                // return <Redirect to="/state"  />
+                _this.props.history.push(URL_MATCH_ENTRIES_MATCH + "/" + dataRecord.uid)
+            }
+        },
+        {
+            text: 'Select', datafield: 'Select1', columntype: 'button', width:50, filterable: false,
+            cellsrenderer: () => {
+                return 'Select';
+            }, buttonclick: (row) => {
+                let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                _this.props.history.push(APP_URL_MDI_MATCH + "/" + dataRecord.uid)
             }
         }
     ];

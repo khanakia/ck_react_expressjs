@@ -1,62 +1,47 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
-
+var autoIncrement = require('mongoose-auto-increment');
 
 var async = require("async");
 
 var tableSchema = mongoose.Schema({
-    match_id: { type: ObjectId, required: true },
-	account_id: { type: ObjectId, required: true },
-    team_id: { type: ObjectId, required: true },
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now },
+    match_id: { type: Number, required: true },
+    account_id: { type: Number, required: true },
+    team_id: { type: Number, required: true },
     rate: { type: Number, required: true },
     amount: { type: Number, required: true },
     lk: { type: String, required: true },
-    created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date, default: Date.now },
     is_declared: { type: Boolean, default: false },
     comm_yn: { type: Boolean, default: true },
     book_no: { type: Number, default: 1 },
-    team_name: String,
-    account_name: String,
-    // save amount for each team assuming as team is winning
+
+    win_amt: {type: Number, default:0 },
+    loose_amt: {type: Number, default:0 },
+    win_amt_subtotal: {type: Number, default:0 },
+    loose_amt_subtotal: {type: Number, default:0 },
+    match_comm: {type: Number, default:0 },
+    match_comm_type: {type: String, default:null },
+    match_comm_to: {type: Number },
+    win_comm_amt: {type: Number, default:0 },
+    loose_comm_amt: {type: Number, default:0 },
+    match_patti_total_per: {type: Number, default:0 },
+    win_patti_amt: {type: Number, default:0 },
+    loose_patti_amt: {type: Number, default:0 },
+    win_amt_grandtotal: {type: Number, default:0 },
+    loose_amt_grandtotal: {type: Number, default:0 },
     teams_data: {},
     // save account.patti 
-    patti: {}
+    patti : {}
 }, { strict: false });
 
-// Getter
-// tableSchema.path('amount').get(function(num) {
-//   return (num / 100).toFixed(2);
-// });
 
-// // Setter
-// tableSchema.path('amount').set(function(num) {
-//   return num * 100;
-// });
-
-
-tableSchema.statics.updateFullEntry = function updateFullEntry (_id, cb) {
-    var _this = this;
-    async.waterfall([
-        function(next){
-            _this.findOne({"_id": _id}).exec(next);
-        },
-        function(matchEntry, next){
-            _this('Account').findOne({_id: matchEntry.account_id}).exec(next)
-            // next(null, matchEntry.account_id)
-        },
-        function(matchEntry, account, next){
-            next(null, account)
-        }
-      
-      ], cb);
-
-
-    return false;
-    // return this.model('MatchEntry').findOne({ _id: _id }, cb);
-
-};
+tableSchema.plugin(autoIncrement.plugin, {
+    model: 'MatchEntry',
+    startAt: 1,
+});
 
 /* global db */
 module.exports = db.model('MatchEntry', tableSchema);	

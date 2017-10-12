@@ -38,12 +38,12 @@ export default class MatchEntryHelper {
 	    })
 	}
 
-	static save(data) {
-		const dataJson = URI.parseQuery(data)
-		if(dataJson._id) {
-			var ajaxObj = MatchHelper.update(dataJson._id,data)
+	static save(data, id=null) {
+		// const dataJson = URI.parseQuery(data)
+		if(id) {
+			var ajaxObj = MatchEntryHelper.update(id,data)
 		} else {
-			var ajaxObj = MatchHelper.store(data)
+			var ajaxObj = MatchEntryHelper.store(data)
 		}
 		return ajaxObj;
 	}

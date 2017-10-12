@@ -1,13 +1,22 @@
 var mongoose = require('mongoose');
-
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
+var autoIncrement = require('mongoose-auto-increment');
 var tableSchema = mongoose.Schema({
-    date: String,
-    account_id: Objectid,
-    dr_amount: Number,
-    cr_amount: Number,
-    balance: Number,
-    uid: String,
-    narration: String
+    created_at: { type: Date, default: Date.now },
+    
+    match_id: { type: Number, default: null },
+
+    // Match Id or Session Id
+    ref_id: { type: Number, default: null },
+
+    // Match, Session
+    ref_type: { type: String, default: null },
+});
+
+tableSchema.plugin(autoIncrement.plugin, {
+    model: 'Journal',
+    startAt: 1,
 });
 
 /* global db */

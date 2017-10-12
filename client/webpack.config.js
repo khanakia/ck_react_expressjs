@@ -29,6 +29,10 @@ const config = {
 
     resolve: {
         extensions: [".js", ".jsx", ".json"],
+        alias: {
+            components: path.resolve(__dirname, 'scripts/components'),
+            helpers: path.resolve(__dirname, 'scripts/helpers'),
+        },
     },
 
     watchOptions: {
