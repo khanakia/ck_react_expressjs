@@ -203,7 +203,7 @@ class MemberForm extends Component {
                                 </div>
                         ) })}
                     </div>
-                    <div className="uk-margin uk-text-right">
+                    <div className="mt-3 text-right col-md-10">
                         <button className="btn btn-primary btn-sm" type="submit">Save</button>
                         <button className="btn btn-danger btn-sm ml-1" type="button" onClick={(e)=> this.props.cancelFormClick(e)}>Cancel</button>
                     </div>

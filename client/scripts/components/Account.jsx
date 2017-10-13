@@ -87,7 +87,7 @@ class Account extends Component {
                     <div className="col-md-4">
                         <AccountGrid key={this.state.scount} accountsList={this.state.accountsList} onDataUpdate={this.fetchAccountsList} editItem={this.editItem} />
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-6">
                         
                         <MemberForm key={this.state.scount} ref="memberForm" 
                             item={this.state.item} accountsList={this.state.accountsList} 

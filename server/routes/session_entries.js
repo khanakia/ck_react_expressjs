@@ -10,9 +10,10 @@ var SessionEntryModel = require('../model/SessionEntryModel')
 var SessionEntryClass = require('../class/SessionEntryClass')
     
 router.get('/', function(req, res, next) {
-  SessionEntryModel.find({}).exec(function (err, items) {
-	    res.setHeader('Content-Type', 'application/json');
-	    res.send(JSON.stringify(items));
+
+	SessionEntryClass.getsessionEntryGridList(req.query.session_id, function(err, doc){
+		if(err) return res.send(err);
+		return res.send(doc);
 	})
 });
 
@@ -22,7 +23,11 @@ router.get('/winlosslist/:id', function(req, res, next) {
 	})
 });
 
-
+router.get('/sessionpl_info/:id', function(req, res, next) {
+	SessionEntryClass.sessionPL_Info(req.params.id).then((data) => {
+		res.send(data)
+	})
+});
 
 router.post('/',function(req, res, next) {
 	// res.status(200).send(req.body);

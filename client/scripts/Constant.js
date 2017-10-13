@@ -44,3 +44,8 @@ export const LIST_MATCH_TYPE = [
     { id: "Test", text: "Test" },
     { id: "Cup", text: "Cup" }
 ]
+
+export const LIST_SESSION_YN = [
+    { id: "Y", text: "Yes" },
+    { id: "N", text: "No" }
+]

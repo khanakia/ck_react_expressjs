@@ -69,9 +69,9 @@ router.get('/', function(req, res, next) {
 
 // MatchSummaryClass.buildSummaryByMatchEntry("59de0a48050f6a70558dbb7c");
 
-MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
-	console.log(data)
-});
+// MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
+// 	console.log(data)
+// });
 
 // MatchSummaryClass.buildMatchEntryJournal("59dc80189857c85e8d6d94ac", "59dc7ffe9857c85e8d6d94a7").then((data) => {
 // 	res.send(data)
@@ -87,10 +87,22 @@ MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
 // })
 
 
-// SessionEntryClass.updateEntryAfterInsert("59dd91645ac08268b8b56d2e").then(function(data){
-// 	console.log(data)
+// SessionEntryClass.updateEntryAfterInsert(9).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
 // 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
 // })
+
+SessionEntryClass.sessionPL_Info(9).then(function(data){
+	
+	res.send(data)
+	// res.send(data);
+}).catch((err)=>{
+	res.send(err.message)
+})
+
 
 // SessionEntryClass.buildWinLossList();
 
@@ -100,7 +112,7 @@ MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
 // AccountClass.getPattiTotalPercentage("59da24d61ae1d43d7373744c", function(err,obj){
 // 	res.send(obj)
 // })
-    res.send('respond with a resource');
+    // res.send('respond with a resource');
 });
 
 router.get('/migration', function(req, res, next) {

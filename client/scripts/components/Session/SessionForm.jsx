@@ -61,6 +61,7 @@ class SessionForm extends Component {
         	this.refs.jqxWindow.close()
         	this.props.onFormSubmitted(response);
         }).catch((error) => {
+            console.log(error)
           toastr.error("Validation Failed")
         })
         return false;
@@ -70,26 +71,38 @@ class SessionForm extends Component {
 
         return (
             <div>
+
                 <JqxWindow ref='jqxWindow' autoOpen={true}
-                    width={500} height={300} position={{ x: "50%", y: 175, left:"-250px" }}
+                    width={400} height={250} position={{ x: "50%", y: 175, left:"-250px" }}
                     minWidth={200} minHeight={200} maxWidth={700}
                     maxHeight={400} showCollapseButton={false}
                 >
-                	<div >
+                	<div>
                         <span>
                             Session Form {this.state.item.session_name}
                         </span>
                     </div>
                     <div >
-                		<form ref="form" onSubmit={(e) => this.formSubmit(e)}>
-                			<input type="text" name="match_id" defaultValue={this.props.matchId} />
-	                        <input type="text" name="session_name" defaultValue={this.state.item.session_name} key={this.state.scount} />
-
-	                        <ComboBoxTeam field_id="team_id" selectedValue={this.state.item.team_id} />
-	                        <button type="submit">Save Session</button>
+  
+                		<form ref="form" onSubmit={(e) => this.formSubmit(e)} className="sessionForm">
+                		    <input type="hidden" name="match_id" defaultValue={this.props.matchId} />
+                            <div className="row11">
+                                <div className="col-md-611">
+                                    <div className="form-group">
+                                        <label>Sesion Name</label>
+            	                        <input  className="form-control form-control-sm" type="text" name="session_name" defaultValue={this.state.item.session_name} key={this.state.scount} />
+                                    </div>
+                                    <div className="form-group">
+                                       <label>Team</label>
+                                       <ComboBoxTeam width={"100%"} field_id="team_id" selectedValue={this.state.item.team_id} />
+                                    </div>
+                                    <div className="text-right">
+        	                           <button className="btn btn-primary btn-sm text-right" type="submit">Save Session</button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
-                   
                 </JqxWindow>
             </div>
         );

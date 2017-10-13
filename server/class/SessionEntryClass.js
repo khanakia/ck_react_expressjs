@@ -9,46 +9,80 @@ const ObjectId1 = mongoose.Types.ObjectId;
 module.exports = {
 
     async updateEntryAfterInsert(id, cb) {
-        var sessionEntry = await SessionEntryModel.findOne({"_id": id});
-        var account = await Account.findOne({_id: sessionEntry.account_id})
-        var patti_aggregate = await AccountClass.getPattiAggregate(sessionEntry.account_id)
+        var item = await SessionEntryModel.findOne({"_id": id});
+        var account = await Account.findOne({_id: item.account_id})
+        var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
-        var win_amt = sessionEntry.rate * sessionEntry.amount
-        var loose_amt = sessionEntry.amount
+        var win_amt = win_amt_subtotal = item.rate * item.amount
+        var loose_amt = loose_amt_subtotal = item.amount
         
-        var sess_comm_amt = 0
-        var tfr_sess_comm_amt = 0
-        var win_amt_after_comm = win_amt;
-        var loose_amt_after_comm = loose_amt;
-
-        if(sessionEntry.comm_yn==true){
-            sess_comm_amt = account.sess_comm * sessionEntry.amount/100
-            tfr_sess_comm_amt = account.tfr_sess_comm * sessionEntry.amount/100
-
-            win_amt_after_comm = win_amt + sess_comm_amt
-            loose_amt_after_comm = loose_amt - sess_comm_amt
+        var sess_comm = account.sess_comm;
+        var sess_comm_to = account.sess_comm_to==null ? item.account_id : account.sess_comm_to;
+        var comm_amt = loose_comm_amt = 0
+        if(item.comm_yn==true) {
             
+            comm_amt = item.amount * sess_comm/100;
+            
+            // if it is same accoutn id then add or subtract commission and display on frontend otherwise we will add commision for third parties directly in match summary
+            // so in match summary win amt or loss amt will be always without commissino we will add new entry for commission in match summary always
+            if(sess_comm_to == item.account_id) {
+                win_amt_subtotal = win_amt_subtotal + comm_amt
+                loose_amt_subtotal = loose_amt_subtotal - comm_amt
+            }
         }
+        
 
-        var sess_patti_total_per = patti_aggregate.session;
-        var book_payable_after_patti = win_amt_after_comm - (win_amt_after_comm *  sess_patti_total_per / 100)
-        var book_receivable_after_patti = loose_amt_after_comm - (loose_amt_after_comm *  sess_patti_total_per / 100)
+        // Patti will be calculated on final amount after commission
+        var patti_total_per = patti_aggregate.session;
+        var win_patti_amt = (win_amt_subtotal *  patti_total_per / 100)
+        var loose_patti_amt = (loose_amt_subtotal *  patti_total_per / 100)
 
-        sessionEntry.set("win_amt", win_amt)
-        sessionEntry.set("loose_amt", loose_amt)
-        sessionEntry.set("sess_comm", account.sess_comm);
-        sessionEntry.set("sess_comm_amt", sess_comm_amt);
-        sessionEntry.set("tfr_comm_to", account.tfr_comm_to);
-        sessionEntry.set("tfr_sess_comm_amt", tfr_sess_comm_amt);
-        sessionEntry.set("win_amt_after_comm", win_amt_after_comm  );
-        sessionEntry.set("loose_amt_after_comm", loose_amt_after_comm  );
-        sessionEntry.set("sess_patti_total_per", sess_patti_total_per)
-        sessionEntry.set("book_payable_after_patti", book_payable_after_patti);
-        sessionEntry.set("book_receivable_after_patti", book_receivable_after_patti);
-        sessionEntry.set("patti", account.patti);
-        return sessionEntry.save(cb)
+        var win_amt_grandtotal = win_amt_subtotal - win_patti_amt
+        var loose_amt_grandtotal = loose_amt_subtotal - loose_patti_amt
+
+
+        item.set("calcs.win_amt", win_amt)
+        item.set("calcs.loose_amt", loose_amt)
+        item.set("calcs.win_amt_subtotal", win_amt_subtotal)
+        item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
+        item.set("calcs.sess_comm", sess_comm)
+        item.set("calcs.sess_comm_to", sess_comm_to)
+        item.set("calcs.comm_amt", comm_amt)
+        item.set("calcs.patti_total_per", patti_total_per)
+        item.set("calcs.win_patti_amt", win_patti_amt)
+        item.set("calcs.loose_patti_amt", loose_patti_amt)
+        item.set("calcs.win_amt_grandtotal", win_amt_grandtotal)
+        item.set("calcs.loose_amt_grandtotal", loose_amt_grandtotal)
+
+        item.set("calcs.patti", account.patti);
+
+        // return item;
+
+        return item.save(cb)
     },
 
+
+    async sessionPL_Info(sessionId) {
+       var sessionEntries = await SessionEntryModel.find({session_id : parseInt(sessionId)})
+
+       let yes = no = commRec = commPay = 0;
+
+       sessionEntries.map( (item,i) => {
+            const {calcs} = item
+            yes += item.yn == "Y" ? item.amount : 0;
+            no += item.yn == "N" ? item.amount : 0;
+            commRec += calcs.sess_comm <= 0 ? calcs.sess_comm : 0
+            commPay += calcs.sess_comm > 0 ? calcs.sess_comm : 0
+       })
+       
+
+       return {
+            yes: yes,
+            no: no,
+            comm_rec: -1 * commRec,
+            comm_pay: -1 * commPay
+       }
+    },
 
     async buildWinLossList() {
 		// var sessionEntries = await SessionEntryModel.aggregate([ 
@@ -119,43 +153,29 @@ module.exports = {
     },
 
 
-    async getsessionEntryGridList(match_id, cb){
-        
-        var matchTeams = await MatchTeamClass.list({match_id:match_id});
-
-        // console.log(matchTeams)
+    async getsessionEntryGridList(session_id, cb){
    
         var project = {
             _id: 1,
             rate: 1,
+            runs: 1, 
             amount: 1,
-            lk: 1,
+            yn: 1,
             team_id: 1,
             account_id: 1,
             match_id: 1,
+            session_id: 1,
             is_declared: 1,
-            "team_name": "$team.team_name",
+            created_at: 1,
+            comm_yn: 1,
             "account_name": "$account.account_name",
         };
 
-        matchTeams.forEach(function(item,i) {
-            // project[item.team_name] = "$teams_data."+item.team_id;
-            project[item.team_name] = { $multiply: [ "$teams_data."+item.team_id, -1 ] }
-            
-        });
-
         SessionEntryModel.aggregate( [ 
             {
-                $lookup:
-                {
-                   from: "teams",
-                   localField: "team_id",
-                   foreignField: "_id",
-                   as: "team"
+                $match: {
+                    session_id: parseInt(session_id)
                 }
-            },
-            {
-                $unwind:"$team"
             },
             {
                 $lookup:

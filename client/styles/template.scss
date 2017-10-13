@@ -54,7 +54,7 @@ input.error {
 }
 
 .info-heading-block {
-	background-color: #ff6675;
+	background-color: #e2e2e2;
 	padding: 20px 0;
 	margin-bottom: 20px;
 
@@ -63,6 +63,10 @@ input.error {
 		margin-right: 10px;
 		margin-bottom: 0;
 	}
+}
+
+.sessionForm {
+	box-sizing: border-box;
 }
 
 

@@ -28,6 +28,9 @@ import Demo from './components/Demo.jsx'
 //   </div>
 // )
 
+window.sessionId = localStorage.getItem('sessionId', null);
+
+
 const Root = () => (
   <Router>
     <div>
