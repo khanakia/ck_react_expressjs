@@ -1,43 +1,45 @@
 import React, { Component } from "react";
 
-import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
-import { URL_MATCH_ENTRIES_TEAM_WINLOSSS_LIST } from '../../Constant'
+// import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
+// import { URL_MATCH_ENTRIES_TEAM_WINLOSSS_LIST } from '../../Constant'
 class MatchEntryTeamGrid extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            items: []
-        }
+        // this.state = {
+        //     items: []
+        // }
     }
 
     static defaultProps = {
         matchId: null,
+        teamsWinLossList: []
     }
 
     componentDidMount() {
         // console.log(this.props.matchId)
-        this.fetchData()
+        // this.fetchData()
     }
 
-    fetchData() {
-        axios({
-            method: 'get',
-            url: URL_MATCH_ENTRIES_TEAM_WINLOSSS_LIST,
-            params: {
-                match_id: this.props.matchId
-            }
-        }).then((res) => {
-            this.setState({
-                items: res.data
-            })
-        })
-    }
+    // fetchData() {
+    //     axios({
+    //         method: 'get',
+    //         url: URL_MATCH_ENTRIES_TEAM_WINLOSSS_LIST,
+    //         params: {
+    //             match_id: this.props.matchId
+    //         }
+    //     }).then((res) => {
+    //         this.setState({
+    //             items: res.data
+    //         })
+    //     })
+    // }
 
     renderItems = () => {
-        if (this.state.items.length < 1) return null;
+        if (this.props.teamsWinLossList.length < 1) return null;
 
-        var item = this.state.items[0]
+        var item = this.props.teamsWinLossList[0]
+        
         return Object.entries(item).map((key, i) => {
             if (key[0] == "_id") return null;
 
@@ -53,6 +55,7 @@ class MatchEntryTeamGrid extends Component {
     }
 
     render() {
+        // console.log(this.props.teamsWinLossList)
         return (
             <div>
                 <table className="table table-striped table-sm">

@@ -2,14 +2,15 @@ var express = require('express');
 var router = express.Router();
 var async = require("async");
 var await = require("async").await;
-
-var SessionModel = require('../model/SessionModel')
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
+
+var SessionModel = require('../model/SessionModel')
+var SessionClass = require('../class/SessionClass')
     
 router.get('/', function(req, res, next) {
-  SessionModel.find({}).exec(function (err, items) {
+  SessionClass.list({match_id: req.query.match_id}).exec(function (err, items) {
 	    res.setHeader('Content-Type', 'application/json');
 	    res.send(JSON.stringify(items));
 	})

@@ -10,15 +10,6 @@ var MatchTeamClass = require('./MatchTeamClass')
 const ObjectId1 = mongoose.Types.ObjectId;
 module.exports = {
 
-    // Run this function whenever any account is updateds
-    async updateEntriesByAccount(accountId) {
-        var matchEntries = await MatchEntryModel.find({account_id: accountId, is_summarized: {$in: [null, false]}})
-        matchEntries.map( async (matchEntry, i) => {
-            console.log(matchEntry._id)
-            await this.updateEntryAfterInsert(matchEntry.id)
-        })
-    },
-
 
     async updateEntryAfterInsert(id, cb) {
         var item = await MatchEntryModel.findOne({"_id": id});
@@ -26,79 +17,57 @@ module.exports = {
         var account = await Account.findOne({_id: item.account_id})
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
-        // We assume fav team will always win so if fav team wins then we are calculating that funter will get or loose money if fav wins
-        var favteam_amt = favteam_subtotal = item.lk=="L" ? item.rate * item.amount : -1 * item.rate * item.amount
-
-        // We assum that if other teams wins that will futner win or loose other than Fav team
-        var otherteam_amt = otherteam_subtotal = item.lk=="L" ? -1 * item.amount : item.amount
-
-
+        var win_amt = win_amt_subtotal= this.winAmtByLK(item.rate, item.amount, item.lk)
+        var loose_amt = loose_amt_subtotal = this.looseAmtByLK(item.rate, item.amount, item.lk)
+        
         var match_comm = account.match_comm;
-        var fav_comm_amt = otherteam_comm_amt = 0
         var match_comm_to = account.match_comm_to==null ? item.account_id : account.match_comm_to;
+        var win_comm_amt = loose_comm_amt = 0
         if(item.comm_yn==true && account.match_comm_type=='entrywise') {
-
-            // Funter will get commission if he has lose
-            if(match_comm>0 && favteam_amt<0) {
-                fav_comm_amt = Math.abs(favteam_amt * match_comm/100)
-            }
-
-            // Funter will pay commission if he has profit
-            if(match_comm<0 && favteam_amt>0) {
-                fav_comm_amt = -1 * (favteam_amt * match_comm/100)
-            }
-
-            // Commissin Calculation if other teams wins and if funter is in profit or loss for particular entry
-            // Funter will get commission if he has lose
-            if(match_comm>0 && otherteam_amt<0) {
-                otherteam_comm_amt = Math.abs(otherteam_amt * match_comm/100)
-            }
-
-            // Funter will pay commission if he has profit
-            if(match_comm<0 && otherteam_amt>0) {
-                otherteam_comm_amt = -1* (otherteam_amt * match_comm/100)
-            }
+            // if less then book will get comm on funters winning amount else it will be zero
+            win_comm_amt = match_comm < 0 ? win_amt * match_comm/100 : 0;
+            // if greater then boook will pay comm on funters loss amount else it will be zero
+            loose_comm_amt = (match_comm >=0) ? loose_amt * match_comm/100 : 0;
 
             // if it is same accoutn id then add or subtract commission and display on frontend otherwise we will add commision for third parties directly in match summary
             // so in match summary win amt or loss amt will be always without commissino we will add new entry for commission in match summary always
             if(match_comm_to == item.account_id) {
-                favteam_subtotal = favteam_subtotal + fav_comm_amt
-                otherteam_subtotal = otherteam_subtotal + otherteam_comm_amt
+                win_amt_subtotal = win_amt_subtotal + win_comm_amt
+                loose_amt_subtotal = loose_amt_subtotal - loose_comm_amt
             }
         }
+        
 
-
-         // // Patti will be calculated on final amount after commission
+        // Patti will be calculated on final amount after commission
         var match_patti_total_per = patti_aggregate.match;
-        var favteam_patti_amt = (favteam_subtotal *  match_patti_total_per / 100)
-        var otherteam_patti_amt = (otherteam_subtotal *  match_patti_total_per / 100)
+        var win_patti_amt = (win_amt_subtotal *  match_patti_total_per / 100)
+        var loose_patti_amt = (loose_amt_subtotal *  match_patti_total_per / 100)
 
-        var favteam_amt_grandtotal = favteam_subtotal - favteam_patti_amt
-        var otherteam_amt_grandtotal = otherteam_subtotal - otherteam_patti_amt
+        var win_amt_grandtotal = win_amt_subtotal - win_patti_amt
+        var loose_amt_grandtotal = loose_amt_subtotal - loose_patti_amt
 
-        item.set("calcs.favteam_amt", favteam_amt)
-        item.set("calcs.otherteam_amt", otherteam_amt)
+
+        item.set("calcs.win_amt", win_amt)
+        item.set("calcs.loose_amt", loose_amt)
         item.set("calcs.match_comm", match_comm)
         item.set("calcs.match_comm_type", account.match_comm_type)
         item.set("calcs.match_comm_to", match_comm_to)
-        item.set("calcs.fav_comm_amt", fav_comm_amt)
-        item.set("calcs.otherteam_comm_amt", otherteam_comm_amt)
-        item.set("calcs.favteam_subtotal", favteam_subtotal)
-        item.set("calcs.otherteam_subtotal", otherteam_subtotal)
+        item.set("calcs.win_comm_amt", win_comm_amt)
+        item.set("calcs.loose_comm_amt", loose_comm_amt)
+        item.set("calcs.win_amt_subtotal", win_amt_subtotal)
+        item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
         item.set("calcs.match_patti_total_per", match_patti_total_per)
-        item.set("calcs.favteam_patti_amt", favteam_patti_amt)
-        item.set("calcs.otherteam_patti_amt", otherteam_patti_amt)
-        item.set("calcs.favteam_amt_grandtotal", favteam_amt_grandtotal)
-        item.set("calcs.otherteam_amt_grandtotal", otherteam_amt_grandtotal)
-
-
+        item.set("calcs.win_patti_amt", win_patti_amt)
+        item.set("calcs.loose_patti_amt", loose_patti_amt)
+        item.set("calcs.win_amt_grandtotal", win_amt_grandtotal)
+        item.set("calcs.loose_amt_grandtotal", loose_amt_grandtotal)
+        item.set("calcs.patti", account.patti)
 
         var matchTeams = await MatchTeamClass.list({match_id:item.match_id});
 
         var teams = {};
         await matchTeams.forEach(function(matchTeamitem, i1) {
-            // var amt = item.team_id == matchTeamitem.team_id ? item.get("calcs.win_amt_grandtotal") : -1 * item.get("calcs.loose_amt_grandtotal")
-            var amt = item.team_id == matchTeamitem.team_id ? favteam_amt_grandtotal : otherteam_amt_grandtotal
+            var amt = item.team_id == matchTeamitem.team_id ? item.get("calcs.win_amt_grandtotal") : -1 * item.get("calcs.loose_amt_grandtotal")
             teams[matchTeamitem.team_name] =  amt
         });
 

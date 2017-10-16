@@ -4,7 +4,7 @@ var Schema = mongoose.Schema,
 var autoIncrement = require('mongoose-auto-increment');
 
 var pattiSchema = mongoose.Schema({
-    account_id: ObjectId,
+    account_id:  { type: Number, default: null },
     match: { type: Number, default: 0, min: 0, max: 100 }, // In Percentage
     session: { type: Number, default: 0, min: 0 , max: 100}, // In Percentage
     meter: { type: Number, default: 0 , min: 0, max: 100}, //In Percentage

@@ -23,6 +23,9 @@ class MatchGrid extends Component {
     	let source = {
             datatype: 'json',
             datafields: [
+                { name: '_id', type: 'string' },
+                { name: 'created_at', type: 'date'},
+                { name: 'match_name', type: 'string' },
                 { name: 'match_name', type: 'string' },
                 { name: 'match_type', type: 'string' },
                 { name: 'is_declared', type: 'boolean' },
@@ -76,9 +79,11 @@ class MatchGrid extends Component {
                     console.log(dataRecord.uid)
                 }
             },
+            { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Name', datafield: 'match_name', width: 150 },
             { text: 'Match Type', datafield: 'match_type', width: 100 },
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },
+            { text: 'Dated', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
         ];
 
         return (

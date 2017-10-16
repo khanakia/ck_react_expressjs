@@ -19,7 +19,12 @@ const config = {
         "./index.js",
       ],
       vendor: [
-          'react', 'react-dom'
+          'react', 'react-dom', 'react-router', 'react-router-dom', 'mobx', 'mobx-react', 'mobx-react-router', 
+          './scripts/components/jqwidgets-react/react_jqxgrid',
+            './scripts/components/jqwidgets-react/react_jqxcombobox',
+           './scripts/components/jqwidgets-react/react_jqxmenu',
+           './scripts/components/jqwidgets-react/react_jqxwindow'
+
       ],
     },
     output: {

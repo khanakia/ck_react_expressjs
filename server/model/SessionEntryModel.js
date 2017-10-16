@@ -20,7 +20,7 @@ var tableSchema = mongoose.Schema({
     comm_yn: { type: Boolean, default: true },
     
 
-    calcs: {}
+    calcs: { type: Object, default: {} },
 
     // win_amt: {type: Number, default:0 },
     // loose_amt: {type: Number, default:0 },
@@ -47,6 +47,22 @@ tableSchema.plugin(autoIncrement.plugin, {
     model: 'SessionEntry',
     startAt: 1,
 });
+
+// Getter
+// tableSchema.virtual('amount1').get(function(num) {
+//   return Number(this.amount.toFixed(2));
+// }).set(function(username) {
+//     this.amount = 5;
+// });
+
+
+// UserSchema.virtual('usernameLower').get(function() {
+//     return this.username.toLowerCase();
+// }).set(function(usernameLower) {
+//     this.username = usernameLower;
+// });
+
+
 
 /* global db */
 module.exports = db.model('SessionEntry', tableSchema);

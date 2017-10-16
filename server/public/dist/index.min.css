@@ -22,6 +22,10 @@ input.error {
   width: 100px;
 }
 
+.w-300p {
+  width: 300px;
+}
+
 .uk-width-1-12 {
   width: calc(100% * 1 / 12.001);
 }
@@ -46,6 +50,14 @@ input.error {
 
 .jqx_cell_disabled input[type="button"] {
   display: none;
+}
+
+.jqx_cell_bgsuccess {
+  background: #d4edda;
+}
+
+.jqx_cell_bgdanger {
+  background: #f8d7da;
 }
 
 .jqxMenu-topmenu {

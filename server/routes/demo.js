@@ -63,15 +63,42 @@ router.get('/', function(req, res, next) {
  //        })
 
 
-// MatchEntryClass.updateMatchEntryAfterInsert("59de0a48050f6a70558dbb7c", function(err, data){
-// 	console.log(err)
+// MatchEntryClass.updateEntryAfterInsert(4, function(err, data){
+// 	// console.log(err)
 // })
 
-// MatchSummaryClass.buildSummaryByMatchEntry("59de0a48050f6a70558dbb7c");
+// MatchSummaryClass.buildSummaryByMatchEntry(4, 'Winner', function(err, data){
+// 	if(err) return res.send(err)
+// 		return res.send('data')
+// })
 
-// MatchSummaryClass.buildMatchSummary("59dc80189857c85e8d6d94ac").catch((data)=>{
-// 	console.log(data)
+// MatchSummaryClass.buildMatchSummary(1).then((data)=>{
+// 	console.log('DONE1')
+// 	res.send(data)
+// }).catch((data)=>{
+// 	console.log('ERROR')
+// 	res.send(data)
 // });
+
+//  MatchEntryClass.updateEntriesByAccount(1).then(function(data){
+// 	console.log(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
+// MatchSummaryClass.cleanUndeclaredData(1)
+MatchSummaryClass.buildByMatchTeam(1, 'Loser', function(err, data){
+	if(err) return res.send(err)
+		return res.send(data)
+})
+
+// MatchSummaryClass.buildMatchJournal(1, function(err, data){
+// 	if(err) return res.send(err)
+// 		return res.send(data)
+// })
+
+// res.send("sdfds")
 
 // MatchSummaryClass.buildMatchEntryJournal("59dc80189857c85e8d6d94ac", "59dc7ffe9857c85e8d6d94a7").then((data) => {
 // 	res.send(data)
@@ -95,13 +122,13 @@ router.get('/', function(req, res, next) {
 // 	res.send(err.message)
 // })
 
-SessionEntryClass.sessionPL_Info(9).then(function(data){
+// SessionEntryClass.sessionPL_Info(9).then(function(data){
 	
-	res.send(data)
-	// res.send(data);
-}).catch((err)=>{
-	res.send(err.message)
-})
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
 
 
 // SessionEntryClass.buildWinLossList();

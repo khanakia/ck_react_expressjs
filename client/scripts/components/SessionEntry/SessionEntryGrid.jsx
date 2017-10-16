@@ -33,7 +33,8 @@ class SessionEntryGrid extends Component {
     // }
 
     refresh = () => {
-        this.refs.jqxgrid.updatebounddata();
+        // this.refs.jqxgrid.updatebounddata();
+        this.dataAdapter.dataBind()
     }
 
     // refreshAdapter = (sessionId) => {
@@ -74,8 +75,9 @@ class SessionEntryGrid extends Component {
             { name: 'account_name', type: 'string' },            
             { name: 'account_id', type: 'string' },
             { name: 'match_id', type: 'string' },
-            { name: 'created_at', type: 'string' },
-            { name: 'comm_yn', type: 'string' },
+            { name: 'created_at', type: 'date'},
+            { name: 'comm_yn', type: 'boolean' },
+            { name: 'session_id', type: 'Number' },
         ];
 
         let source = {
@@ -85,7 +87,7 @@ class SessionEntryGrid extends Component {
             url: URL_SESSION_ENTRIES + '?session_id=' + this.props.sessionId
         };
 
-        let dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [{
                 text: 'Delete',
@@ -136,23 +138,23 @@ class SessionEntryGrid extends Component {
             },
             { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Party', datafield: 'account_name', width: 150 },
-            { text: 'Rate', datafield: 'rate', width: 100 },
-            { text: 'Runs', datafield: 'runs', width: 100 },
+            { text: 'Rate', datafield: 'rate', width: 100, cellsformat: 'd2' },
+            { text: 'Runs', datafield: 'runs', width: 70 },
             { text: 'L/K', datafield: 'yn', width: 50 },
-            { text: 'Amount', datafield: 'amount', width: 100 },
-            { text: 'Comm YN', datafield: 'comm_yn', width: 100 },
-            { text: 'Created At', datafield: 'created_at', width: 100 },
+            { text: 'Amount', datafield: 'amount', width: 100 , cellsformat: 'd2'},
+            { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
         ];
 
 
         return (
             <div>
-                <JqxGrid key={this.props.sessionId} source={dataAdapter} 
+                <JqxGrid source={this.dataAdapter} 
                   ref="jqxgrid"
-                  width={"100%"} height={400} pageable={true}
-                  sortable={true} altrows={false} enabletooltips={false}
+                  width={"100%"} height={400} pageable={true} pagermode={'simple'} pagesize={1000}
+                  sortable={false} altrows={false} enabletooltips={true}
                   editable={false} columns={columns}
-                  filterable={true} showfilterrow={true}
+                  filterable={true} showfilterrow={false}
                 />
             </div>
         );

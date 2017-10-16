@@ -55,3 +55,15 @@ error_log
 /cli/
 /cgi-bin/
 
+# ignore Node Webkit files
+minidump_stackwalk
+nwjc
+nwjs.app/
+payload
+credits.html
+nwjs
+chromedriver
+
+# ignore other files
+ckdb.archive
+

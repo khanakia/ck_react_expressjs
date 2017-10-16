@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css"> -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/jqwidgets/jqwidgets/styles/jqx.base.css" />
@@ -16,6 +16,7 @@
     <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/> -->
     <link rel="stylesheet" href="bower_components/toastr/toastr.css" />
     <link rel="stylesheet" href="dist/index.min.css">
+    
 </head>
 
 <body>
@@ -45,15 +46,16 @@
     <script src="bower_components/jquery-validation/dist/jquery.validate.js"></script>
     <script src="bower_components/urijs/src/URI.js"></script>
     <script src="bower_components/lodash/dist/lodash.js"></script>
+    <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+    <script src="bower_components/jquery-confirm2/dist/jquery-confirm.min.js"></script>
+        <script src="bower_components/jQuery.tabbable/jQuery.tabbable.js"></script>
+
     <script src="dist/vendor.bundle.js"></script>
     <script src="dist/index.min.js"></script>
+    <script src="javascripts/keyboard.js"></script>
+
     <script type="text/javascript">
-    Mousetrap.bind('f1', function() { window.location.href = "/#/members" });
-    Mousetrap.bind('f2', function() { window.location.href = "/#/teams" });
-    Mousetrap.bind('f3', function() { window.location.href = "/#/matches" });
-    Mousetrap.bind('f4', function() { window.location.href = "/#/match_entries" });
-    Mousetrap.bind('alt+s', function() { window.location.href = "/#/states" });
-    Mousetrap.bind('alt+t', function() { window.location.href = "/#/match_types" });
+
     // $.jqx.theme = 'metro';
     </script>
 </body>

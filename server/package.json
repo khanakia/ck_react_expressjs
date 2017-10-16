@@ -4,8 +4,15 @@
   "private": true,
   "node-main": "./bin/www",
   "main": "http://localhost:3000",
+  "node-remote": "<all_urls>",
+  "permissions": [
+    "desktopCapture",
+    "chrome-extension://*"
+  ],
   "scripts": {
-    "start": "DEBUG=express:* nodemon ./bin/www"
+    "start": "DEBUG=express:* nodemon ./bin/www",
+    "nw": "nw .",
+    "nwjs": "../nwjs.app/Contents/MacOS/nwjs server/."
   },
   "nodemonConfig": {
     "ignore": [
@@ -18,12 +25,20 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
-    "lodash": "^4.17.4",
-    "mongodb": "^2.2.31",
+    "lodash": "^4.17.4",    
+    "mongodb": "^2.2.33",
     "mongoose": "^4.11.12",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "~1.8.1",
     "pug": "~2.0.0-beta11",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "shelljs": "^0.7.8",
+    "webworker-threads": "^0.7.13"
+  },
+  "devDependencies": {
+    "nw-dev": "^3.0.1"
+  },
+  "window": {
+    "toolbar": true
   }
 }

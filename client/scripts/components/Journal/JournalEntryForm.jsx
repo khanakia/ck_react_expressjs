@@ -13,21 +13,22 @@ class JournalEntryForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            accountId: this.props.accountId,
+            matchId: this.props.matchId,
             isNew: true,
             item: {
                 _id: null,
                 account_id: null,
-                amount: 0,
-
-            }
-
+                narration: null,
+                dr_amt: 0,
+                cr_amt: 0,                
+            },
         }
     }
 
     static defaultProps = {
-        accountId: null,
+        matchId: null,
         onFormSubmitted: function() {},
+        getBookNo: function() {}
     }
 
     edit(rowdata) {
@@ -37,11 +38,23 @@ class JournalEntryForm extends React.Component {
         })
     }
 
+    resetForm = () => {
+        console.log(this.state)
+        this.setState({
+            isNew: false,
+            item: {
+
+            }
+        })
+    }
+
     formSubmit = (e) => {
         e.preventDefault()
-        var _this = this;
 
-
+        if(!jQuery(this.refs.form).valid()) {
+           return false;
+        }
+        
         const dated = this.refs.dated.getText()
         if (!dated) {
             toastr.error("Please Select Date.")
@@ -51,7 +64,7 @@ class JournalEntryForm extends React.Component {
             toastr.error("Please Select Account First.")
         }
 
-        let data = jQuery(e.target).serialize()
+        let data = jQuery(this.refs.form).serialize()
 
         const dataJson = URI.parseQuery(data)
         dataJson.created_at = dated;
@@ -59,6 +72,9 @@ class JournalEntryForm extends React.Component {
         console.log(dataJson)
         JournalEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.props.onFormSubmitted(response);
+        }).catch((error) => {
+            // console.log(error)
+            toastr.error("Validation failed.")
         })
         return false;
     }
@@ -69,7 +85,7 @@ class JournalEntryForm extends React.Component {
 
         return (
             <div>
-                <form ref="form" onSubmit={(e)=> this.formSubmit(e)}>
+                <form ref="form" >
                     <div className="form-row">
                         <div className="col-auto">
                             <label>Date</label>
@@ -80,13 +96,13 @@ class JournalEntryForm extends React.Component {
                         <div className="col-auto ">
                             <label>Account</label>
                             <div>
-                                <ComboBoxMember width="100%" field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
+                                <ComboBoxMember width="150" field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label>Narration</label>
                             <div>
-                                <input className="form-control form-control-sm error-hide" name="narration" value={item.narration} />
+                                <input className="form-control form-control-sm error-hide w-300p required" name="narration"  />
                             </div>
                         </div>
                         <div className="col-auto">
@@ -104,8 +120,15 @@ class JournalEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="submit">Save</button>
+                                <button className="btn btn-primary btn-sm" type="button" onClick={this.formSubmit}>Save</button>
                             </div>
+                        </div>
+                        <div className="col-auto ">
+                          <label className="" >&nbsp;</label>
+                          <div>
+                              <button className="btn btn-primary btn-sm" type="button" onClick={this.resetForm}>Cancel</button>
+
+                          </div>
                         </div>
                     </div>
                 </form>

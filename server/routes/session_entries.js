@@ -39,7 +39,14 @@ router.post('/',function(req, res, next) {
 	    if (err) {
 	        return res.status(500).send(err);
 	    }
-	    return res.status(200).send(obj);
+
+	    SessionEntryClass.updateEntryAfterInsert(obj._id, function(err, item){
+	    	if(err) {
+	    		return res.status(401).send(err);	
+	    	}
+	    	return res.status(200).send(item);	
+	    })
+	    // return res.status(200).send(obj);
 	});
 
 });
@@ -47,7 +54,14 @@ router.post('/',function(req, res, next) {
 router.put('/:id', function(req, res, next) {
 	SessionEntryModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
     if (err) return res.send(500, { error: err });
-    return res.send(doc);
+
+    	 SessionEntryClass.updateEntryAfterInsert(doc._id, function(err, item){
+	    	if(err) {
+	    		return res.status(401).send(err);	
+	    	}
+	    	return res.status(200).send(item);	
+	    })
+    // return res.send(doc);
 	});
   
 });

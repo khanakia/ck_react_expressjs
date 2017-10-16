@@ -8,7 +8,9 @@ var Schema = mongoose.Schema,
 
 var _ = require('lodash');
 
-    
+
+var MatchEntryClass = require('../class/MatchEntryClass')
+
 router.get('/', function(req, res, next) {
   AccountModel.find({}).exec(function (err, items) {
 	    // res.render('members', {members: docs})
@@ -83,9 +85,12 @@ router.put('/:id', function(req, res, next) {
 
 	accountItem.match_comm_to = _.isEmpty(accountItem.match_comm_to) ? null : accountItem.match_comm_to;
 	
-	AccountModel.findOneAndUpdate({_id: req.params.id}, accountItem, {upsert:true}, function(err, doc){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
+	AccountModel.findOneAndUpdate({_id: req.params.id}, accountItem, {upsert:true}, function(err, obj){
+    	if (err) {
+	        return res.status(401).send(err);
+	    }
+	    MatchEntryClass.updateEntriesByAccount(obj._id)
+	    return res.status(200).send(obj);
 	});
   
 });

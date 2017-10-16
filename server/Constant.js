@@ -9,8 +9,13 @@ module.exports = {
 		LOSER : "Loser",
 	},
 
-	MATCH_SUMMARY_ENTRYTYPE : {
-		TEAM : "Team",
+	// MATCH_SUMMARY_ENTRYTYPE : {
+	// 	TEAM : "Team",
+	// 	SESSION : "Session",
+	// },
+
+	MATCH_SUMMARY_REFTYPE : {
+		MATCH_TEAM : "Match Team",
 		SESSION : "Session",
 	},
 };

@@ -59,7 +59,7 @@ class MemberForm extends Component {
         //   return false;
         // }
 
-        let data = jQuery(e.target).serialize()
+        let data = jQuery(this.refs.form).serialize()
         // console.log(data);
         AccountHelper.save(data, this.props.item._id).then( (response) => {
             console.log(response);
@@ -80,7 +80,7 @@ class MemberForm extends Component {
 
         return (
             <div className="">
-                <form className="" ref="form" onSubmit={this.onSubmit} key={`form_${item._id}`}>
+                <form className="moustrapform" ref="form" key={`form_${item._id}`}>
                     <div className="form-row">
                         <div className="form-group col-md-6">
                             <label className="col-form-label">Name ({item._id ? item._id : 'N/A'})</label>
@@ -171,7 +171,9 @@ class MemberForm extends Component {
                         {Array.apply(0, Array(4)).map( (x, i) => { 
                             
                             var account_id = (item.patti[i] == undefined) ? '' : item.patti[i]['account_id']; 
-                            var comm = (item.patti[i] == undefined) ? 0 : item.patti[i]['comm']; 
+                            var match = (item.patti[i] == undefined) ? 0 : item.patti[i]['match']; 
+                            var session = (item.patti[i] == undefined) ? 0 : item.patti[i]['session']; 
+                            var meter = (item.patti[i] == undefined) ? 0 : item.patti[i]['meter']; 
                             return (
                                 <div className="row" key={`${item.id}_key_${i}`}>
                                     <div className="col-md-1">
@@ -186,17 +188,17 @@ class MemberForm extends Component {
                                     </div>
                                     <div className="col-md-2">
                                         <div className="uk-form-controls">
-                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={comm} name={`patti[${i}][match]`} />
+                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={match} name={`patti[${i}][match]`} />
                                         </div>
                                     </div>
                                     <div className="col-md-2">
                                         <div className="uk-form-controls">
-                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={comm} name={`patti[${i}][session]`} />
+                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={session} name={`patti[${i}][session]`} />
                                         </div>
                                     </div>
                                     <div className="col-md-2">
                                         <div className="uk-form-controls">
-                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={comm} name={`patti[${i}][meter]`} />
+                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={meter} name={`patti[${i}][meter]`} />
                                         </div>
                                     </div>
                               
@@ -204,7 +206,7 @@ class MemberForm extends Component {
                         ) })}
                     </div>
                     <div className="mt-3 text-right col-md-10">
-                        <button className="btn btn-primary btn-sm" type="submit">Save</button>
+                        <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}>Save</button>
                         <button className="btn btn-danger btn-sm ml-1" type="button" onClick={(e)=> this.props.cancelFormClick(e)}>Cancel</button>
                     </div>
                 </form>

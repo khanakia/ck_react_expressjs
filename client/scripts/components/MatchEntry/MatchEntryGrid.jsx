@@ -10,16 +10,23 @@ class MatchEntryGrid extends Component {
 
     static defaultProps = {
         matchId: null,
-        matchTeams: [],
+        teamsList: [],
+        entriesList : [],
         onEditButtonClick: function(data) {}
     }
 
     refresh = () => {
-        this.refs.jqxgrid.updatebounddata();
+        // this.refs.jqxgrid.updatebounddata();
+        this.dataAdapter.dataBind()
+    }
+
+    componentDidUpdate() {
+        // console.log("componnetDidUpdate")
+        // this.refs.jqxgrid.updatebounddata();
     }
 
     render() {
-        var _this = this;
+        const teamsList = this.props.teamsList
         var datafields = [
             { name: '_id', type: 'string' },
             { name: 'account_name', type: 'string' },
@@ -30,13 +37,13 @@ class MatchEntryGrid extends Component {
             { name: 'team_id', type: 'string' },
             { name: 'account_id', type: 'string' },
             { name: 'match_id', type: 'string' },
+            { name: 'match_team_id', type: 'number' },
             { name: 'amounts', type: 'string' },
             { name: 'is_declared', type: 'string' },
         ];
 
-        // console.log(this.props.matchTeams)
-        if (this.props.matchTeams.length > 0) {
-            this.props.matchTeams.map(function(item, i) {
+        if (teamsList.length > 0) {
+            teamsList.map(function(item, i) {
                 datafields.push({
                     name: item.team_name
                 })
@@ -45,12 +52,13 @@ class MatchEntryGrid extends Component {
 
         let source = {
             datatype: 'json',
-            datafields: datafields,
             id: '_id',
-            url: URL_MATCH_ENTRIES + '?match_id=' + this.props.matchId
+            localdata: this.props.entriesList.slice(),
+            // url: URL_MATCH_ENTRIES + '?match_id=' + this.props.matchId
+            datafields: datafields,
         };
 
-        let dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [{
                 text: 'Delete',
@@ -71,7 +79,7 @@ class MatchEntryGrid extends Component {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
                     console.log(dataRecord.uid)
                     MatchEntryHelper.delete(dataRecord.uid).then((res) => {
-                        this.refresh()
+                        // this.refresh()
                     }).catch((res)=> {
                         toastr.error("Cannot Remove Item.")
                     })
@@ -99,6 +107,7 @@ class MatchEntryGrid extends Component {
                     this.props.onEditButtonClick(dataRecord);
                 }
             },
+            { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Party', datafield: 'account_name', width: 150 },
             { text: 'Rate', datafield: 'rate', width: 100 },
             { text: 'Amount', datafield: 'amount', width: 100 },
@@ -106,7 +115,7 @@ class MatchEntryGrid extends Component {
             { text: 'Team', datafield: 'team_name', width: 100 }
         ];
 
-        this.props.matchTeams.map(function(item, i) {
+        teamsList.map(function(item, i) {
             columns.push({
                 text: item.team_name,
                 datafield: item.team_name,
@@ -116,9 +125,9 @@ class MatchEntryGrid extends Component {
 
         return (
             <div>
-                <JqxGrid
+                <JqxGrid key={Math.random()}
                   ref="jqxgrid"
-                  width={"100%"} height={600} source={dataAdapter} pageable={true}
+                  width={"100%"} height={600} source={this.dataAdapter} pageable={true}
                   sortable={true} altrows={false} enabletooltips={false}
                   editable={false} columns={columns}
                   filterable={true} showfilterrow={true}

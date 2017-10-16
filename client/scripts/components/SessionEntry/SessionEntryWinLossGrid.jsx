@@ -19,7 +19,15 @@ class SessionEntryWinLossGrid extends Component {
     }
 
     render() {
-        var _this = this;
+
+        var cellclassname_Amt = function (row, column, value, data) {
+                     // console.log(row, column , value, data)
+                     if(data.amount<0) {
+                        return "jqx_cell_bgdanger"
+                     } else {
+                        return "jqx_cell_bgsuccess"
+                     }
+                }
         var datafields = [
             { name: 'runs', type: 'string' },
             { name: 'amount', type: 'string' },
@@ -35,19 +43,20 @@ class SessionEntryWinLossGrid extends Component {
         let dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [
-            { text: 'Runs', datafield: 'runs', width: 150 },
-            { text: 'Amount', datafield: 'amount', width: 100 }
+            { text: 'Runs', datafield: 'runs', width: 150, cellclassname: cellclassname_Amt },
+            { text: 'Amount', datafield: 'amount', width: 100, cellclassname: cellclassname_Amt
+            }                  
         ];
 
         return (
             <div>
-                <JqxGrid
+                <JqxGrid key={this.props.sessionId} 
                   ref="jqxgrid"
-                  width={"100%"} height={600} source={dataAdapter} pageable={true}
+                  width={"100%"} height={600} source={dataAdapter} 
                   sortable={false} altrows={false} enabletooltips={false}
                   editable={false} columns={columns}
                   filterable={false} showfilterrow={false}
-                  pagesize={100}
+                  pagesize={100} pageable={false}
                 />
             </div>
         );

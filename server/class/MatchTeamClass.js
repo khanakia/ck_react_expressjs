@@ -2,12 +2,11 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 
-var MatchModel = require('../model/MatchModel')
-var MatchTeamModel = require('../model/MatchTeamModel')
-
-var MatchSummaryClass = require('./MatchSummaryClass')
 const ObjectId1 = mongoose.Types.ObjectId;
 var Constant = require('../Constant')
+var MatchModel = require('../model/MatchModel')
+var MatchTeamModel = require('../model/MatchTeamModel')
+var MatchSummaryClass = require('./MatchSummaryClass')
 module.exports = {
 
     list(args = { match_id: null}) {
@@ -122,7 +121,7 @@ module.exports = {
         // match.declare_method = Constant.MATCH_DECLARE_METHOD.TEAM
         await match.save()
 
-        await MatchSummaryClass.buildMatchSummary(matchTeam.match_id).catch((err)=>{
+        await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)
         });
         return matchTeam
@@ -161,7 +160,7 @@ module.exports = {
         match.is_declared = true
         await match.save()
 
-        await MatchSummaryClass.buildMatchSummary(matchTeam.match_id).catch((err)=>{
+        await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)
         });
 
@@ -200,7 +199,7 @@ module.exports = {
         match.is_declared = false
         await match.save()
 
-        await MatchSummaryClass.buildMatchSummary(matchTeam.match_id).catch((err)=>{
+        await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)
         });
 

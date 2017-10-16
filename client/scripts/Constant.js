@@ -46,6 +46,12 @@ export const LIST_MATCH_TYPE = [
 ]
 
 export const LIST_SESSION_YN = [
-    { id: "Y", text: "Yes" },
-    { id: "N", text: "No" }
+    { id: "Y", text: "Y" },
+    { id: "N", text: "N" }
+]
+
+
+export const LIST_MATCH_LK = [
+    { id: "L", text: "L" },
+    { id: "K", text: "K" }
 ]

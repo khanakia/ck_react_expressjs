@@ -36,8 +36,8 @@ class Header extends React.Component {
                     </li>
                     <li>Utilities
                         <ul>
-                            <li><Link to={'/ledger_journal'}>Backup</Link></li>
-                            <li><Link to={'/ledger_journal'}>Remove All Records</Link></li>
+                            <li><a href={'/others/db_backup'}>Backup DB</a></li>
+                            <li><Link to={'/others/db_remove_all_records'}>Remove All Records</Link></li>
                         </ul>
                     </li>
                 </ul>

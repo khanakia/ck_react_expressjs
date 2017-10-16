@@ -22,6 +22,7 @@ var  autoIncrement = require('mongoose-auto-increment');
 //   // }
 // })
 var uri = 'mongodb://localhost:27017/ckdb';
+global.MONGO_DB = uri;
 global.db = mongoose.createConnection(uri);
 autoIncrement.initialize(db);
 
@@ -39,6 +40,7 @@ var match_entries = require('./routes/match_entries');
 var journal_entries = require('./routes/journal_entries');
 var sessions = require('./routes/sessions');
 var session_entries = require('./routes/session_entries');
+var others = require('./routes/others');
 
 var app = express();
 
@@ -67,6 +69,7 @@ app.use('/match_entries', match_entries);
 app.use('/journal_entries', journal_entries);
 app.use('/sessions', sessions);
 app.use('/session_entries', session_entries);
+app.use('/others', others);
 
 
 // catch 404 and forward to error handler

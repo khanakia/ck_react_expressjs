@@ -12,260 +12,558 @@ var Constant = require('../Constant')
 const ObjectId1 = mongoose.Types.ObjectId;
 module.exports = {
 
-    async cleanSummaryTypeTeam(matchId) {
+
+    async cleanUndeclaredData(matchId) {
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: false})
-        matchTeams.forEach( async (matchTeam,i) => {
-            await this.cLeanTeamJournal(matchId, matchTeam.team_id)
-            await MatchSummaryModel.remove({"team_id": matchTeam.team_id, "entry_type": Constant.MATCH_SUMMARY_ENTRYTYPE.TEAM});
-            await MatchEntryModel.updateMany({"team_id": matchTeam.team_id, match_id: matchId}, {"is_declared": false});
-        })
-    },
-
-    async buildMatchSummary(matchId) {
-        var self = this;
-        await this.cleanSummaryTypeTeam(matchId)
-        var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
-        matchTeams.forEach( async (matchTeam,i) => {
-
-          async.waterfall([
-              function(next) {
-                    self.buildByMatchEntries(matchId, matchTeam.team_id, matchTeam.status)
-                    next(null)
-              },
-              function(modelAResult, next) {
-                 self.buildMatchEntryJournal(matchId, matchTeam.team_id)
-              }
-          ]);
-
-          
-            
-        })
-    },
-
-    async buildByMatchEntries(matchId, team_id, status) {
-        var matchEntries = await MatchEntryModel.find({match_id: matchId, team_id: team_id, is_declared: true})
-        matchEntries.map( async (matchEntry, i) => {
-            await this.buildSummaryByMatchEntry(matchEntry, status)
-        })
-    },
-
-    async buildSummaryByMatchEntry(matchEntry, match_team_status, cb) {
-        await MatchSummaryModel.remove({"entry_id": matchEntry._id, "entry_type": Constant.MATCH_SUMMARY_ENTRYTYPE.TEAM});
-        // var matchEntry = await MatchEntryModel.findOne({"_id": matchEntry._id});
-
-        var mentry1 = await MatchEntryModel.aggregate([
-                    {
-                        $match: {
-                            "_id" : ObjectId1(matchEntry._id)
-                        }
-                    },
-                    {
-                        $lookup:
-                        {
-                           from: "teams",
-                           localField: "team_id",
-                           foreignField: "_id",
-                           as: "team"
-                        }
-                    },
-                    {
-                        $unwind:"$team"
-                    },
-                    {
-                        $lookup:
-                        {
-                           from: "matches",
-                           localField: "match_id",
-                           foreignField: "_id",
-                           as: "match"
-                        }
-                    },
-                    {
-                        $unwind:"$match"
-                    },
-                    { 
-                        $project : {
-                            "match_name": "$match.match_name",
-                            "team_name": "$team.team_name",
-                        }
-                    } 
-            ])
-        
-        var msItem_Default = {
-            match_id: matchEntry.match_id,
-            entry_type: "Team",
-            entry_id: matchEntry._id,
-            entry_account_id: matchEntry.account_id,
-            team_id: matchEntry.team_id,
-            account_id: null,
-            dr_amt: 0,
-            cr_amt: 0,
-            bal: 0,
-
-            narration: ` (Match: ${mentry1[0].match_name}) (Team: ${mentry1[0].team_name})`
-        }
+        matchTeams.map( async (matchTeam,i) => {
+            // await this.cLeanTeamJournal(matchId, matchTeam.team_id)
+            // await MatchSummaryModel.remove({"ref_id": matchTeam._id, "ref_type": Constant.MATCH_SUMMARY_REFTYPE.MATCH_TEAM});
 
 
-        // Distribute Profit
-        var msItem1 = new MatchSummaryModel(msItem_Default);
-        msItem1.account_id = matchEntry.account_id
-        if(match_team_status == "Winner") {
-            msItem1.cr_amt = matchEntry.win_amt
-        }
-        if(match_team_status == "Loser") {
-            msItem1.dr_amt = matchEntry.loose_amt
-        }
-        msItem1.bal = msItem1.dr_amt - msItem1.cr_amt
-        msItem1.summary_type = "Match"
-
-        msItem1.narration = msItem1.summary_type + msItem1.narration
-        // console.log(msItem1)
-        if(msItem1.bal!==0) {
-            await msItem1.save()
-        }
-
-
-        // Distribute Commission
-        var msItem2 = new MatchSummaryModel(msItem_Default);
-        msItem2.account_id = matchEntry.match_comm_to ? matchEntry.match_comm_to : matchEntry.account_id
-        if(matchEntry.match_comm > 0) {
-            msItem2.cr_amt = matchEntry.loose_comm_amt
-        } else {
-            msItem2.dr_amt = matchEntry.win_comm_amt
-        }
-        msItem2.bal = msItem2.dr_amt - msItem2.cr_amt
-        msItem2.summary_type = "Commission"
-        msItem2.narration = msItem2.summary_type + msItem2.narration
-        // console.log(msItem2)
-        if(msItem2.bal!==0) {
-            await msItem2.save()            
-        }
-
-  
-
-        // console.log(matchEntry)
-        matchEntry.patti.forEach( async (item,i) => {
-            var msItem3 = new MatchSummaryModel(msItem_Default);
-            msItem3.account_id = item.account_id
-            var match_patti = item.match
-            
-            if(match_team_status== "Winner") {
-                var patti_amt = matchEntry.win_amt_subtotal * match_patti/100
-                 msItem3.dr_amt = patti_amt
-            }
-
-            if(match_team_status== "Loser") {
-                var patti_amt = matchEntry.loose_amt_subtotal * match_patti/100
-                 msItem3.cr_amt = patti_amt
-            }
-
-            msItem3.summary_type = "Patti"
-            msItem3.narration = msItem3.summary_type + msItem3.narration
-
-            if(msItem3.bal!==0) {
-                await msItem3.save()
-            }
-            
-        });
-
-
-        await MatchEntryModel.update({_id: matchEntry._id}, {is_declared:true})
-
-    },
-
-
-     async cLeanTeamJournal(match_id, team_id) {
-        var journalItems = await JournalModel.find({
-            match_id : ObjectId1(match_id),
-            ref_id : ObjectId1(team_id),
-            ref_type: "Team"
-        })
-
-        console.log(match_id, team_id)
-        journalItems.forEach( async (item, i) => {
-
+            var journalItems = await JournalModel.find({
+                ref_id : parseInt(matchTeam._id),
+                ref_type: "Match Team"
+            })
+            journalItems.map( async (item, i) => {
                 await JournalEntryModel.remove({"journal_id": item._id});
                 await item.remove()
+            })
+
+            await MatchEntryModel.updateMany({"match_team_id": matchTeam._id}, {"is_summarized": false});
         })
-
-
     },
 
-    async buildMatchEntryJournal(match_id, team_id) {
-        // var matchTeam = await MatchTeamModel.findOne({_id: matchTeamId})
+
+
+    async buildMatchJournal(matchId, cb) {
+        var self = this;
+        await this.cleanUndeclaredData(matchId)
+        var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
+        matchTeams.map( async (matchTeam,i) => {
+            await this.buildByMatchTeam(matchTeam._id, matchTeam.status,()=>null)
+        })
+
+        cb(null, 'done')
+    },
+
+
+    async buildByMatchTeam(matchTeamId, matchTeamStatus, cb) {
+
+        var matchTeam = await MatchTeamModel.findOne({_id: parseInt(matchTeamId)})
+        // await JournalModel.remove({});
+        // await JournalEntryModel.remove({});
         var project = {
             "match_id" : 1,
             "team_id" : 1,
             "account_id" : 1,
-            "summary_type" : 1,
-            "narration" : 1,
-            "dr_amt" : 1,
-            "cr_amt" : 1,
-            "bal" : 1,
+            "favteam_subtotal" : 1,
+            "otherteam_subtotal" : 1,
+            "favteam_pos" : 1,
+            "favteam_neg" : 1,
+            "otherteam_pos" : 1,
+            "otherteam_neg" : 1,
+            "match_name": 1,
+            "team_name": 1,
+            // "favteam_pos": {$cond: [{$gt: ['$calcs.favteam_subtotal', 20000]}, '$calcs.favteam_subtotal', 0]},
+            // "favteam_neg": {$cond: [{$lt: ['$calcs.favteam_subtotal', 0]}, '$calcs.favteam_subtotal', 0]},
+            // "otherteam_pos": {$cond: [{$gt: ['$calcs.otherteam_subtotal', 0]}, '$calcs.otherteam_subtotal', 0]},
+            // "otherteam_neg": {$cond: [{$lt: ['$calcs.otherteam_subtotal', 0]}, '$calcs.otherteam_subtotal', 0]}
+
         }
-        var aggregate = [
+  
+
+        var matchEntries = await MatchEntryModel.aggregate([
             {
-               $match: {
-                    match_id : ObjectId1(match_id),
-                    team_id : ObjectId1(team_id)
-               }
-           },
-           {
+                 $match: {
+                     "match_team_id" : parseInt(matchTeamId),
+                     // "is_summarized": {$in: [null, false]}
+                 }
+            },
+            {
+                 $lookup: {
+                     from: "teams",
+                     localField: "team_id",
+                     foreignField: "_id",
+                     as: "team"
+                 }
+             },
+             {
+                 $unwind: "$team"
+             },
+             {
+                 $lookup: {
+                     from: "matches",
+                     localField: "match_id",
+                     foreignField: "_id",
+                     as: "match"
+                 }
+             },
+             {
+                 $unwind: "$match"
+             },
+            {
                $group: {
                  _id: {
-                    "match_id" : "$match_id",
-                    "team_id" : "$team_id",
+                    "match_team_id" : "$match_team_id",
                     "account_id" : "$account_id",
-                    "summary_type" : "$summary_type"
                 },
+                "team_name" : { $first: "$team.team_name" },
+                "match_name" : { $first: "$match.match_name" },
                 "match_id" : { $first: "$match_id"  },
                 "team_id" : { $first: "$team_id"  },
                 "account_id" : { $first: "$account_id"  },
-                "summary_type" : { $first: "$summary_type"  },
-                "narration" : { $first: "$narration"  },
-                "dr_amt" : { $sum: "$dr_amt" },
-                "cr_amt" : { $sum: "$cr_amt" },
-                "bal" : { $sum: "$bal" }
+                "favteam_subtotal" : { $sum: "$calcs.favteam_subtotal" },
+                "otherteam_subtotal" : { $sum: "$calcs.otherteam_subtotal" },
+                'favteam_pos': { 
+                        '$sum': {
+                            '$cond': [
+                                { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                '$calcs.favteam_subtotal', 
+                                0
+                            ]
+                        }
+                    },
+                'favteam_neg': { 
+                        '$sum': {
+                            '$cond': [
+                                { '$lt': ['$calcs.favteam_subtotal', 0]}, 
+                                '$calcs.favteam_subtotal', 
+                                0
+                            ]
+                        }
+                    },  
+                'otherteam_pos': { 
+                        '$sum': {
+                            '$cond': [
+                                { '$gt': ['$calcs.otherteam_subtotal', 0]}, 
+                                '$calcs.otherteam_subtotal', 
+                                0
+                            ]
+                        }
+                    },
+                'otherteam_neg': { 
+                        '$sum': {
+                            '$cond': [
+                                { '$lt': ['$calcs.otherteam_subtotal', 0]}, 
+                                '$calcs.otherteam_subtotal', 
+                                0
+                            ]
+                        }
+                    },        
+                // "favteam_pos" : { $sum: "$favteam_pos" },
+                // "favteam_neg" : { $sum: "$favteam_neg" },
+                // "otherteam_pos" : { $sum: "$otherteam_pos" },
+                // "otherteam_neg" : { $sum: "$otherteam_neg" },
 
                }
-           },
+            },
             {
                 $project: project
             }
+        ])
 
-       ];
 
-       // return (aggregate)
+        // cb(null, matchEntries)
 
-       var matchSummaries = await MatchSummaryModel.aggregate(aggregate);
-
-       await this.cLeanTeamJournal(match_id, team_id)
-
-       var journalItem = new JournalModel({
-            match_id : match_id,
-            ref_id : team_id,
-            ref_type: "Team"
-       })
-
-       await journalItem.save()
-
-        matchSummaries.forEach( async (item, i) => {
-            var jentryItem = new JournalEntryModel({
-                journal_id : journalItem._id,
-                account_id: item.account_id,
-                dr_amt: item.dr_amt,
-                cr_amt: item.cr_amt,
-                bal: item.bal,
-                narration: item.narration
-            })
-
-            await jentryItem.save()
+        var journalItem = new JournalModel({
+            match_id : matchTeam.match_id,
+            ref_id : matchTeamId,
+            ref_type: "Match Team"
         })
 
-        console.log(matchSummaries)
+        await journalItem.save()
+        
+        matchEntries.map( async (matchEntry, i) => {
+            var amount = matchTeamStatus=="Winner" ? matchEntry.favteam_subtotal : matchEntry.otherteam_subtotal;
+            var amount_pos = matchTeamStatus=="Winner" ? matchEntry.favteam_pos : matchEntry.otherteam_pos;
+            var amount_neg = matchTeamStatus=="Winner" ? matchEntry.favteam_neg : matchEntry.otherteam_neg;
 
-        return matchSummaries
+            var narration = ` (Match: ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
 
+            // Distribute Profit
+            var jentryItem = new JournalEntryModel({
+                journal_id : journalItem._id,
+                account_id: matchEntry.account_id,
+                dr_amt: 0,
+                cr_amt: 0,
+                bal: 0,
+            })
+            if(amount >0) {
+                jentryItem.cr_amt = Math.abs(amount);
+            } else {
+                jentryItem.dr_amt = Math.abs(amount);
+            }
+            jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+            jentryItem.narration = "PL -" + narration
+            await jentryItem.save()
+
+
+            // Distribute Commission
+            var account = await Account.findOne({_id: parseInt(matchEntry.account_id)})
+
+            var jentryItem1 = new JournalEntryModel({
+                journal_id : journalItem._id,
+                account_id: account.match_comm_to,
+                dr_amt: 0,
+                cr_amt: 0,
+                bal: 0
+            })
+            
+            if(account.match_comm_type=="entrywise") {
+                console.log("ENTRY")
+                if(account.match_comm > 0) {
+                    jentryItem1.cr_amt = Math.abs(amount_neg) * account.match_comm/100;
+                }
+                if(account.match_comm < 0) {
+                    jentryItem1.cr_amt = Math.abs(amount_pos) * account.match_comm/100;
+                }
+                jentryItem1.narration = "Commission - Entrywise" + narration
+
+            } else {
+                if(account.match_comm > 0 && amount < 0) {
+                    jentryItem1.cr_amt = Math.abs(amount) * account.match_comm/100;
+                }
+
+                if(account.match_comm < 0 && amount > 0) {
+                    jentryItem1.dr_amt = Math.abs(amount) * account.match_comm/100;
+                }
+                jentryItem1.narration = "Commission - NET" + narration
+            }
+            
+            jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
+            await jentryItem1.save()
+
+
+            // Distribute Patti
+
+            var final_amount = jentryItem.bal + jentryItem1.bal
+            Promise.all(account.patti.map(async (item) => {
+                console.log(item._id)
+                var jentryItem2 = new JournalEntryModel({
+                    journal_id : journalItem._id,
+                    account_id: item.account_id,
+                    dr_amt: 0,
+                    cr_amt: 0,
+                    bal: 0
+                })
+                
+                
+                var patti_amt = final_amount * item.match/100
+                jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
+                jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
+                jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
+                jentryItem2.narration = "Patti -" + narration
+                return await jentryItem2.save();
+            }))
+            
+            
+        })
+
+
+        // console.log('matchTeamId', matchTeamId)
+        await MatchEntryModel.updateMany({match_team_id: parseInt(matchTeamId)}, {is_summarized:true})
+ 
+
+       return cb(null, 'done')
     },
+
+
+
+
+
+    // async buildMatchSummary(matchId) {
+    //     var self = this;
+    //     await this.cleanSummaryTypeTeam(matchId)
+    //     var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
+    //     matchTeams.forEach( async (matchTeam,i) => {
+
+    //       async.waterfall([
+    //           function(next) {
+    //                 self.buildByMatchTeam(matchTeam._id, matchTeam.status)
+    //                 next(null)
+    //           },
+    //           // function(modelAResult, next) {
+    //           //    // self.buildMatchEntryJournal(matchId, matchTeam.team_id)
+    //           // }
+    //       ]);
+
+          
+            
+    //     })
+    // },
+
+
+    
+
+
+    // async buildByMatchTeam(matchTeamId, matchTeamStatus) {
+    //     var matchEntries = await MatchEntryModel.find({match_team_id: matchTeamId, is_declared: false})
+    //     matchEntries.map( async (matchEntry, i) => {
+    //         await this.buildSummaryByMatchEntry(matchEntry.id, matchTeamStatus)
+    //     })
+    // },
+
+    // buildNet(matchTeamId) {
+
+
+    // },
+
+    // buildSummaryByMatchEntry(matchEntryId, MatchTeamStatus, cb) {
+    //     async.waterfall([
+    //         function(next) {
+    //             MatchSummaryModel.remove({"entry_id": matchEntryId, "ref_type": Constant.MATCH_SUMMARY_REFTYPE.MATCH_TEAM}).exec(next)
+    //              // next(null)
+    //         },
+    //         function(matchSummary, next) {
+    //             try {
+    //                 MatchEntryModel.aggregate([
+    //                      {
+    //                          $match: {
+    //                              "_id" : parseInt(matchEntryId)
+    //                          }
+    //                      },
+    //                      {
+    //                          $lookup: {
+    //                              from: "teams",
+    //                              localField: "team_id",
+    //                              foreignField: "_id",
+    //                              as: "team"
+    //                          }
+    //                      },
+    //                      {
+    //                          $unwind: "$team"
+    //                      },
+    //                      {
+    //                          $lookup: {
+    //                              from: "matches",
+    //                              localField: "match_id",
+    //                              foreignField: "_id",
+    //                              as: "match"
+    //                          }
+    //                      },
+    //                      {
+    //                          $unwind: "$match"
+    //                      },
+    //                      {
+    //                          $project: {
+    //                             "_id" : "$_id",
+    //                             "match_id" : "$match_id",
+    //                             "match_team_id" : "$match_team_id",
+    //                             "account_id" : "$account_id",
+    //                             "team_id" : "$team_id",
+    //                             "match_name": "$match.match_name",
+    //                             "team_name": "$team.team_name",
+    //                             "calcs" : "$calcs",
+    //                          }
+    //                      }
+    //                 ]).exec(next)
+
+    //             } catch(err) {
+    //                 next({error: err.message})
+    //             }
+
+    //         },
+    //         function(matchEntry, next) {
+    //             var matchEntry = matchEntry[0]
+    //             try {
+    //                 var msItem_Default = {
+    //                     match_id: matchEntry.match_id,
+    //                     ref_type: "Match Team",
+    //                     ref_id: matchEntry.match_team_id,
+    //                     // entry_type: "Team",
+    //                     entry_id: matchEntry._id,
+    //                     entry_account_id: matchEntry.account_id,
+    //                     team_id: matchEntry.team_id,
+    //                     account_id: null,
+    //                     dr_amt: 0,
+    //                     cr_amt: 0,
+    //                     bal: 0,
+
+    //                     narration: ` (Match: ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
+    //                 }
+    //                 next(null, matchEntry, msItem_Default);
+
+    //             } catch(err) {
+    //                 next({error: err.message})
+    //             }
+    //         }, 
+    //         function(matchEntry, msItem_Default, next) {
+    //                 try {
+
+    //                     // Distribute Profit
+    //                     let {calcs} = matchEntry
+    //                     // next(msItem_Default)
+    //                     var msItem1 = new MatchSummaryModel(msItem_Default);
+    //                     msItem1.account_id = matchEntry.account_id
+    //                     msItem1.cr_amt = MatchTeamStatus == Constant.MATCH_TEAM_STATUS.WINNER ? calcs.win_amt : 0;
+    //                     msItem1.dr_amt = MatchTeamStatus == Constant.MATCH_TEAM_STATUS.LOSER ? calcs.loose_amt : 0
+    //                     msItem1.bal = msItem1.dr_amt - msItem1.cr_amt
+    //                     msItem1.summary_type = "Match"
+    //                     msItem1.narration = "PL -" + msItem1.narration
+                        
+    //                     msItem1.save(function (err, result) {
+    //                         next(err, matchEntry, msItem_Default, msItem1);
+    //                     });
+    //                 } catch(err) {
+    //                     next({error: err.message})
+    //                 }
+    //         },
+
+    //         function(matchEntry, msItem_Default, msItem1, next) {
+    //             try {
+
+    //                 // Distribute Commission
+    //                 let {calcs} = matchEntry
+    //                 var msItem2 = new MatchSummaryModel(msItem_Default);
+    //                 msItem2.account_id = calcs.match_comm_to ? calcs.match_comm_to : matchEntry.account_id
+
+    //                 //  If >0 and Funter is loosing the book will give comm
+    //                 msItem2.cr_amt = (calcs.match_comm > 0 && MatchTeamStatus == Constant.MATCH_TEAM_STATUS.LOSER)  ? calcs.loose_comm_amt : 0
+
+    //                 //  If <0 and Funter is Winning the book will get comm
+    //                 msItem2.dr_amt = (calcs.match_comm < 0 && MatchTeamStatus == Constant.MATCH_TEAM_STATUS.WINNER) ? calcs.win_comm_amt : 0
+                    
+    //                 msItem2.bal = msItem2.dr_amt - msItem2.cr_amt
+    //                 msItem2.summary_type = "Commission"
+    //                 msItem2.narration = msItem2.summary_type + msItem2.narration
+    //                 // console.log(msItem2)
+    //                 msItem2.save(function (err, result) {
+    //                     next(err, matchEntry, msItem_Default, msItem1, msItem2);
+    //                 });
+    //             } catch(err) {
+    //                 next({error: err.message})
+    //             }
+                           
+
+    //         },
+
+    //         function(matchEntry, msItem_Default, msItem1, msItem2, next) {
+    //             let {calcs} = matchEntry
+    //             let amount = msItem1.bal + msItem2.bal
+    //             Promise.all(matchEntry.calcs.patti.map(async (item) => {
+
+    //                 var msItem3 = new MatchSummaryModel(msItem_Default);
+    //                 msItem3.account_id = item.account_id
+
+    //                 var match_patti = item.match
+    //                 var patti_amt = amount * match_patti/100
+    //                 msItem3.dr_amt = patti_amt < 0 ? patti_amt : 0;
+    //                 msItem3.cr_amt = patti_amt > 0 ? patti_amt : 0;
+    //                 msItem3.bal = msItem3.dr_amt - msItem3.cr_amt
+    //                 msItem3.summary_type = "Patti"
+    //                 msItem3.narration = msItem3.summary_type + msItem3.narration
+    //                 return await msItem3.save();
+    //             }))
+    //             .then( (result) => {
+    //                 next(null, matchEntry);
+    //             })
+    //             .catch( (err) => {
+    //                  next({error: err.message})
+    //             });
+    //         },
+
+    //         function(matchEntry, next) {
+    //             try {
+    //                 MatchEntryModel.update({_id: parseInt(1)}, {is_summarized:false}).exec(next)
+                    
+    //             } catch(err) {
+    //                 next({error: err.message})
+    //             }
+    //         }
+    //     ], cb);
+    // },
+
+
+    //  async cLeanTeamJournal(match_id, team_id) {
+    //         var journalItems = await JournalModel.find({
+    //             match_id : ObjectId1(match_id),
+    //             ref_id : ObjectId1(team_id),
+    //             ref_type: "Team"
+    //         })
+
+    //         console.log(match_id, team_id)
+    //         journalItems.forEach( async (item, i) => {
+
+    //                 await JournalEntryModel.remove({"journal_id": item._id});
+    //                 await item.remove()
+    //         })
+    // },
+
+    // async buildMatchEntryJournal(match_id, team_id) {
+    //     // var matchTeam = await MatchTeamModel.findOne({_id: matchTeamId})
+    //     var project = {
+    //         "match_id" : 1,
+    //         "team_id" : 1,
+    //         "account_id" : 1,
+    //         "summary_type" : 1,
+    //         "narration" : 1,
+    //         "dr_amt" : 1,
+    //         "cr_amt" : 1,
+    //         "bal" : 1,
+    //     }
+    //     var aggregate = [
+    //         {
+    //            $match: {
+    //                 match_id : ObjectId1(match_id),
+    //                 team_id : ObjectId1(team_id)
+    //            }
+    //        },
+    //        {
+    //            $group: {
+    //              _id: {
+    //                 "match_id" : "$match_id",
+    //                 "team_id" : "$team_id",
+    //                 "account_id" : "$account_id",
+    //                 "summary_type" : "$summary_type"
+    //             },
+    //             "match_id" : { $first: "$match_id"  },
+    //             "team_id" : { $first: "$team_id"  },
+    //             "account_id" : { $first: "$account_id"  },
+    //             "summary_type" : { $first: "$summary_type"  },
+    //             "narration" : { $first: "$narration"  },
+    //             "dr_amt" : { $sum: "$dr_amt" },
+    //             "cr_amt" : { $sum: "$cr_amt" },
+    //             "bal" : { $sum: "$bal" }
+
+    //            }
+    //        },
+    //         {
+    //             $project: project
+    //         }
+
+    //    ];
+
+    //    // return (aggregate)
+
+    //    var matchSummaries = await MatchSummaryModel.aggregate(aggregate);
+
+    //    await this.cLeanTeamJournal(match_id, team_id)
+
+    //    var journalItem = new JournalModel({
+    //         match_id : match_id,
+    //         ref_id : team_id,
+    //         ref_type: "Team"
+    //    })
+
+    //    await journalItem.save()
+
+    //     matchSummaries.forEach( async (item, i) => {
+    //         var jentryItem = new JournalEntryModel({
+    //             journal_id : journalItem._id,
+    //             account_id: item.account_id,
+    //             dr_amt: item.dr_amt,
+    //             cr_amt: item.cr_amt,
+    //             bal: item.bal,
+    //             narration: item.narration
+    //         })
+
+    //         await jentryItem.save()
+    //     })
+
+    //     console.log(matchSummaries)
+
+    //     return matchSummaries
+
+    // },
 
 };

@@ -43,11 +43,11 @@ module.exports = {
 
         item.set("calcs.win_amt", win_amt)
         item.set("calcs.loose_amt", loose_amt)
-        item.set("calcs.win_amt_subtotal", win_amt_subtotal)
-        item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
         item.set("calcs.sess_comm", sess_comm)
         item.set("calcs.sess_comm_to", sess_comm_to)
         item.set("calcs.comm_amt", comm_amt)
+        item.set("calcs.win_amt_subtotal", win_amt_subtotal)
+        item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
         item.set("calcs.patti_total_per", patti_total_per)
         item.set("calcs.win_patti_amt", win_patti_amt)
         item.set("calcs.loose_patti_amt", loose_patti_amt)
@@ -69,82 +69,95 @@ module.exports = {
 
        sessionEntries.map( (item,i) => {
             const {calcs} = item
+            console.log(item.amount1, typeof item.amount1)
             yes += item.yn == "Y" ? item.amount : 0;
             no += item.yn == "N" ? item.amount : 0;
-            commRec += calcs.sess_comm <= 0 ? calcs.sess_comm : 0
-            commPay += calcs.sess_comm > 0 ? calcs.sess_comm : 0
+
+            var sess_comm = calcs.sess_comm;
+            commRec += sess_comm <= 0 ? sess_comm : 0
+            commPay += sess_comm > 0 ? sess_comm : 0
        })
        
 
        return {
-            yes: yes,
-            no: no,
-            comm_rec: -1 * commRec,
-            comm_pay: -1 * commPay
+            yes: yes.toFixed(2),
+            no: no.toFixed(2),
+            comm_rec: (-1 * commRec).toFixed(2),
+            comm_pay: (-1 * commPay).toFixed(2)
        }
     },
 
-    async buildWinLossList() {
-		// var sessionEntries = await SessionEntryModel.aggregate([ 
-		// 	// {
-		// 	// 	$match: {
-		// 	// 		"_id" : ""
-		// 	// 	}
-		// 	// },
-		//     { "$group": { 
-		//         "_id": null,
-		//         "max": { "$max": "$runs" }, 
-		//         "min": { "$min": "$runs" } 
-		//     }},
-		//     { $limit: 1 }
-		// ])
+    async buildWinLossList(sessionId) {
+		var sessionEntries = await SessionEntryModel.aggregate([ 
+			{
+				$match: {
+					"session_id" : parseInt(sessionId)
+				}
+			},
+		    { "$group": { 
+		        "_id": null,
+		        "max": { "$max": "$runs" }, 
+		        "min": { "$min": "$runs" } 
+		    }},
+		    { $limit: 1 }
+		])
 
-		// var sessionEntry = Object.assign({}, 
-		// 	{
-		// 		min: 0,
-		// 		max: 0
-		// 	},
-		// 	sessionEntries[0]
-		// )
+		var sessionEntry = Object.assign({}, 
+			{
+				min: 1,
+				max: 100
+			},
+			sessionEntries[0]
+		)
+
+        sessionEntry.min = (sessionEntry.min-5) > 0 ? sessionEntry.min-5 : 1;
+        sessionEntry.max = (sessionEntry.max+5);
 
 
 		var sessionEntriesGrouped = await SessionEntryModel.aggregate([ 
+                {
+                    $match: {
+                        "session_id" : parseInt(sessionId)
+                    }
+                },
 			    { 
 			    	"$group": { 
 			            _id: {
 			                    "runs" : "$runs",
-			                	"lk" : "$lk"
+			                	"yn" : "$yn"
 			                },
 
 			            "runs" : {$first: "$runs"},
-			            "lk" : {$first: "$lk"},
-			            win_amt_after_comm:  { $sum: "$win_amt_after_comm" },
-			            loose_amt_after_comm: { $sum: "$loose_amt_after_comm" }
+			            "yn" : {$first: "$yn"},
+			            win_amt_subtotal:  { $sum: "$calcs.win_amt_subtotal" },
+			            loose_amt_subtotal: { $sum: "$calcs.loose_amt_subtotal" }
 				    }
 				}
 			])
 
+        // return (sessionEntriesGrouped)
 		var wlarray = []
-		for (var i = 1; i < 100; i++) {
+		for (var i = sessionEntry.min; i < sessionEntry.max; i++) {
 			var amount = 0;
 			var winners = _.filter(sessionEntriesGrouped, function(o) {
 				// console.log(o.runs)
-												return (o.lk=="L" && o.runs<=i) || (o.lk=="K" && o.runs > i); 
+												return (o.yn=="Y" && o.runs<=i) || (o.yn=="N" && o.runs > i); 
 											});
 			// console.log(winners)
-			var win_total_amt = _.sumBy(winners, 'win_amt_after_comm');
+			var win_total_amt = _.sumBy(winners, 'win_amt_subtotal');
 
 			var loosers = _.filter(sessionEntriesGrouped, function(o) {
-												return (o.lk=="K" && o.runs <=i) || (o.lk=="L" && o.runs > i); 
+												return (o.yn=="N" && o.runs <=i) || (o.yn=="Y" && o.runs > i); 
 											});
 			// console.log(loosers)
-			var loose_total_amt = _.sumBy(loosers, 'loose_amt_after_comm');
+			var loose_total_amt = _.sumBy(loosers, 'loose_amt_subtotal');
 
 			amount = loose_total_amt - win_total_amt;
+            // console.log(loose_total_amt)
 			// console.log(win_total_amt)
 			wlarray.push({
 				"runs": i,
-				"amount" : amount
+				"amount" : amount.toFixed()
 			})
 		}
 

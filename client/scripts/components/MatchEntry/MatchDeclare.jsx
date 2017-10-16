@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import ReactDOM from 'react-dom';
 
-import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
+import JqxWindow from '../jqwidgets-react/react_jqxwindow.js';
 import { URL_MATCH_TEAMS, URL_MATCH_TEAMS_SET_LOSER, URL_MATCH_TEAMS_SET_WINNER , URL_MATCH_TEAMS_SET_UNSET_LOSER, URL_MATCH_TEAMS_SET_UNDECLARE_MATCH} from '../../Constant'
 class MatchDeclare extends Component {
     constructor(props) {
@@ -18,6 +19,11 @@ class MatchDeclare extends Component {
 
     componentDidMount() {
         // console.log(this.props.matchId)
+        this.refs.jqxWindow.move($(window).width() / 2 - this.refs.jqxWindow.width() / 2, $(window).height() / 2 - this.refs.jqxWindow.height() / 2)
+
+        this.refs.jqxWindow.on('close', (event) => {            
+            ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
+        }); 
         this.fetchData()
     }
 
@@ -133,20 +139,32 @@ class MatchDeclare extends Component {
     render() {
         return (
             <div>
-            	{/*<button onClick={() => this.undeclareMatch()}>Undeclare Match</button>*/}
-                <table className="table table-striped table-sm">
-                    <thead className="thead-inverse">
-                        <tr>
-                            <th>Team</th>
-                            <th>Is Declared</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderItems()}
-                    </tbody>
-                </table>
+            	<JqxWindow ref='jqxWindow' autoOpen={true}
+                    width={400} height={250} position={{ x: "50%", y: 175, left:"-250px" }}
+                    minWidth={200} minHeight={200} maxWidth={700}
+                    maxHeight={400} showCollapseButton={false}
+                >
+                    <div>
+                        <span>
+                            Match Declaration
+                        </span>
+                    </div>
+                    <div>
+                        <table className="table table-striped table-sm">
+                            <thead className="thead-inverse">
+                                <tr>
+                                    <th>Team</th>
+                                    <th>Is Declared</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.renderItems()}
+                            </tbody>
+                        </table>
+                    </div>
+                </JqxWindow>
             </div>
         );
     }

@@ -1,0 +1,61 @@
+(function(a){var c={},d=a.prototype.stopCallback;a.prototype.stopCallback=function(e,b,a,f){return this.paused?!0:c[a]||c[f]?!1:d.call(this,e,b,a)};a.prototype.bindGlobal=function(a,b,d){this.bind(a,b,d);if(a instanceof Array)for(b=0;b<a.length;b++)c[a[b]]=!0;else c[a]=!0};a.init()})(Mousetrap);
+
+jQuery(document).ready(function(){
+	var mousetrapGlobal = new  Mousetrap()
+
+	mousetrapGlobal.stopCallback = function(e, element, combo) {
+	    return false;
+	}
+    mousetrapGlobal.bind('f1', function() { window.location.href = "/#/accounts" });
+    mousetrapGlobal.bind('f2', function() { window.location.href = "/#/teams" });
+    mousetrapGlobal.bind('f3', function() { window.location.href = "/#/matches" });
+    mousetrapGlobal.bind('f4', function() { window.location.href = "/#/match_entries" });
+    mousetrapGlobal.bind('f6', function() { window.location.href = "/#/report_connect" });
+
+
+    // Mousetrap.bind('alt+s', function() { window.location.href = "/#/states" });
+    // Mousetrap.bind('alt+t', function() { window.location.href = "/#/match_types" });
+    // Mousetrap.bind('g o', function() { alert("dsfds")});
+
+
+
+
+    if(window.currentPage=="mdiMatchPage") {
+	    var moustrapMdiPageClass = new  Mousetrap()
+		moustrapMdiPageClass.stopCallback = function(e, element, combo) {
+		    return false;
+		}
+		moustrapMdiPageClass.bind('option+1', function(e) {
+			console.log("Sdfsd")
+	    	$('#mdi-tab li:eq(0) a').tab('show')
+	    	
+	    });
+	    moustrapMdiPageClass.bind('alt+2', function(e) {
+	    	$('#mdi-tab li:eq(1) a').tab('show')
+	    });
+	    moustrapMdiPageClass.bind('alt+3', function(e) {
+	    	$('#mdi-tab li:eq(2) a').tab('show')
+	    });
+
+	    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		  	var href = jQuery(e.target).attr('href');
+		  	if(href=="#pills-match") {
+		  		jQuery(".idinput-session").focus();
+		  	}
+		})
+    }
+
+
+    var moustrapForm = document.querySelector('.moustrapform');
+    var moustrapFormClass = new  Mousetrap(moustrapForm)
+	moustrapFormClass.stopCallback = function(e, element, combo) {
+	    return element.tagName == 'BUTTON' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+	}
+    moustrapFormClass.bind('enter', function(e) {
+    	console.log("enter")
+	    // Submit button was automaticall clicking on tabnext because both enter and tabnext event firing together so i delayed the tabnext event
+	    setTimeout(function(){
+	    	$.tabNext();
+	    }, 50)
+    });
+})

@@ -13,35 +13,47 @@ var MatchEntryClass = require('../class/MatchEntryClass')
 
 router.get('/', function(req, res, next) {
 
-	MatchEntryClass.getMatchEntryGridList(req.query.match_id, function(err, doc){
+	MatchEntryClass.getMatchEntryGridList({match_id: req.query.match_id, book_no: req.query.book_no}, function(err, doc){
 		if(err) return res.send(err);
 		return res.send(doc);
 	})
 });
 
-router.get('/count_book', function(req, res, next) {
-	MatchEntryModel.find({match_id: req.query.match_id}).distinct('book_no', function(err, docs) {
-		// res.send({count: docs.length+ Math.floor(Math.random() * 5)})
-		res.send({ count: docs.length + 1 })
-	})
+
+router.get('/match_plinfo', function(req, res, next) {
+  async.parallel({
+      bookNoList: function (cb){ MatchEntryModel.find({match_id: req.query.match_id}).distinct('book_no').exec(cb) },
+      teamsWinLossList: function (cb){ MatchEntryClass.teamsWinLossList({match_id: req.query.match_id, book_no: req.query.book_no}, cb) }
+  }, function(err, result){
+       if(err) return res.status(500).send(err)
+       res.send(result)
+  });
+
+});
+
+// router.get('/count_book', function(req, res, next) {
+// 	MatchEntryModel.find({match_id: req.query.match_id}).distinct('book_no', function(err, docs) {
+// 		// res.send({count: docs.length+ Math.floor(Math.random() * 5)})
+// 		res.send({ count: docs.length + 1 })
+// 	})
   	
-});
+// });
 
 
-router.get('/team_winloss_list', function(req, res, next) {
-	MatchEntryClass.getTeamsWinLossList({match_id: req.query.match_id, book_no: req.query.book_no}).then(function(data){
-		res.send(data);
-	})
-});
+// router.get('/team_winloss_list', function(req, res, next) {
+// 	MatchEntryClass.getTeamsWinLossList({match_id: req.query.match_id, book_no: req.query.book_no}).then(function(data){
+// 		res.send(data);
+// 	})
+// });
 
 
-router.get('/:id', function(req, res, next) {
-  MatchEntryModel.findOne({_id: req.params.id}).exec(function (err, items) {
-	    // res.render('members', {members: docs})
-	    res.setHeader('Content-Type', 'application/json');
-	    res.send(JSON.stringify(items));
-	})
-});
+// router.get('/:id', function(req, res, next) {
+//   MatchEntryModel.findOne({_id: req.params.id}).exec(function (err, items) {
+// 	    // res.render('members', {members: docs})
+// 	    res.setHeader('Content-Type', 'application/json');
+// 	    res.send(JSON.stringify(items));
+// 	})
+// });
 
 router.post('/',function(req, res, next) {
 	var matchEntryItem = req.body;
@@ -52,7 +64,7 @@ router.post('/',function(req, res, next) {
 		if (error) {
 	        return res.status(401).send(error);
 	    }
-	    MatchEntryClass.updateMatchEntryAfterInsert(obj._id, function(err, item){
+	    MatchEntryClass.updateEntryAfterInsert(obj._id, function(err, item){
 	    	if(err) {
 	    		return res.status(401).send(err);	
 	    	}
@@ -70,7 +82,7 @@ router.put('/:id', function(req, res, next) {
 		if (err) {
 	        return res.status(401).send(err);
 	    }
-	    MatchEntryClass.updateMatchEntryAfterInsert(obj._id, function(err, item){
+	    MatchEntryClass.updateEntryAfterInsert(obj._id, function(err, item){
 	    	if(err) {
 	    		return res.status(401).send(err);	
 	    	}

@@ -88,3 +88,15 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+
+// LIVE RELOAD NODE WEBKIT
+// https://github.com/nwjs/nw.js/wiki/Livereload-nw.js-on-changes
+// var path = './';
+// var fs = require('fs');
+// console.log(path)
+// var reloadWatcher=fs.watch(path,{ recursive: true }, function() {
+//   location.reload();
+//   reloadWatcher.close();
+// });

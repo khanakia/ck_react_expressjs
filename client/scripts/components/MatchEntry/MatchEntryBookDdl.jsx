@@ -1,57 +1,61 @@
 import React, { Component } from "react";
 
-import JqxDropDownList from '../jqwidgets-react/react_jqxdropdownlist.js';
-
-import MatchEntryHelper from '../../helpers/MatchEntryHelper'
+// import JqxDropDownList from '../jqwidgets-react/react_jqxdropdownlist.js';
+import CSelect from '../controls/CSelect.jsx'
+// import MatchEntryHelper from '../../helpers/MatchEntryHelper'
 
 
 class MatchEntryBookDdl extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-        matchId: this.props.matchId,
-        count: 1,
-        // scount: this.props.scount
-    }
+    // this.state = {
+    //     matchId: this.props.matchId,
+    //     count: 1,
+    //     // scount: this.props.scount
+    // }
   }
 
     static defaultProps = {
-        scount: 0,
-        matchId: null,
+        // scount: 0,
+        // matchId: null,
+        bookNoList: [],
+        onChange: function(id){}
     }
 
     componentDidMount() {
-        this.sendAjax()
+        // this.sendAjax()
     }
 
 
     getSelectedValue() {
-        var item = this.refs.dropdown.getSelectedItem();
-        if(item) return item.value;
-        return null;
+        return this.refs.dropdown.getSelectedValue();
     }
 
-    sendAjax = () => {
-        MatchEntryHelper.count_book(this.props.matchId).then((res) => {
-            console.log(res)
-            this.setState({
-                count: res.data.count,
-            })
-        })
-    }
+    // sendAjax = () => {
+    //     MatchEntryHelper.count_book(this.props.matchId).then((res) => {
+    //         console.log(res)
+    //         this.setState({
+    //             count: res.data.count,
+    //         })
+    //     })
+    // }
 
     componentWillUpdate(nextProps, nextState) {
       // console.log('Component WILL UPDATE!');
       // console.log(this.props.scount, nextProps.scount);
-      if(this.props.scount!==nextProps.scount) {
-        this.sendAjax()
-      }
+      // if(this.props.scount!==nextProps.scount) {
+      //   this.sendAjax()
+      // }
     }
     render() {
         let source = []
-        for (var i = 0; i < this.state.count; i++) {
-            source.push(i+1)
+        for (var i = 0; i < this.props.bookNoList.length+1; i++) {
+            source.push({
+              id: i+1,
+              text: i+1
+            })
         };
+        // console.log(source)
         // console.log("count" , this.state.count)
         return (
             <div>
@@ -64,9 +68,7 @@ class MatchEntryBookDdl extends Component {
                   <tbody>
                     <tr>
                       <td>
-                        <JqxDropDownList key={this.state.count} ref="dropdown"
-                            width={"100%"} height={25} source={source} selectedIndex={0}
-                        />
+                         <CSelect ref="dropdown" className="form-control form-control-sm" items={source} onChange={this.props.onChange}> </CSelect>
                       </td>
                     </tr>
                   </tbody>

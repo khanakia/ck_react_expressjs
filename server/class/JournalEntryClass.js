@@ -45,19 +45,23 @@ module.exports = {
        // return matchEntry;
     },
 
-    list(args = { account_id: null}) {
+    list(args = {}) {
         var aggregate = [];
+        var match = {}
         if(args.account_id) {
-            aggregate.push(
-                {
-                    $match: {
-                        'account_id' : ObjectId1(args.account_id)
-                    }
-                }
-            )
+            match['account_id'] = parseInt(args.account_id)
         }
 
+        // By Default it will be false
+        if(args.is_monday_final==null || args.is_monday_final=="false") {
+            match['is_monday_final'] = false
+            
+        }
+        
         aggregate.push(
+            {
+                $match: match
+            },
             {
                 $lookup:
                 {
@@ -82,6 +86,7 @@ module.exports = {
                     bal: 1,
                     created_at: 1,
                     narration: 1,
+                    is_monday_final: 1,
                     "account_name" :"$account.account_name",
                 } 
             }

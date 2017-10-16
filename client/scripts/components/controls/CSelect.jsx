@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 
-import JqxComboBox from '../jqwidgets-react/react_jqxcombobox.js';
-
-class ComboBox extends Component {
+class CSelect extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -74,4 +72,4 @@ class ComboBox extends Component {
     }
 }
 
-export default ComboBox;
+export default CSelect;

@@ -7,9 +7,10 @@ var tableSchema = mongoose.Schema({
     created_at: { type: Date, default: Date.now },
     journal_id: { type: Number, required: true},
     account_id: { type: Number, required: true},
-    dr_amt: Number,
-    cr_amt: Number,
-    bal: Number,
+    dr_amt: { type: Number, default: 0},
+    cr_amt: { type: Number, default: 0},
+    bal: { type: Number, default: 0},
+    is_monday_final: { type: Boolean, default: false},
     narration: String
 });
 

@@ -4,8 +4,13 @@ var Schema = mongoose.Schema,
 var autoIncrement = require('mongoose-auto-increment');
 var tableSchema = mongoose.Schema({
     match_id: { type: Number, required: true },
+
+    // Match Team, Session, Meter
+    ref_type: { type: String, defaul: null },
+    ref_id: { type: Number, defaul: null },
+
     // Match|Session
-    entry_type: {type: String, required: true},
+    // entry_type: {type: String, required: true},
     entry_id: { type: Number, required: true },
     entry_account_id: { type: Number, required: true },
 
@@ -33,7 +38,7 @@ var tableSchema = mongoose.Schema({
     // current_bal: { type: Number, default: 0 },
 
     // Match Win or Loss | Commission | Patti
-    summary_type: {type: String, default: "Match"},
+    summary_type: {type: String, default: null},
     narration: String,
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
