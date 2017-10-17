@@ -6,67 +6,29 @@ import { URL_SESSION_ENTRIES } from "../../Constant"
 class SessionEntryGrid extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            sessionId: this.props.sessionId
-        }
-    }
+     }
 
     static defaultProps = {
-        sessionId: null,
-        
+        entriesList : [],
         onEditButtonClick: function(data) {}
     }
 
-    componentDidUpdate() {
-        // this.refreshAdapter(this.props.sessionId)
+    componentWillMount() {
+        this.initDataAdapter()
     }
 
-
-    // componentWillReceiveProps(nextProps) {
-    //     console.log(nextProps.sessionId!==this.props.sessionId)
-    //       if(nextProps.sessionId!==this.props.sessionId) {
-    //           // this.setState({
-    //           //   sessionId: nextProps.sessionId
-    //           // })
-    //           // this.refreshAdapter(nextProps.sessionId)
-    //       }
-    // }
-
-    refresh = () => {
-        // this.refs.jqxgrid.updatebounddata();
+    componentDidUpdate() {
+        this.source.localdata = this.props.entriesList.slice()
         this.dataAdapter.dataBind()
     }
 
-    // refreshAdapter = (sessionId) => {
-    //     var datafields = [
-    //         { name: '_id', type: 'string' },
-    //         { name: 'rate', type: 'string' },
-    //         { name: 'runs', type: 'string' },
-    //         { name: 'amount', type: 'string' },
-    //         { name: 'yn', type: 'string' },
-    //         { name: 'account_name', type: 'string' },            
-    //         { name: 'account_id', type: 'string' },
-    //         { name: 'match_id', type: 'string' },
-    //         { name: 'created_at', type: 'string' },
-    //         { name: 'comm_yn', type: 'string' },
-    //     ];
+    refresh = () => {
+        // this.refs.jqxgrid.updatebounddata();
+        // this.dataAdapter.dataBind()
+    }
 
-    //     let source = {
-    //         datatype: 'json',
-    //         datafields: datafields,
-    //         id: '_id',
-    //         url: URL_SESSION_ENTRIES + '?session_id=' + sessionId
-    //     };
-
-    //     let dataAdapter = new $.jqx.dataAdapter(source);
-
-    //     this.refs.jqxgrid.setOptions({source: dataAdapter})
-    //     return dataAdapter
-    // }
-
-    render() {
-        
-         var datafields = [
+    initDataAdapter() {
+        var datafields = [
             { name: '_id', type: 'string' },
             { name: 'rate', type: 'string' },
             { name: 'runs', type: 'string' },
@@ -80,16 +42,17 @@ class SessionEntryGrid extends Component {
             { name: 'session_id', type: 'Number' },
         ];
 
-        let source = {
+        this.source = {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            url: URL_SESSION_ENTRIES + '?session_id=' + this.props.sessionId
+            // url: URL_SESSION_ENTRIES + '?session_id=' + this.props.sessionId,
+            localdata: this.props.entriesList.slice(),
         };
 
-        this.dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
-        let columns = [{
+        this.columns = [{
                 text: 'Delete',
                 datafield: 'Delete',
                 columntype: 'button',
@@ -145,16 +108,18 @@ class SessionEntryGrid extends Component {
             { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
         ];
+        
+    }
 
-
+    render() {
         return (
             <div>
-                <JqxGrid source={this.dataAdapter} 
-                  ref="jqxgrid"
-                  width={"100%"} height={400} pageable={true} pagermode={'simple'} pagesize={1000}
-                  sortable={false} altrows={false} enabletooltips={true}
-                  editable={false} columns={columns}
-                  filterable={true} showfilterrow={false}
+                <JqxGrid ref="jqxgrid" 
+                    source={this.dataAdapter} columns={this.columns}
+                    width={"100%"} height={400} pageable={true} pagermode={'simple'} pagesize={1000}
+                    sortable={false} altrows={false} enabletooltips={true}
+                    editable={false} 
+                    filterable={true} showfilterrow={false}
                 />
             </div>
         );

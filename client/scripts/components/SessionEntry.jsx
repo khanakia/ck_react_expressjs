@@ -1,36 +1,47 @@
 import React, { Component } from "react";
 import { render } from 'react-dom'
+import { inject, observer } from 'mobx-react';
 
-import JqxWindow from './jqwidgets-react/react_jqxwindow.js';
-import ComboBoxSession from './controls/ComboBoxSession'
-import SessionForm from './Session/SessionForm'
-import SessionEntryForm from './SessionEntry/SessionEntryForm'
-import SessionEntryGrid from './SessionEntry/SessionEntryGrid'
-import SessionEntryWinLossGrid from './SessionEntry/SessionEntryWinLossGrid'
+// import JqxWindow from './jqwidgets-react/react_jqxwindow.js';
+// import ComboBoxSession from './controls/ComboBoxSession'
 import SessionInfoBlock from './SessionEntry/SessionInfoBlock'
-
+import SessionEntryWinLossGrid from './SessionEntry/SessionEntryWinLossGrid'
+import SessionEntryGrid from './SessionEntry/SessionEntryGrid'
+import SessionEntryForm from './SessionEntry/SessionEntryForm'
 import SessionGrid from './Session/SessionGrid'
+import SessionForm from './Session/SessionForm'
 
-
+@inject('globalStore')
+@inject('sessionStore')
+@inject('sessionEntryStore')
+@observer
 class SessionEntry extends Component {
 	constructor(props) {
 		super(props)
-
-		this.state = {
-			scount: 0,
-			// get in bootstrap.js before component render
-			sessionId: window.sessionId,
-			plInfo: {}
-		}
 	}
+
 	static defaultProps = {
         matchId : null,
         sessionId: null
     }
 
+
+
     componentDidMount() {
-    	this.fetchSession(this.state.sessionId);
+    	this.props.sessionStore.fetchList(this.props.matchId)
+    	if(this.props.globalStore.selectedSessionId) {
+    		this.fetch(this.props.globalStore.selectedSessionId)
+    	}
 	}
+
+
+
+    fetch = (sessionId) => {
+    	this.props.sessionEntryStore.fetch(sessionId)
+        // this.props.sessionEntryStore.fetchList(sessionId)
+        // this.props.sessionEntryStore.fetchPlInfo(sessionId)
+        // this.props.sessionEntryStore.fetchWinLossList(sessionId)
+    }
 
 	// setCurrentSessionId = (sessionId) => {
 	// 	this.setTempSessionId(sessionId)
@@ -41,37 +52,36 @@ class SessionEntry extends Component {
 	// 	})
 	// }
 
-	fetchSession = (sessionId) => {
+	// fetchSession = (sessionId) => {
 
-		axios({
-	    	method: 'get',
-	        url: "/session_entries/sessionpl_info/" + sessionId,
-	    }).then( (res) => {
-	    	this.setTempSessionId(sessionId)
-	    	this.setState({
-	    		scount: this.state.scount+1,
-	    		plInfo: res.data,
-	    		sessionId: sessionId
-	    	})
-	    	this.refs.entryGrid.refresh()
-			this.refs.winlossGrid.refresh()
-	    })
-	}
+	// 	axios({
+	//     	method: 'get',
+	//         url: "/session_entries/sessionpl_info/" + sessionId,
+	//     }).then( (res) => {
+	//     	this.setTempSessionId(sessionId)
+	//     	this.setState({
+	//     		scount: this.state.scount+1,
+	//     		plInfo: res.data,
+	//     		sessionId: sessionId
+	//     	})
+	//     	this.refs.entryGrid.refresh()
+	// 		this.refs.winlossGrid.refresh()
+	//     })
+	// }
 	
-	setTempSessionId = (sessionId) => {
-		localStorage.setItem('sessionId', sessionId)
-	}
+	// setTempSessionId = (sessionId) => {
+	// 	localStorage.setItem('sessionId', sessionId)
+	// }
 
-	showAddSessionWindow =() => {
-		  this.openSessionForm()
 
-	}
 
-	editSession =() => {
-		const id = this.refs.comboSession.getSelectedValue()
-		this.openSessionForm(id)
-	}
 
+
+
+
+
+	
+	//// Sessions Functions =======================================
 	openSessionForm(id=null){
 		let mainDemoContainer = document.getElementById('footerContainer');
             let widgetContainer = document.createElement('div');
@@ -79,47 +89,85 @@ class SessionEntry extends Component {
             render(<SessionForm onFormSubmitted={this.onSessionFormSubmitted} matchId={this.props.matchId} id={id} />, widgetContainer);
 	}
 
+	showAddSessionWindow =() => {
+		this.openSessionForm()
+	}
+
+	editSession =() => {
+		const id = this.refs.comboSession.getSelectedValue()
+		this.openSessionForm(id)
+	}
+
 	onSessionFormSubmitted = () => {
-		// this.refs.comboSession.rebind()
-		this.refs.sessionGrid.refresh()
-
-
-	}
-
-
-	comboSessionOnClose = (e) => {
-		const sessionId = (this.refs.entryForm.refs.comboSession.getSelectedValue())
-		
-		this.fetchSession(sessionId)
-		this.refs.sessionGrid.selectRowBySessonId(sessionId)
-	}
-
-
-	onFormSubmitted = () => {
-		
-		this.refs.entryForm.resetForm()
-		this.fetchSession(this.state.sessionId);
-	}
-
-	onEditButtonClick = (data) => {
-		this.refs.entryForm.edit(data)
+		// this.refs.sessionGrid.refresh()
+		this.props.sessionStore.fetchList(this.props.matchId)
 	}
 
 	sessionGrid_onRowSelect = (rowdata) => {
-		this.fetchSession(rowdata._id)
+		// this.fetchSession(rowdata._id)
+		this.props.globalStore.setSessionId(rowdata._id)
+		this.fetch(rowdata._id)
 	}
 
-	seessionOnEditButtonClick= (rowdata) => {
+	sessionGrid_onEdit= (rowdata) => {
 		this.openSessionForm(rowdata._id)
 	}
+
+
+    openDeclareWindow = () => {
+    	var rowdata = this.refs.sessionGrid.getSelectedRowData()
+    	console.log(rowdata)
+        var declared_runs = prompt("Enter Declared Runs");
+        
+        if(declared_runs>=0) {
+			axios({
+				method: 'post',
+				url: "/sessions/declare/"+rowdata._id,
+				data: {
+					declared_runs: declared_runs
+				}
+			}).then((res) => {
+				// this.refs.sessionGrid.refresh()
+				this.props.sessionStore.fetchList(this.props.matchId)
+			})
+        }
+    }
+
+    //// SESSION ENTRY FUNCTIONS ========================================================
+    comboSessionOnClose = (e) => {
+		const sessionId = (this.refs.entryForm.refs.comboSession.getSelectedValue())
+
+		this.props.globalStore.setSessionId(sessionId)
+		this.fetch(sessionId)
+		this.refs.sessionGrid.selectRowBySessonId(sessionId)
+	}
+	sessionEntry_onFormSubmitted = (response) => {
+		this.refs.entryForm.resetForm()
+		console.log(response.session_id)
+		this.fetch(response.session_id)
+	}
+
+	sessionEntry_onEditButtonClick = (data) => {
+		this.refs.entryForm.edit(data)
+	}
+
     render() {
+    	const {selectedSessionId} = this.props.globalStore
+    	const {sessionList} = this.props.sessionStore
+    	const {sessionEntriesList, sessionPlInfo, sessionWinLossList} = this.props.sessionEntryStore
+
+    	// console.log(selectedSessionId)
+
         return (
             <div>
 
             	<div className="row info-heading-block">
             	
             		<div className="col-md-6">
-		         		<SessionInfoBlock plInfo={this.state.plInfo} />
+		         		<SessionInfoBlock plInfo={sessionPlInfo} />
+            		</div>
+            		<div className="col-md-6 text-right">
+            			
             		</div>
             	</div>
 
@@ -128,18 +176,20 @@ class SessionEntry extends Component {
          			<div className="col-md-9">
 		         		<div className="mt-2 mb-2">
 	     					<SessionEntryForm ref="entryForm" matchId={this.props.matchId} 
-	     								sessionId={this.state.sessionId} onFormSubmitted={this.onFormSubmitted} 
+	     								sessionId={selectedSessionId} onFormSubmitted={this.sessionEntry_onFormSubmitted} 
 	     								comboSessionOnClose={this.comboSessionOnClose} />
 		         		</div>
-         				<SessionEntryGrid ref="entryGrid" key={this.state.scount} sessionId={this.state.sessionId} matchId={this.props.matchId} onEditButtonClick={this.onEditButtonClick} />
+         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
+         						onEditButtonClick={this.sessionEntry_onEditButtonClick} />
          			</div>
          			<div className="col-md-3">
-         				<div className="mb-2">
-         				<button className="btn btn-primary btn-sm mb-1" type="button" onClick={this.showAddSessionWindow}>Add</button>
-         				<SessionGrid ref="sessionGrid" matchId={this.props.matchId} sessionId={this.state.sessionId} 
-         							 onRowSelect={this.sessionGrid_onRowSelect} onEditButtonClick={this.seessionOnEditButtonClick} />
+         				<button className="btn btn-primary btn-sm mr-2" type="button" onClick={this.showAddSessionWindow}>Add</button>
+         				<button className="btn btn-primary btn-sm" onClick={this.openDeclareWindow}>Declare</button>
+         				<div className="mt-2 mb-2">
+         				<SessionGrid ref="sessionGrid" entriesList={sessionList} sessionId={selectedSessionId}
+         							 onRowSelect={this.sessionGrid_onRowSelect} onEditButtonClick={this.sessionGrid_onEdit} />
          				</div>
-         				<SessionEntryWinLossGrid ref="winlossGrid" sessionId={this.state.sessionId} />
+         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} />
          			</div>
          		</div>
 

@@ -28,6 +28,18 @@ router.post('/',function(req, res, next) {
 
 });
 
+router.post('/declare/:id',function(req, res, next) {
+	SessionModel.findOne({_id: parseInt(req.params.id)}, function(err, obj) {
+		if(err) return res.send('error')
+		obj.declared_runs = req.body.declared_runs
+		obj.save()
+		return res.send(obj)
+	})
+
+	// res.send('done')
+
+});
+
 router.get('/:id', function(req, res, next) {
   SessionModel.findOne({_id: req.params.id}).exec(function (err, items) {
 	    // res.render('members', {members: docs})

@@ -28,6 +28,7 @@ class Team extends Component {
         let source = {
             datatype: 'json',
             datafields: [
+                { name: '_id', type: 'string' },
                 { name: 'team_name', type: 'string' },
             ],
 
@@ -46,6 +47,7 @@ class Team extends Component {
         let dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [
+            { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Name', datafield: 'team_name', width: 250 },
             {
                 text: 'Delete',
@@ -58,17 +60,22 @@ class Team extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    // console.log(dataRecord.uid)
-                    TeamHelper.delete(dataRecord.uid).then( (res) => {
-                        this.refreshComponent()
-                    })
+
+                    var r = confirm("Are you sure!");
+                    if (r == true) {
+                        TeamHelper.delete(dataRecord.uid).then( (res) => {
+                            this.refreshComponent()
+                        }).catch(function(err) {
+                            toastr.error(err.response.data.message)
+                        });
+                    }
 
                 }
             }
         ];
         return (
             <div>
-                <h3>Team</h3>
+                <h5>Team</h5>
                 <form ref="form" onSubmit={this.onSubmit} className="mb-1">
                     <div className="row">
                         <div className="col-md-2">

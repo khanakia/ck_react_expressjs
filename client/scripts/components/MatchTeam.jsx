@@ -1,37 +1,35 @@
 import React, { Component } from "react";
-
-
 import { render } from 'react-dom'
-import { Redirect } from 'react-router'
-
-import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
+import { inject, observer } from 'mobx-react';
 
 import MatchTeamHelper from '../helpers/MatchTeamHelper'
 import ComboBoxTeam from './controls/ComboBoxTeam'
+import MatchTeamGrid from './MatchTeam/MatchTeamGrid'
 
-
+@inject('matchTeamStore')
+@observer
 class MatchTeam extends Component {
     constructor(props, context) {
         super(props)
-        this.state = {
-            // isNew: true,
-            item: {
-
-            }
-        }
     }
 
     static defaultProps = {
-        matchId: null
+        matchId: null,
+        is_declared: null,
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        this.props.matchTeamStore.fetchList(this.props.matchId)
+    }
 
+    componentWillReceiveProps(nextProps) {        
+          if(nextProps.matchId!==this.props.matchId) {
+              this.props.matchTeamStore.fetchList(nextProps.matchId)
+          }
     }
 
     onSubmit = (e) => {
         e.preventDefault()
-        
 
         if (!this.props.matchId) {
             toastr.error('Please Select Match first.')
@@ -39,73 +37,47 @@ class MatchTeam extends Component {
         }
 
         const team_id = this.refs.comboTeam.refs.idInput.value
+
+         if (!team_id) {
+            toastr.error('Please Select Team first.')
+            return false;
+        }
+
         MatchTeamHelper.store({
             team_id: team_id,
             match_id: this.props.matchId
         }).then((res) => {
-            console.log(response);
-            this.refreshComponent()
+            this.props.matchTeamStore.fetchList(this.props.matchId)
         })
         return false;
     }
 
-    refreshComponent() {
-        this.refs.jqxgrid.updatebounddata();
+
+
+    matchTeamGrid_onDataUpdate = () => {
+        this.props.matchTeamStore.fetchList(this.props.matchId)
     }
 
     render() {
-        let source = {
-            datatype: 'json',
-            datafields: [
-                { name: 'team_name', type: 'string' },
-            ],
-
-            id: '_id',
-            url: '../match_teams?match_id=' + this.props.matchId,
-
-        };
-
-        let dataAdapter = new $.jqx.dataAdapter(source);
-
-        let columns = [
-            { text: 'Team Name', datafield: 'team_name', width: 250 },
-            {
-                text: 'Delete',
-                datafield: 'Delete',
-                columntype: 'button',
-                width: 50,
-                filterable: false,
-                cellsrenderer: () => {
-                    return 'Delete';
-                },
-                buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    MatchTeamHelper.delete(dataRecord.uid).then((res) => {
-                        this.refreshComponent()
-                    })
-
-                }
-            },
-        ];
+        const {matchTeamList, matchTeam} = this.props.matchTeamStore
+        // console.log(matchTeamList)
         return (
             <div>
                 <h3>Match Teams</h3>
-                <form ref="form" onSubmit={this.onSubmit} className="mb-1">
+                <form ref="form" className="mb-1" onSubmit={(e) => e.preventDefault()}>
                     <div className="row">
                         <div className="col-md-2">
                             <div className="input-group">
                                 <ComboBoxTeam ref="comboTeam" field_id="match_id" />
+
                                 <span className="input-group-btn">
-                                  <button className="btn btn-primary btn-sm ml-1" type="submit">Add</button>
+                                  <button className="btn btn-primary btn-sm ml-1" type="button" onClick={this.onSubmit}>Add</button>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </form>
-                <JqxGrid ref="jqxgrid" width={450} height={500} source={dataAdapter} 
-                            pageable={true} sortable={true} altrows={true} enabletooltips={true}
-                            editable={true} columns={columns} filterable={true} showfilterrow={true} />
+               <MatchTeamGrid entriesList={matchTeamList} onDataUpdate={this.matchTeamGrid_onDataUpdate} />
             </div>
 
         );

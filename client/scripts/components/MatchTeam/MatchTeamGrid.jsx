@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
-import MatchHelper from '../../helpers/MatchHelper'
+import MatchTeamHelper from '../../helpers/MatchTeamHelper'
 import {URL_MATCHES} from '../../Constant'
 
-class MatchGrid extends Component {
+class MatchTeamGrid extends Component {
 
 	constructor(props) {
         super(props);
@@ -32,10 +32,12 @@ class MatchGrid extends Component {
             datafields: [
                 { name: '_id', type: 'string' },
                 { name: 'created_at', type: 'date'},
-                { name: 'match_name', type: 'string' },
-                { name: 'match_type', type: 'string' },
-                { name: 'is_declared', type: 'boolean' },
+                { name: 'updated_at', type: 'date'},
+                { name: 'team_id', type: 'string' },
                 { name: 'team_name', type: 'string' },
+                { name: 'match_id', type: 'string' },
+                { name: 'is_declared', type: 'boolean' },
+                { name: 'status', type: 'string' },
             ],
 
             id: '_id',
@@ -43,7 +45,7 @@ class MatchGrid extends Component {
             localdata: this.props.entriesList.slice(),
 
             // updaterow: (rowid, rowdata, commit) => {
-            //     MatchHelper.update(rowdata.uid, {
+            //     MatchTeamHelper.update(rowdata.uid, {
             //         match_name: rowdata.match_name
             //     })
             //     commit(true);
@@ -66,7 +68,7 @@ class MatchGrid extends Component {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
                     var r = confirm("Are you sure!");
                     if (r == true) {
-                        MatchHelper.delete(dataRecord.uid).then( (res) => {
+                        MatchTeamHelper.delete(dataRecord.uid).then( (res) => {
                             this.props.onDataUpdate()
                         })
                         .catch((err) => {
@@ -75,27 +77,11 @@ class MatchGrid extends Component {
                     }
                 }
             },
-            {
-                text: 'Edit',
-                datafield: 'Edit',
-                columntype: 'button',
-                width: 50,
-                filterable: false,
-                cellsrenderer: () => {
-                    return 'Edit';
-                },
-                buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    this.props.editItem(dataRecord.uid)
-                    // console.log(dataRecord.uid)
-                }
-            },
             { text: 'Id', datafield: '_id', width: 50 },
-            { text: 'Name', datafield: 'match_name', width: 150 },
-            { text: 'Match Type', datafield: 'match_type', width: 100 },
+            { text: 'Team', datafield: 'team_name', width: 150 },
+            { text: 'Status', datafield: 'status', width: 100 },
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },
-            { text: 'Winner', datafield: 'team_name', width: 100  },
-            { text: 'Dated', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
+            { text: 'Created', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
         ];
     }
 
@@ -104,12 +90,12 @@ class MatchGrid extends Component {
         return (
             <div>
          		<JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"100%"} height={500} 
-         			pageable={true} sortable={true} altrows={true} enabletooltips={true} 
+                    width={"100%"} height={350} 
+         			pageable={false} sortable={true} altrows={true} enabletooltips={true} 
          			editable={false}  filterable={false} showfilterrow={false} />
             </div>
         );
     }
 }
 
-export default MatchGrid;
+export default MatchTeamGrid;

@@ -68,7 +68,7 @@ class SessionEntryForm extends React.Component {
         const dataJson = URI.parseQuery(data)
         console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
-            this.props.onFormSubmitted(response);
+            this.props.onFormSubmitted(response.data);
         }).catch((error) => {
             console.log(error)
             toastr.error("Validation failed.")

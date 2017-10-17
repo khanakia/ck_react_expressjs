@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-
-import MatchInfoBlock from "./Match/MatchInfoBlock"
-import SessionEntry from "./SessionEntry"
-
 import { inject, observer } from 'mobx-react';
 
+import MatchInfoBlock from "./Match/MatchInfoBlock"
+import MatchEntry from "./MatchEntry"
+import SessionEntry from "./SessionEntry"
 
 @inject('matchStore')
 @observer
@@ -38,25 +37,14 @@ class MdiMatch extends Component {
 			            	Session <span className="badge badge-light">ALT+2</span>
 			            </a>
 			        </li>
-			        <li className="nav-item">
-			            <a className="nav-link" id="pills-player-tab" data-toggle="tab" href="#pills-player" role="tab" aria-controls="pills-player" aria-expanded="true">
-			            	Meter <span className="badge badge-light">ALT+3</span>
-			            </a>
-			        </li>
-			    
 			    </ul>
 			    <div className="tab-content" id="pills-tabContent">
 			        <div className="tab-pane fade show active" id="pills-match" role="tabpanel" aria-labelledby="pills-match-tab">
-			        	{/*<SessionEntry matchId={matchId} />*/}
-			        	
+			        	<MatchEntry matchId={matchId} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
-			        	
-			        </div>
-			        <div className="tab-pane fade" id="pills-player" role="tabpanel" aria-labelledby="pills-player-tab">
-			        	
-			        </div>
-			    
+			        	<SessionEntry matchId={matchId} />
+			        </div>			    
 			    </div>
 	        </div>
         );

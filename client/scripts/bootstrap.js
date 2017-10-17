@@ -10,23 +10,38 @@ import { render } from 'react-dom'
 import createBrowserHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
+import { GlobalStoreClass } from './stores/GlobalStoreClass';
 import { MatchStoreClass } from './stores/MatchStoreClass';
+import { MatchTeamStoreClass } from './stores/MatchTeamStoreClass';
 import { MatchEntryStoreClass } from './stores/MatchEntryStoreClass';
 import { JournalEntryStoreClass } from './stores/JournalEntryStoreClass';
+import { SessionStoreClass } from './stores/SessionStoreClass';
+import { SessionEntryStoreClass } from './stores/SessionEntryStoreClass';
+import { AccountStoreClass } from './stores/AccountStoreClass';
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
+const globalStore = new GlobalStoreClass();
 const matchStore = new MatchStoreClass();
+const matchTeamStore = new MatchTeamStoreClass();
 const matchEntryStore = new MatchEntryStoreClass()
 const journalEntryStore = new JournalEntryStoreClass()
+const sessionStore = new SessionStoreClass()
+const sessionEntryStore = new SessionEntryStoreClass()
+const accountStore = new AccountStoreClass()
 
 
 const stores = {
   // Key can be whatever you want
   routing: routingStore,
+  globalStore: globalStore,
   matchStore: matchStore,
+  matchTeamStore: matchTeamStore,
   matchEntryStore : matchEntryStore,
-  journalEntryStore : journalEntryStore
+  journalEntryStore : journalEntryStore,
+  sessionStore : sessionStore,
+  sessionEntryStore : sessionEntryStore,
+  accountStore: accountStore
   // ...other stores
 };
 

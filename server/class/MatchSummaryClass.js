@@ -2,16 +2,207 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 
+var Constant = require('../Constant')
+const ObjectId1 = mongoose.Types.ObjectId;
+
 var Account = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchSummaryModel = require('../model/MatchSummaryModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var JournalModel = require('../model/JournalModel')
 var JournalEntryModel = require('../model/JournalEntryModel')
-var Constant = require('../Constant')
-const ObjectId1 = mongoose.Types.ObjectId;
+
+var SessionModel = require('../model/SessionModel')
+var SessionEntryModel = require('../model/SessionEntryModel')
 module.exports = {
 
+    //  SESSION DECLARE FUNCTIONS ======================================================
+
+    async session_declare(sessionId) {
+        await this.session_updateFinalWinLossAmt_bySession(sessionId)
+        await this.session_buildJournal(sessionId)
+    },
+
+    // This will fire if session updates in Member Account while session is not declared if session declared then it will not affect that entry
+    async session_updateFinalWinLossAmt_onAccountUpdate(accounId) {
+        var sessionEntries = await SessionEntryModel.find({account_id:accountId, is_declared: {$in: [null, false]}})
+        sessionEntries.map( async (item,i) => {
+            await this.session_updateFinalWinLossAmt(item._id)
+        })
+    },
+
+
+    async session_updateFinalWinLossAmt_bySession(sessionId) {
+        var sessionEntries = await SessionEntryModel.find({session_id:sessionId})
+        sessionEntries.map( async (item,i) => {
+            await this.session_updateFinalWinLossAmt(item._id)
+        })
+    },
+
+    /* this will get session result and then update the win or loss amt in the final column which we will sum and group by account later 
+        and create journal from that final amount column */
+    async session_updateFinalWinLossAmt(sessionEntryId) {
+
+        var sessionEntry = await SessionEntryModel.findOne({_id: parseInt(sessionEntryId)})
+        var session = await SessionModel.findOne({_id: parseInt(sessionEntry.session_id)})
+            
+        if(session.is_declared && session.declared_runs!==null) {
+
+            var declared_runs = parseInt(session.declared_runs);
+
+            // Assume Deafult is looser
+            var final_amount = -1 * sessionEntry.amount
+
+            // if yes then funter is winner else looser
+            if((sessionEntry.yn=="Y" && sessionEntry.runs<=declared_runs) || (sessionEntry.yn=="N" && sessionEntry.runs > declared_runs)){
+                final_amount = sessionEntry.rate * sessionEntry.amount
+            } 
+
+            sessionEntry.final_amount = final_amount
+            sessionEntry.is_declared = true
+            return sessionEntry.save()
+        }
+
+        return false;
+    },
+
+
+
+    async session_buildJournal(sessionId, cb) {      
+        var session = await SessionModel.findOne({_id: parseInt(sessionId)})
+        
+        var project = {
+            "match_id" : 1,
+            "account_id" : 1,
+            "amount" : 1,
+            "final_amount" : 1,
+            "match_name": 1,
+        }
+  
+        var sessionEntries = await SessionEntryModel.aggregate([
+            {
+                 $match: {
+                     "session_id" : parseInt(sessionId),
+                 }
+            },
+             {
+                 $lookup: {
+                     from: "matches",
+                     localField: "match_id",
+                     foreignField: "_id",
+                     as: "match"
+                 }
+             },
+             {
+                 $unwind: "$match"
+             },
+            {
+               $group: {
+                 _id: {
+                    "account_id" : "$account_id",
+                },
+                "match_name" : { $first: "$match.match_name" },
+                "match_id" : { $first: "$match_id"  },
+                "account_id" : { $first: "$account_id"  },
+                "final_amount" : { $sum: "$final_amount" },
+                "amount" : { $sum: "$amount" },
+                
+
+               }
+            },
+            {
+                $project: project
+            }
+        ])
+
+
+
+        // cb(null, matchEntries)
+
+        var journalItem = new JournalModel({
+            match_id : session.match_id,
+            ref_id : session._id,
+            ref_type: "Session"
+        })
+
+        await journalItem.save()
+        
+        sessionEntries.map( async (sessionEntry, i) => {
+            console.log(sessionEntry)
+            var final_amount = sessionEntry.final_amount
+            
+            var narration = ` (Match: ${sessionEntry.match_id} - ${sessionEntry.match_name}) (Session: ${session._id} - ${session.session_name})`
+
+            // Distribute Profit
+            var jentryItem = new JournalEntryModel({
+                journal_id : journalItem._id,
+                account_id: sessionEntry.account_id,
+                dr_amt: 0,
+                cr_amt: 0,
+                bal: 0,
+            })
+
+            if(final_amount >0) {
+                jentryItem.cr_amt = Math.abs(final_amount);
+            } else {
+                jentryItem.dr_amt = Math.abs(final_amount);
+            }
+            jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+            jentryItem.narration = "PL -" + narration
+            await jentryItem.save()
+
+
+            // Distribute Commission
+            var account = await Account.findOne({_id: parseInt(sessionEntry.account_id)})
+
+            var jentryItem1 = new JournalEntryModel({
+                journal_id : journalItem._id,
+                account_id: account.match_comm_to,
+                dr_amt: 0,
+                cr_amt: 0,
+                bal: 0
+            }) 
+
+            var comm_amt = Math.abs(sessionEntry.amount * account.sess_comm/100);
+            if(account.sess_comm > 0) {
+                jentryItem1.cr_amt = comm_amt
+            }
+            if(account.sess_comm < 0) {
+                jentryItem1.cr_amt = comm_amt
+            }
+            jentryItem1.narration = "Commission -" + narration
+            jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
+            await jentryItem1.save()
+
+
+            // Distribute Patti
+            var patti_final_amount = jentryItem.bal + jentryItem1.bal
+            Promise.all(account.patti.map(async (item) => {
+                var jentryItem2 = new JournalEntryModel({
+                    journal_id : journalItem._id,
+                    account_id: item.account_id,
+                    dr_amt: 0,
+                    cr_amt: 0,
+                    bal: 0
+                })
+                var patti_amt = patti_final_amount * item.match/100
+                jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
+                jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
+                jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
+                jentryItem2.narration = "Patti -" + narration
+                return await jentryItem2.save();
+            }))
+            
+            
+        })
+
+        // console.log('matchTeamId', matchTeamId)
+        await SessionEntryModel.updateMany({session_id: parseInt(sessionId)}, {is_summarized:true}) 
+        // return cb(null, 'done')
+    },
+
+
+    //  MATCH DECLARE FUNCTIONS ======================================================
 
     async cleanUndeclaredData(matchId) {
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: false})
@@ -32,8 +223,6 @@ module.exports = {
             await MatchEntryModel.updateMany({"match_team_id": matchTeam._id}, {"is_summarized": false});
         })
     },
-
-
 
     async buildMatchJournal(matchId, cb) {
         var self = this;

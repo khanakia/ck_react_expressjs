@@ -40,44 +40,21 @@ class MemberForm extends Component {
         item: {}
     }
 
-
-    componentDidMount() {
-
-    }
-
-    // refresh() {
-    //     this.refs.memberDdl.dataAdapter.dataBind()
-    //     this.refs.pattiAccountDdl_0.dataAdapter.dataBind()
-    //     this.refs.pattiAccountDdl_1.dataAdapter.dataBind()
-    //     this.refs.pattiAccountDdl_2.dataAdapter.dataBind()
-    //     this.refs.pattiAccountDdl_3.dataAdapter.dataBind()
-    // }
-
     onSubmit = (e) => {
         e.preventDefault()
         // if(! $(this.refs.memberForm.refs.form).valid()) {
         //   return false;
         // }
-
         let data = jQuery(this.refs.form).serialize()
-        // console.log(data);
         AccountHelper.save(data, this.props.item._id).then( (response) => {
-            console.log(response);
             this.props.onSubmit()
-        }).catch(function(error) {
-            console.log(error)
-            // if (error.response.data.cerror) {
-            //     toastr.error(error.response.data.cerror)
-            // } else {
-            //     toastr.error("Validation failed.")
-            // }
+        }).catch(function(err) {
+            toastr.error(err.response.data.message)
         });
     }
 
     render() {
         const item = Object.assign({}, this.defaultItem, this.props.item || {} )
-        // console.log(this.props.item)
-
         return (
             <div className="">
                 <form className="moustrapform" ref="form" key={`form_${item._id}`}>
@@ -207,7 +184,7 @@ class MemberForm extends Component {
                     </div>
                     <div className="mt-3 text-right col-md-10">
                         <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}>Save</button>
-                        <button className="btn btn-danger btn-sm ml-1" type="button" onClick={(e)=> this.props.cancelFormClick(e)}>Cancel</button>
+                        <button className="btn btn-danger btn-sm ml-1" type="button" onClick={this.props.cancelFormClick}>Cancel</button>
                     </div>
                 </form>
             </div>

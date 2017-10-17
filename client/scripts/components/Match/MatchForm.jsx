@@ -23,29 +23,23 @@ class MatchForm extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        var _this = this;
-
-        if (!$(e.target).valid()) {
+        if (!$(this.refs.form).valid()) {
             return false;
         }
 
-        let data = jQuery(e.target).serialize()
+        let data = jQuery(this.refs.form).serialize()
 
         var match_type = this.refs.combo.getSelectedValue()
         if (!match_type) {
             toastr.error("Please Select Match Type")
+            return;
         }
 
         MatchHelper.save(data, this.props.item._id).then((res) => {
             console.log(res);
             this.props.onSubmit()
         }).catch(function(error) {
-            console.log(error)
-            // if (error.response.data.cerror) {
-            //     toastr.error(error.response.data.cerror)
-            // } else {
-            //     toastr.error("Validation failed.")
-            // }
+            toastr.error(err.response.data.message)
         });
         return false;
     }
@@ -54,7 +48,7 @@ class MatchForm extends Component {
     	const item = Object.assign({}, this.defaultItem, this.props.item || {} )
         return (
             <div>
-            	<form className="" ref="form" onSubmit={this.onSubmit} key={`form_${item._id}`}>
+            	<form className="" ref="form"  key={`form_${item._id}`}>
                     <div className="form-row align-items-center">
                         <div className="form-group col-md-2">
                             <label className="col-form-label">Name</label>
@@ -72,7 +66,7 @@ class MatchForm extends Component {
                         <div className="form-group col-md-3">
                             <label className="col-form-label">&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="submit">Save</button>
+                                <button className="btn btn-primary btn-sm" type="submit" onClick={this.onSubmit}>Save</button>
                                 <button className="btn btn-danger btn-sm ml-1" type="button" onClick={()=>this.props.cancelFormClick()}>Cancel</button>
                             </div>
                         </div>

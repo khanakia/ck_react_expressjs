@@ -2,27 +2,23 @@ var express = require('express');
 var router = express.Router();
 var async = require("async");
 var await = require("async").await;
-
-var MatchModel = require('../model/MatchModel')
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
+var MatchModel = require('../model/MatchModel')
+var MatchClass = require('../class/MatchClass')
 var MatchTeamClass = require('../class/MatchTeamClass')
+var DeleteClass = require('../class/DeleteClass')
     
 router.get('/', function(req, res, next) {
-  MatchModel.find({}).exec(function (err, items) {
-	    // res.render('members', {members: docs})
-	    res.setHeader('Content-Type', 'application/json');
-	    res.send(JSON.stringify(items));
+  	MatchClass.list().then(function(err, docs){
+		if (err) return res.send(err)
+		return res.send(docs)
 	})
 });
 
 router.get('/:id', function(req, res, next) {
-	// MatchModel.findOne({_id: req.params.id}).exec(function(err, docs){
-	// 	res.send(docs)
-	// })
-	// res.send("Sdfs")
 	async.parallel({
 		match: function (cb){  MatchModel.findOne({_id: req.params.id}).exec(cb) },
 		matchTeams: function (cb){ MatchTeamClass.list({match_id: req.params.id}).exec(cb) }
@@ -34,10 +30,6 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/',function(req, res, next) {
-	// res.status(200).send(req.body);
-	delete req.body["_id"];
-	// res.status(200).send(req.body);
-
 	let item = new MatchModel(req.body);  
 	item.save((err, obj) => {  
 	    if (err) {
@@ -49,7 +41,7 @@ router.post('/',function(req, res, next) {
 });
 
 router.put('/:id', function(req, res, next) {
-	MatchModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
+	MatchModel.findOneAndUpdate({_id: req.params.id}, req.body, function(err, doc){
     if (err) return res.send(500, { error: err });
     return res.send(doc);
 	});
@@ -57,10 +49,12 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
-  MatchModel.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+	DeleteClass.match(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 

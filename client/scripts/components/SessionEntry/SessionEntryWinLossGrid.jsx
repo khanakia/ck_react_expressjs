@@ -9,25 +9,26 @@ class SessionEntryWinLossGrid extends Component {
     }
 
     static defaultProps = {
-        sessionId: null,
+        // sessionId: null,
+        entriesList: [],
         onEditButtonClick: function(data) {}
     }
 
-    
+
     refresh = () => {
         this.refs.jqxgrid.updatebounddata();
     }
 
     render() {
 
-        var cellclassname_Amt = function (row, column, value, data) {
-                     // console.log(row, column , value, data)
-                     if(data.amount<0) {
-                        return "jqx_cell_bgdanger"
-                     } else {
-                        return "jqx_cell_bgsuccess"
-                     }
-                }
+        var cellclassname_Amt = function(row, column, value, data) {
+            // console.log(row, column , value, data)
+            if (data.amount < 0) {
+                return "jqx_cell_bgdanger"
+            } else {
+                return "jqx_cell_bgsuccess"
+            }
+        }
         var datafields = [
             { name: 'runs', type: 'string' },
             { name: 'amount', type: 'string' },
@@ -37,27 +38,30 @@ class SessionEntryWinLossGrid extends Component {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            url: URL_SESSION_ENTRIES_WINLOSSS_LIST + '/' + this.props.sessionId
+            // url: URL_SESSION_ENTRIES_WINLOSSS_LIST + '/' + this.props.sessionId
+            localdata: this.props.entriesList.slice(),
         };
 
-        let dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [
             { text: 'Runs', datafield: 'runs', width: 150, cellclassname: cellclassname_Amt },
-            { text: 'Amount', datafield: 'amount', width: 100, cellclassname: cellclassname_Amt
-            }                  
+            {
+                text: 'Amount',
+                datafield: 'amount',
+                width: 100,
+                cellclassname: cellclassname_Amt
+            }
         ];
 
         return (
             <div>
-                <JqxGrid key={this.props.sessionId} 
-                  ref="jqxgrid"
-                  width={"100%"} height={600} source={dataAdapter} 
-                  sortable={false} altrows={false} enabletooltips={false}
-                  editable={false} columns={columns}
-                  filterable={false} showfilterrow={false}
-                  pagesize={100} pageable={false}
-                />
+                <JqxGrid ref="jqxgrid" key={Math.random()}
+                    source={this.dataAdapter}
+                    width={ "100%"} height={600} 
+                    sortable={false} altrows={false} enabletooltips={false} 
+                    editable={false} columns={columns} 
+                    filterable={false} showfilterrow={false} pagesize={100} pageable={false} />
             </div>
         );
     }

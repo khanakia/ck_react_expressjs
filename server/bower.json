@@ -23,6 +23,8 @@
     "moment": "^2.19.1",
     "jquery-confirm2": "^3.3.2",
     "lodash": "^4.17.4",
-    "jQuery.tabbable": "^1.0.2"
+    "jQuery.tabbable": "^1.0.2",
+    "request": "^2.83.1",
+    "font-awesome": "^4.7.0"
   }
 }

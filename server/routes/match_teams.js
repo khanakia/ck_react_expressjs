@@ -7,6 +7,7 @@ var Schema = mongoose.Schema,
     
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchTeamClass = require('../class/MatchTeamClass')
+var DeleteClass = require('../class/DeleteClass')
 
 router.get('/', function(req, res, next) {
 	MatchTeamClass.list({match_id: req.query.match_id}).then(function(err, docs){
@@ -83,10 +84,12 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
-  MatchTeamModel.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+	DeleteClass.matchTeam(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 

@@ -11,14 +11,6 @@ var tableSchema = mongoose.Schema({
     match_type: { type: String, required: true },
     winner_teamid: { type: Number, default: null },
     is_declared: { type: Boolean, default: false },
-
-    /*  There can be two ways to declare match first on Team wise and other is whole match by ignoring team so i can dropout each team
-		individually one by one then Journal will be affected based on team_id if i declare match by setting some team as winner 
-		then other will be set to loose automatically and journal will be affected by match_id
-
-		Match | Team
-	*/
-    // declare_method: { type: String, default: null}
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

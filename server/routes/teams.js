@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
 
-var model = require('../model/TeamModel')
+var TeamModel = require('../model/TeamModel')
+var DeleteClass = require('../class/DeleteClass')
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
-    model.find({}).exec(function (err, blogs) {
-	    // res.render('members', {members: docs})
-	    res.setHeader('Content-Type', 'application/json');
-	    res.send(JSON.stringify(blogs));
+    TeamModel.find({}).exec((err, items) => {
+    	res.send(items)
 	})
 });
 
 
 router.post('/', function(req, res, next) {
-	let item = new model(req.body);  
+	let item = new TeamModel(req.body);  
 	item.save((err, obj) => {  
 	    if (err) {
 	        res.status(500).send(err);
@@ -24,19 +22,21 @@ router.post('/', function(req, res, next) {
 
 });
 
-router.put('/:id', function(req, res, next) {
-	model.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+// router.put('/:id', function(req, res, next) {
+// 	TeamModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
+//     if (err) return res.send(500, { error: err });
+//     return res.send("succesfully saved");
+// 	});
   
-});
+// });
 
 router.delete('/:id', function(req, res, next) {
-    model.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+    DeleteClass.team(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 

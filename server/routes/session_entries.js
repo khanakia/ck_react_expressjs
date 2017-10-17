@@ -23,8 +23,8 @@ router.get('/winlosslist/:id', function(req, res, next) {
 	})
 });
 
-router.get('/sessionpl_info/:id', function(req, res, next) {
-	SessionEntryClass.sessionPL_Info(req.params.id).then((data) => {
+router.get('/session_plinfo', function(req, res, next) {
+	SessionEntryClass.sessionPL_Info(req.query.session_id).then((data) => {
 		res.send(data)
 	})
 });

@@ -88,10 +88,10 @@ router.get('/', function(req, res, next) {
 // 	res.send(err.message)
 // })
 // MatchSummaryClass.cleanUndeclaredData(1)
-MatchSummaryClass.buildByMatchTeam(1, 'Loser', function(err, data){
-	if(err) return res.send(err)
-		return res.send(data)
-})
+// MatchSummaryClass.buildByMatchTeam(1, 'Loser', function(err, data){
+// 	if(err) return res.send(err)
+// 		return res.send(data)
+// })
 
 // MatchSummaryClass.buildMatchJournal(1, function(err, data){
 // 	if(err) return res.send(err)
@@ -107,6 +107,31 @@ MatchSummaryClass.buildByMatchTeam(1, 'Loser', function(err, data){
 // 	console.log(data)
 // 	res.send(data);
 // })
+
+
+// MatchSummaryClass.session_updateFinalWinLossAmt(12).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
+
+// MatchSummaryClass.session_updateFinalWinLossAmt_bySession(5).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
+
+MatchSummaryClass.session_buildJournal(5).then(function(data){
+	console.table(data)
+	res.send(data)
+	// res.send(data);
+}).catch((err)=>{
+	res.send(err.message)
+})
 
 // MatchEntryClass.getTeamsWinLossList().then(function(data){
 // 	console.log(data)
