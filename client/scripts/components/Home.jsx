@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom'
 
-import {APP_TITLE, APP_URL_ACCOUNTS, APP_URL_TEAMS, APP_URL_MATCHES, APP_URL_JOURNALS } from "../Constant"
+import {APP_TITLE, APP_URL_ACCOUNTS, APP_URL_TEAMS, APP_URL_MATCHES, APP_URL_JOURNAL_ENTRIES } from "../Constant"
 class Home extends Component {
-
-
     render() {
 
         return (
@@ -19,7 +17,7 @@ class Home extends Component {
 			            	<Link to={APP_URL_ACCOUNTS}>Parties</Link>
 			                <Link to={APP_URL_TEAMS}>Teams</Link>
 			                <Link to={APP_URL_MATCHES}>Match Master</Link>
-			                <Link to={APP_URL_JOURNALS}>Journal</Link>
+			                <Link to={APP_URL_JOURNAL_ENTRIES}>Journal</Link>
 			            </div>
 			        </div>
 			    </div>

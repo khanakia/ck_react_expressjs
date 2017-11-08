@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 
 
-import ReportConnectGrid from './ReportConnect/ReportConnectGrid.jsx'
+import ReportBalanceSheetGrid from './Report/ReportBalanceSheetGrid.jsx'
 
 @inject('journalEntryStore')
 @observer
-class ReportConnect extends Component {
+class ReportBalanceSheet extends Component {
 	 componentDidMount() {
         this.props.journalEntryStore.fetchAccountBalanceList()
     }
@@ -17,12 +17,12 @@ class ReportConnect extends Component {
     	const {accountBalanceList} = this.props.journalEntryStore
         return (
             <div>
-         		<h5>ReportConnect</h5>
+         		<h5>Report - Balance Sheet</h5>
 
-         		<ReportConnectGrid  entriesList={accountBalanceList} />
+         		<ReportBalanceSheetGrid  entriesList={accountBalanceList} />
             </div>
         );
     }
 }
 
-export default ReportConnect;
+export default ReportBalanceSheet;

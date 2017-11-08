@@ -61,6 +61,11 @@ class MatchTeamGrid extends Component {
                 columntype: 'button',
                 width: 50,
                 filterable: false,
+                cellclassname: function (row, column, value, data) {
+                     if(data.is_declared) {
+                        return "jqx_cell_disabled"
+                     }
+                },
                 cellsrenderer: () => {
                     return 'Delete';
                 },

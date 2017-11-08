@@ -37,13 +37,39 @@ router.post('/',function(req, res, next) {
 	    }
 	    return res.status(200).send(obj);
 	});
+});
 
+router.post('/undeclare/:id',function(req, res, next) {
+	MatchClass.undeclare(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
+});
+
+router.post('/abandon/:id',function(req, res, next) {
+	MatchModel.findOne({_id: req.params.id}, function(err, doc){
+	    if (err) return res.send(500, { error: err });
+	    doc.is_abandoned = true;
+	    doc.save()
+	    return res.send(doc);
+	});
+});
+
+router.post('/unabandon/:id',function(req, res, next) {
+	MatchModel.findOne({_id: req.params.id}, function(err, doc){
+	    if (err) return res.send(500, { error: err });
+	    doc.is_abandoned = false;
+	    doc.save()
+	    return res.send(doc);
+	});
 });
 
 router.put('/:id', function(req, res, next) {
 	MatchModel.findOneAndUpdate({_id: req.params.id}, req.body, function(err, doc){
-    if (err) return res.send(500, { error: err });
-    return res.send(doc);
+	    if (err) return res.send(500, { error: err });
+	    return res.send(doc);
 	});
   
 });

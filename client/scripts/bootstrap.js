@@ -6,18 +6,23 @@ import {
   Switch
 } from 'react-router-dom'
 import { render } from 'react-dom'
-
 import createBrowserHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
+
+import {APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
+
+
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { GlobalStoreClass } from './stores/GlobalStoreClass';
 import { MatchStoreClass } from './stores/MatchStoreClass';
 import { MatchTeamStoreClass } from './stores/MatchTeamStoreClass';
 import { MatchEntryStoreClass } from './stores/MatchEntryStoreClass';
+import { JournalStoreClass } from './stores/JournalStoreClass';
 import { JournalEntryStoreClass } from './stores/JournalEntryStoreClass';
 import { SessionStoreClass } from './stores/SessionStoreClass';
 import { SessionEntryStoreClass } from './stores/SessionEntryStoreClass';
 import { AccountStoreClass } from './stores/AccountStoreClass';
+import { ReportStoreClass } from './stores/ReportStoreClass';
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
@@ -25,11 +30,12 @@ const globalStore = new GlobalStoreClass();
 const matchStore = new MatchStoreClass();
 const matchTeamStore = new MatchTeamStoreClass();
 const matchEntryStore = new MatchEntryStoreClass()
+const journalStore = new JournalStoreClass()
 const journalEntryStore = new JournalEntryStoreClass()
 const sessionStore = new SessionStoreClass()
 const sessionEntryStore = new SessionEntryStoreClass()
 const accountStore = new AccountStoreClass()
-
+const reportStore = new ReportStoreClass()
 
 const stores = {
   // Key can be whatever you want
@@ -38,10 +44,12 @@ const stores = {
   matchStore: matchStore,
   matchTeamStore: matchTeamStore,
   matchEntryStore : matchEntryStore,
+  journalStore: journalStore,
   journalEntryStore : journalEntryStore,
   sessionStore : sessionStore,
   sessionEntryStore : sessionEntryStore,
-  accountStore: accountStore
+  accountStore: accountStore,
+  reportStore: reportStore
   // ...other stores
 };
 
@@ -53,14 +61,18 @@ import Home from './components/Home.jsx'
 // import State from './components/State.jsx'
 import Team from './components/Team.jsx'
 import Account from './components/Account.jsx'
-import Journal from './components/Journal.jsx'
+import JournalEntry from './components/JournalEntry.jsx'
 import MatchType from './components/MatchType.jsx'
 import Match from './components/Match.jsx'
 import MatchEntries from './components/MatchEntries.jsx'
 import MatchEntry from './components/MatchEntry.jsx'
 import MdiMatch from './components/MdiMatch.jsx'
 import Demo from './components/Demo.jsx'
-import ReportConnect from './components/ReportConnect.jsx'
+import ReportBalanceSheet from './components/ReportBalanceSheet.jsx'
+import ReportJournalSummary from './components/ReportJournalSummary.jsx'
+import ReportPlMatchAccountWise from './components/ReportPlMatchAccountWise.jsx'
+import ReportPlMatchWise from './components/ReportPlMatchWise.jsx'
+
 
 // import observableTodoStore from './components/Todo.jsx'
 
@@ -87,12 +99,15 @@ const Root = () => (
             <Route exact path="/match_types" component={MatchType}/>
             <Route exact path="/matches" component={Match}/>
             <Route path="/matches/:id" component={Match}/>
-            <Route exact path="/journals" component={Journal}/>
-            <Route path="/journals/account/:account_id" component={Journal}/>
+            <Route exact path="/journal_entries" component={JournalEntry}/>
+            <Route path="/journal_entries/account/:account_id" component={JournalEntry}/>
             <Route exact path="/match_entries" component={MatchEntries}/>
             <Route path="/match_entries/match/:id" component={MatchEntry}/>
             <Route path="/mdimatch/:id" component={MdiMatch}/>
-            <Route path="/report_connect" component={ReportConnect}/>
+            <Route exact path={APP_URL_REPORT_JOURNAL_SUMMARY} component={ReportJournalSummary}/>            
+            <Route path={APP_URL_REPORT_BSHEET} component={ReportBalanceSheet}/>
+            <Route path={APP_URL_REPORT_PL_MATCH_WISE} component={ReportPlMatchWise}/>
+            <Route path={APP_URL_REPORT_PL_MATCH_ACCOUNTWISE} component={ReportPlMatchAccountWise}/>
 	    </Layout>
       </Switch>
       

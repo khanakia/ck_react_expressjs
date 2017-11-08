@@ -37,7 +37,7 @@ class ComboBoxMatchTeam extends Component {
     init() {
         this.refs.Combo.on('change', (e) => {
             var item = this.getSelectedItem();
-            console.log(item)
+            // console.log(item)
             if (item) {
                 this.refs.nameInput.value = item.label
                 this.refs.idInput.value = item.value
@@ -101,9 +101,9 @@ class ComboBoxMatchTeam extends Component {
 
         return (
                 <div>
-                      <input type="text" ref="nameInput" name={this.props.field_name} />
-                      <input type="text" ref="idInput" name={this.props.field_id} />
-                      <input type="text" ref="teamIdInput" name={this.props.field_team_id} />
+                      <input type="hidden" ref="nameInput" name={this.props.field_name} />
+                      <input type="hidden" ref="idInput" name={this.props.field_id} />
+                      <input type="hidden" ref="teamIdInput" name={this.props.field_team_id} />
                       <JqxComboBox ref='Combo' key={Math.random()}
                           width={this.props.width} height={28} selectedIndex={-1} source={this.dataAdapter}
                           displayMember={this.props.displayMember} valueMember={this.props.valueMember}

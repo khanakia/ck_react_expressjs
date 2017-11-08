@@ -1,13 +1,23 @@
 var async = require("async");
-
-var AccountModel = require('../model/AccountModel')
-
-var ResponseHelper = require('../class/ResponseHelper')
 var _ = require('lodash');
 
-
+var AccountModel = require('../model/AccountModel')
+var ResponseHelper = require('../class/ResponseHelper')
+// var EventHookClass = require('../class/EventHookClass')
+var MatchEntryModel = require('../model/MatchEntryModel')
 
 module.exports = {
+    async demo() {
+        return 'demo'
+    },
+
+    async canBid(accountId) {
+        if(!accountId) return false;
+        var account = await AccountModel.findOne({_id : parseInt(accountId)})
+        console.log(account)
+        return true;
+    },
+
     async getPattiAggregate(id, cb) {
         var _this = this;
         var account = await AccountModel.findOne({_id: id})
@@ -27,6 +37,22 @@ module.exports = {
     //     throw(ResponseHelper.errorThrow(400, 'Error', 'Validate Field'))
     //     return ResponseHelper.ok(200, '1', "Message", {status: 'dd'})
     // },
+
+    async getCompanyAccounId() {
+        var accounts = await AccountModel.find({is_company: true})
+        var account = new AccountModel({
+            "account_name" : "Book",
+            "is_company" : true
+        })
+        if(accounts.length > 0) {
+            account = accounts[0]
+        } else {
+            await account.save()
+        }
+
+        // console.log(account._id)
+        return account._id
+    },
 
     async save(item, id=null) {
         var isError = 0
@@ -61,6 +87,7 @@ module.exports = {
         if(id) {
              try {
                 await AccountModel.findOneAndUpdate({_id: id}, item);
+                emitter.emit('accountUpdate', id);
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
             }

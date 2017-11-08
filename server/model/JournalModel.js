@@ -11,7 +11,7 @@ var tableSchema = mongoose.Schema({
     ref_id: { type: Number, default: null },
 
     // Match, Session
-    ref_type: { type: String, default: null },
+    ref_type: { type: String, default: 'Journal' },
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

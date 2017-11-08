@@ -14,56 +14,98 @@ var JournalEntryModel = require('../model/JournalEntryModel')
 
 var SessionModel = require('../model/SessionModel')
 var SessionEntryModel = require('../model/SessionEntryModel')
+var AccountClass = require('./AccountClass')
+var JournalEntryClass = require('./JournalEntryClass')
+
 module.exports = {
+    async createJournalEntryItem(journal_id, by_account_id, account_id, amount, type, is_company, narration) {
+        var jentryItem = new JournalEntryModel({
+            journal_id : journal_id,
+            by_account_id: by_account_id,
+            account_id: account_id,
+            dr_amt: 0,
+            cr_amt: 0,
+            bal: 0,
+            type: type,
+            locked: true,
+            is_company: is_company,
+        })
 
-    //  SESSION DECLARE FUNCTIONS ======================================================
-
-    async session_declare(sessionId) {
-        await this.session_updateFinalWinLossAmt_bySession(sessionId)
-        await this.session_buildJournal(sessionId)
+        if(amount > 0) {
+            jentryItem.cr_amt = Math.abs(amount);
+        } else {
+            jentryItem.dr_amt = Math.abs(amount);
+        }
+        jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+        jentryItem.narration = narration
+        if(jentryItem.bal!==0) {
+            return await jentryItem.save()
+        }
+        return false;
     },
 
+    //  SESSION DECLARE FUNCTIONS ======================================================
+    async session_deleteJournal(sessionId) {
+        var journalItems = await JournalModel.find({
+            ref_id : parseInt(sessionId),
+            ref_type: "Session"
+        })
+        journalItems.map( async (item, i) => {
+            await JournalEntryModel.remove({"journal_id": item._id});
+            await item.remove()
+        })
+
+        await SessionEntryModel.updateMany({session_id: parseInt(sessionId)}, {final_amount:null, is_declared:false, is_summarized:false}) 
+    },
+
+    // async session_declare(sessionId) {
+    //     await this.session_updateFinalWinLossAmt_bySession(sessionId)
+    //     await this.session_buildJournal(sessionId)
+    // },
+
     // This will fire if session updates in Member Account while session is not declared if session declared then it will not affect that entry
-    async session_updateFinalWinLossAmt_onAccountUpdate(accounId) {
+    async session_updateFinalWinLossAmt_onAccountUpdate(accountId) {
         var sessionEntries = await SessionEntryModel.find({account_id:accountId, is_declared: {$in: [null, false]}})
         sessionEntries.map( async (item,i) => {
-            await this.session_updateFinalWinLossAmt(item._id)
+            await this.session_updateFinalWinLossAmt_byEntry(item._id)
         })
     },
 
 
     async session_updateFinalWinLossAmt_bySession(sessionId) {
         var sessionEntries = await SessionEntryModel.find({session_id:sessionId})
+        await Promise.all(
         sessionEntries.map( async (item,i) => {
-            await this.session_updateFinalWinLossAmt(item._id)
-        })
+           return  await this.session_updateFinalWinLossAmt_byEntry(item._id)
+        }))
     },
 
     /* this will get session result and then update the win or loss amt in the final column which we will sum and group by account later 
-        and create journal from that final amount column */
-    async session_updateFinalWinLossAmt(sessionEntryId) {
+        and create journal from that final amount column 
+        I did this step becuase each session entry can have different run so i cannot group session entries based on result
+    */
+    async session_updateFinalWinLossAmt_byEntry(sessionEntryId) {
 
         var sessionEntry = await SessionEntryModel.findOne({_id: parseInt(sessionEntryId)})
         var session = await SessionModel.findOne({_id: parseInt(sessionEntry.session_id)})
             
-        if(session.is_declared && session.declared_runs!==null) {
+        // if(session.is_declared && session.declared_runs!==null) {
 
-            var declared_runs = parseInt(session.declared_runs);
+        var declared_runs = parseInt(session.declared_runs);
 
-            // Assume Deafult is looser
-            var final_amount = -1 * sessionEntry.amount
+        // Assume Deafult is looser
+        var final_amount = -1 * sessionEntry.amount
 
-            // if yes then funter is winner else looser
-            if((sessionEntry.yn=="Y" && sessionEntry.runs<=declared_runs) || (sessionEntry.yn=="N" && sessionEntry.runs > declared_runs)){
-                final_amount = sessionEntry.rate * sessionEntry.amount
-            } 
+        // if yes then funter is winner else looser
+        if((sessionEntry.yn=="Y" && sessionEntry.runs<=declared_runs) || (sessionEntry.yn=="N" && sessionEntry.runs > declared_runs)){
+            final_amount = sessionEntry.rate * sessionEntry.amount
+        } 
 
-            sessionEntry.final_amount = final_amount
-            sessionEntry.is_declared = true
-            return sessionEntry.save()
-        }
+        sessionEntry.final_amount = final_amount
+        sessionEntry.is_declared = true
+        return await sessionEntry.save()
+        // }
 
-        return false;
     },
 
 
@@ -81,43 +123,45 @@ module.exports = {
   
         var sessionEntries = await SessionEntryModel.aggregate([
             {
-                 $match: {
-                     "session_id" : parseInt(sessionId),
-                 }
+                $match: {
+                    "session_id": parseInt(sessionId),
+                }
             },
-             {
-                 $lookup: {
-                     from: "matches",
-                     localField: "match_id",
-                     foreignField: "_id",
-                     as: "match"
-                 }
-             },
-             {
-                 $unwind: "$match"
-             },
             {
-               $group: {
-                 _id: {
-                    "account_id" : "$account_id",
-                },
-                "match_name" : { $first: "$match.match_name" },
-                "match_id" : { $first: "$match_id"  },
-                "account_id" : { $first: "$account_id"  },
-                "final_amount" : { $sum: "$final_amount" },
-                "amount" : { $sum: "$amount" },
-                
+                $lookup: {
+                    from: "matches",
+                    localField: "match_id",
+                    foreignField: "_id",
+                    as: "match"
+                }
+            },
+            {
+                $unwind: "$match"
+            },
+            {
+                $group: {
+                    _id: {
+                        "account_id": "$account_id",
+                    },
+                    "match_name": { $first: "$match.match_name" },
+                    "match_id": { $first: "$match_id" },
+                    "account_id": { $first: "$account_id" },
+                    "final_amount": { $sum: "$final_amount" },
+                    "amount": { $sum: "$amount" },
 
-               }
+
+                }
             },
             {
                 $project: project
             }
         ])
 
+        if(sessionEntries.length == 0) {
+            return false;
+        }
 
-
-        // cb(null, matchEntries)
+        // console.log(sessionEntries)
 
         var journalItem = new JournalModel({
             match_id : session.match_id,
@@ -126,84 +170,51 @@ module.exports = {
         })
 
         await journalItem.save()
+
+        var companyAccountId = await AccountClass.getCompanyAccounId()
+        var narration = null
         
-        sessionEntries.map( async (sessionEntry, i) => {
-            console.log(sessionEntry)
-            var final_amount = sessionEntry.final_amount
+        await Promise.all(sessionEntries.map( async (sessionEntry, i) => {
             
-            var narration = ` (Match: ${sessionEntry.match_id} - ${sessionEntry.match_name}) (Session: ${session._id} - ${session.session_name})`
+            var account = await Account.findOne({_id: parseInt(sessionEntry.account_id)})
+            narration = ` (Party: ${account._id} - ${account.account_name}) (Match: ${sessionEntry.match_id} - ${sessionEntry.match_name}) (Session: ${session._id} - ${session.session_name})`
 
             // Distribute Profit
-            var jentryItem = new JournalEntryModel({
-                journal_id : journalItem._id,
-                account_id: sessionEntry.account_id,
-                dr_amt: 0,
-                cr_amt: 0,
-                bal: 0,
-            })
-
-            if(final_amount >0) {
-                jentryItem.cr_amt = Math.abs(final_amount);
-            } else {
-                jentryItem.dr_amt = Math.abs(final_amount);
-            }
-            jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-            jentryItem.narration = "PL -" + narration
-            await jentryItem.save()
+            var final_amount = sessionEntry.final_amount
+            var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, sessionEntry.account_id, final_amount, 'PL', false, "PL -" + narration)
+            // await jeitem1.save()
 
 
             // Distribute Commission
-            var account = await Account.findOne({_id: parseInt(sessionEntry.account_id)})
-
-            var jentryItem1 = new JournalEntryModel({
-                journal_id : journalItem._id,
-                account_id: account.match_comm_to,
-                dr_amt: 0,
-                cr_amt: 0,
-                bal: 0
-            }) 
-
-            var comm_amt = Math.abs(sessionEntry.amount * account.sess_comm/100);
-            if(account.sess_comm > 0) {
-                jentryItem1.cr_amt = comm_amt
-            }
-            if(account.sess_comm < 0) {
-                jentryItem1.cr_amt = comm_amt
-            }
-            jentryItem1.narration = "Commission -" + narration
-            jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
-            await jentryItem1.save()
+            var comm_amt = Math.abs(sessionEntry.amount) * account.sess_comm/100;
+            var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.sess_comm_to, comm_amt, "Commission", false, "Comm -" + narration)
+            // await jeitem2.save()
 
 
             // Distribute Patti
-            var patti_final_amount = jentryItem.bal + jentryItem1.bal
-            Promise.all(account.patti.map(async (item) => {
-                var jentryItem2 = new JournalEntryModel({
-                    journal_id : journalItem._id,
-                    account_id: item.account_id,
-                    dr_amt: 0,
-                    cr_amt: 0,
-                    bal: 0
-                })
-                var patti_amt = patti_final_amount * item.match/100
-                jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
-                jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
-                jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
-                jentryItem2.narration = "Patti -" + narration
-                return await jentryItem2.save();
+            var patti_final_amount = final_amount + comm_amt
+            await Promise.all(account.patti.map(async (item) => {
+                var patti_amt = -1* patti_final_amount * item.session/100
+                var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, "Patti -" + narration)
+                // return await jeitem.save()
             }))
-            
-            
-        })
+        }))
 
-        // console.log('matchTeamId', matchTeamId)
-        await SessionEntryModel.updateMany({session_id: parseInt(sessionId)}, {is_summarized:true}) 
-        // return cb(null, 'done')
+        // Distribute PL to Book Account
+        var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
+        console.log(pl_bal)
+        if(pl_bal!==0) {
+            var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
+            // await jeitemBook.save();
+        }
+
+        await SessionEntryModel.updateMany({session_id: parseInt(sessionId)}, {is_summarized:true})  
     },
 
 
     //  MATCH DECLARE FUNCTIONS ======================================================
 
+   
     async cleanUndeclaredData(matchId) {
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: false})
         matchTeams.map( async (matchTeam,i) => {
@@ -228,11 +239,11 @@ module.exports = {
         var self = this;
         await this.cleanUndeclaredData(matchId)
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
-        matchTeams.map( async (matchTeam,i) => {
+        await Promise.all(matchTeams.map( async (matchTeam,i) => {
             await this.buildByMatchTeam(matchTeam._id, matchTeam.status,()=>null)
-        })
+        }))
 
-        cb(null, 'done')
+        // cb(null, 'done')
     },
 
 
@@ -266,6 +277,7 @@ module.exports = {
                  $match: {
                      "match_team_id" : parseInt(matchTeamId),
                      // "is_summarized": {$in: [null, false]}
+                     // "comm_yn" : true
                  }
             },
             {
@@ -306,7 +318,12 @@ module.exports = {
                 'favteam_pos': { 
                         '$sum': {
                             '$cond': [
-                                { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$comm_yn", true ] },
+                                       {"$gt": ["$calcs.favteam_subtotal", 0]}
+                                   ]
+                                },
                                 '$calcs.favteam_subtotal', 
                                 0
                             ]
@@ -315,7 +332,12 @@ module.exports = {
                 'favteam_neg': { 
                         '$sum': {
                             '$cond': [
-                                { '$lt': ['$calcs.favteam_subtotal', 0]}, 
+                                // { '$lt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$comm_yn", true ] },
+                                       {"$lt": ["$calcs.favteam_subtotal", 0]}
+                                   ]
+                                },
                                 '$calcs.favteam_subtotal', 
                                 0
                             ]
@@ -324,7 +346,12 @@ module.exports = {
                 'otherteam_pos': { 
                         '$sum': {
                             '$cond': [
-                                { '$gt': ['$calcs.otherteam_subtotal', 0]}, 
+                                // { '$gt': ['$calcs.otherteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$comm_yn", true ] },
+                                       {"$gt": ["$calcs.otherteam_subtotal", 0]}
+                                   ]
+                                },
                                 '$calcs.otherteam_subtotal', 
                                 0
                             ]
@@ -333,7 +360,12 @@ module.exports = {
                 'otherteam_neg': { 
                         '$sum': {
                             '$cond': [
-                                { '$lt': ['$calcs.otherteam_subtotal', 0]}, 
+                                // { '$lt': ['$calcs.otherteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$comm_yn", true ] },
+                                       {"$lt": ["$calcs.otherteam_subtotal", 0]}
+                                   ]
+                                },
                                 '$calcs.otherteam_subtotal', 
                                 0
                             ]
@@ -361,93 +393,127 @@ module.exports = {
         })
 
         await journalItem.save()
+
+        var companyAccountId = await AccountClass.getCompanyAccounId()
+        var narration = null
         
-        matchEntries.map( async (matchEntry, i) => {
+        await Promise.all(matchEntries.map( async (matchEntry, i) => {
+            var account = await Account.findOne({_id: parseInt(matchEntry.account_id)})
+
             var amount = matchTeamStatus=="Winner" ? matchEntry.favteam_subtotal : matchEntry.otherteam_subtotal;
             var amount_pos = matchTeamStatus=="Winner" ? matchEntry.favteam_pos : matchEntry.otherteam_pos;
             var amount_neg = matchTeamStatus=="Winner" ? matchEntry.favteam_neg : matchEntry.otherteam_neg;
 
-            var narration = ` (Match: ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
+            narration = ` (Match: ${matchEntry.match_id} - ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
 
             // Distribute Profit
-            var jentryItem = new JournalEntryModel({
-                journal_id : journalItem._id,
-                account_id: matchEntry.account_id,
-                dr_amt: 0,
-                cr_amt: 0,
-                bal: 0,
-            })
-            if(amount >0) {
-                jentryItem.cr_amt = Math.abs(amount);
-            } else {
-                jentryItem.dr_amt = Math.abs(amount);
-            }
-            jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-            jentryItem.narration = "PL -" + narration
-            await jentryItem.save()
+            // var jentryItem = new JournalEntryModel({
+            //     journal_id : journalItem._id,
+            //     account_id: matchEntry.account_id,
+            //     dr_amt: 0,
+            //     cr_amt: 0,
+            //     bal: 0,
+            // })
+            // if(amount >0) {
+            //     jentryItem.cr_amt = Math.abs(amount);
+            // } else {
+            //     jentryItem.dr_amt = Math.abs(amount);
+            // }
+            // jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+            // jentryItem.narration = "PL -" + narration
+            // await jentryItem.save()
+
+            var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, matchEntry.account_id, amount, 'PL', false, "PL -" + narration)
 
 
             // Distribute Commission
-            var account = await Account.findOne({_id: parseInt(matchEntry.account_id)})
-
-            var jentryItem1 = new JournalEntryModel({
-                journal_id : journalItem._id,
-                account_id: account.match_comm_to,
-                dr_amt: 0,
-                cr_amt: 0,
-                bal: 0
-            })
             
+
+            // var jentryItem1 = new JournalEntryModel({
+            //     journal_id : journalItem._id,
+            //     account_id: account.match_comm_to,
+            //     dr_amt: 0,
+            //     cr_amt: 0,
+            //     bal: 0
+            // })
+            
+            // if(account.match_comm_type=="entrywise") {
+            //     console.log("ENTRY")
+            //     if(account.match_comm > 0) {
+            //         jentryItem1.cr_amt = Math.abs(amount_neg) * account.match_comm/100;
+            //     }
+            //     if(account.match_comm < 0) {
+            //         jentryItem1.cr_amt = Math.abs(amount_pos) * account.match_comm/100;
+            //     }
+            //     jentryItem1.narration = "Commission - Entrywise" + narration
+
+            // } else {
+            //     if(account.match_comm > 0 && amount < 0) {
+            //         jentryItem1.cr_amt = Math.abs(amount) * account.match_comm/100;
+            //     }
+
+            //     if(account.match_comm < 0 && amount > 0) {
+            //         jentryItem1.dr_amt = Math.abs(amount) * account.match_comm/100;
+            //     }
+            //     jentryItem1.narration = "Commission - NET" + narration
+            // }
+            
+            // jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
+            // await jentryItem1.save()
+
+
+            var narration1 = narration
+            var amountForComm = 0
             if(account.match_comm_type=="entrywise") {
-                console.log("ENTRY")
-                if(account.match_comm > 0) {
-                    jentryItem1.cr_amt = Math.abs(amount_neg) * account.match_comm/100;
-                }
-                if(account.match_comm < 0) {
-                    jentryItem1.cr_amt = Math.abs(amount_pos) * account.match_comm/100;
-                }
-                jentryItem1.narration = "Commission - Entrywise" + narration
+                amountForComm = amount_neg
+                narration1 = `Comm Entrywise - (Party: ${account._id} - ${account.account_name}) ` + narration
 
             } else {
-                if(account.match_comm > 0 && amount < 0) {
-                    jentryItem1.cr_amt = Math.abs(amount) * account.match_comm/100;
-                }
-
-                if(account.match_comm < 0 && amount > 0) {
-                    jentryItem1.dr_amt = Math.abs(amount) * account.match_comm/100;
-                }
-                jentryItem1.narration = "Commission - NET" + narration
+                amountForComm = amount;
+                narration1 = `Comm Net - (Party: ${account._id} - ${account.account_name}) ` + narration
             }
-            
-            jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
-            await jentryItem1.save()
+
+            var comm_amt = Math.abs(amountForComm * account.match_comm/100);
+            var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.match_comm_to, comm_amt, "Commission", false, narration1)
 
 
             // Distribute Patti
 
-            var final_amount = jentryItem.bal + jentryItem1.bal
-            Promise.all(account.patti.map(async (item) => {
-                console.log(item._id)
-                var jentryItem2 = new JournalEntryModel({
-                    journal_id : journalItem._id,
-                    account_id: item.account_id,
-                    dr_amt: 0,
-                    cr_amt: 0,
-                    bal: 0
-                })
+            // var final_amount = jentryItem.bal + jentryItem1.bal
+            // Promise.all(account.patti.map(async (item) => {
+            //     console.log(item._id)
+            //     var jentryItem2 = new JournalEntryModel({
+            //         journal_id : journalItem._id,
+            //         account_id: item.account_id,
+            //         dr_amt: 0,
+            //         cr_amt: 0,
+            //         bal: 0
+            //     })
                 
                 
-                var patti_amt = final_amount * item.match/100
-                jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
-                jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
-                jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
-                jentryItem2.narration = "Patti -" + narration
-                return await jentryItem2.save();
-            }))
-            
-            
-        })
+            //     var patti_amt = final_amount * item.match/100
+            //     jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
+            //     jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
+            //     jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
+            //     jentryItem2.narration = "Patti -" + narration
+            //     return await jentryItem2.save();
+            // }))
 
+            var patti_final_amount = amount + comm_amt
+            await Promise.all(account.patti.map(async (item) => {
+                // i added -1 bcause patti_final_amount is Funter PL so if Funter is in profit then book will have losss and vice versa so we are reversing the amount
+                var patti_amt = -1 * patti_final_amount * item.match/100
+                var n = `Patti - (Party: ${account._id} - ${account.account_name}) ` + narration
+                var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
+            }))
+        }))
+
+        // Distribute PL to Book Account
+        var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
+        console.log(pl_bal)
+        if(pl_bal!==0) {
+            var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
+        }
 
         // console.log('matchTeamId', matchTeamId)
         await MatchEntryModel.updateMany({match_team_id: parseInt(matchTeamId)}, {is_summarized:true})
@@ -455,10 +521,6 @@ module.exports = {
 
        return cb(null, 'done')
     },
-
-
-
-
 
     // async buildMatchSummary(matchId) {
     //     var self = this;
@@ -480,9 +542,6 @@ module.exports = {
             
     //     })
     // },
-
-
-    
 
 
     // async buildByMatchTeam(matchTeamId, matchTeamStatus) {

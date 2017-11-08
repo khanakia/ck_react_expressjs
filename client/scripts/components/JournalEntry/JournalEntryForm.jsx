@@ -72,9 +72,10 @@ class JournalEntryForm extends React.Component {
         console.log(dataJson)
         JournalEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.props.onFormSubmitted(response);
-        }).catch((error) => {
+        }).catch((err) => {
+            console.log(err)
+            toastr.error(err.response.data.message)
             // console.log(error)
-            toastr.error("Validation failed.")
         })
         return false;
     }

@@ -11,6 +11,7 @@ var tableSchema = mongoose.Schema({
     match_type: { type: String, required: true },
     winner_teamid: { type: Number, default: null },
     is_declared: { type: Boolean, default: false },
+    is_abandoned: { type: Boolean, default: false },
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

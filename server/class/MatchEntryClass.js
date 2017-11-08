@@ -2,13 +2,57 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 
-var Account = require('../model/AccountModel')
+const ObjectId1 = mongoose.Types.ObjectId;
+var AccountModel = require('../model/AccountModel')
+var MatchModel = require('../model/MatchModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var AccountClass = require('./AccountClass')
 var MatchTeamClass = require('./MatchTeamClass')
-const ObjectId1 = mongoose.Types.ObjectId;
+var ResponseHelper = require('../class/ResponseHelper')
+
 module.exports = {
+
+    async save(item, id=null) {
+
+        var canBid = await AccountClass.canBid(item.account_id)
+        if(!canBid) {
+            throw(ResponseHelper.error(400, 'Limit Exceeded.'))
+        }
+
+        // return item;
+        var match = await MatchModel.findOne({_id: item.match_id})
+        if(match.is_declared) {
+            throw(ResponseHelper.error(400, 'Match is declared already.'))
+        }
+
+        if(match.is_abandoned) {
+            throw(ResponseHelper.error(400, 'Match is abandoned already.'))
+        }
+
+        if(id) {
+             try {
+                let matchEntry = await MatchEntryModel.findOneAndUpdate({_id: id}, item);
+                await this.updateEntryAfterInsert(id)
+                return matchEntry
+            } catch(err) {
+                throw(ResponseHelper.parseMongooseFirstError(err))
+            }
+        } else {
+            try {
+                let matchEntry = new MatchEntryModel(item)
+                await matchEntry.save();
+                await this.updateEntryAfterInsert(matchEntry._id)
+                return matchEntry
+            } catch(err) {
+                throw(ResponseHelper.parseMongooseFirstError(err))
+            }
+        }
+
+        return ResponseHelper.ok(200, 'Successfully saved.','',{item})
+    },
+
+    
 
     // Run this function whenever any account is updateds
     async updateEntriesByAccount(accountId) {
@@ -22,8 +66,9 @@ module.exports = {
 
     async updateEntryAfterInsert(id, cb) {
         var item = await MatchEntryModel.findOne({"_id": id});
+
     
-        var account = await Account.findOne({_id: item.account_id})
+        var account = await AccountModel.findOne({_id: item.account_id})
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
         // We assume fav team will always win so if fav team wins then we are calculating that funter will get or loose money if fav wins
@@ -177,25 +222,6 @@ module.exports = {
         }
     },
 
-    // matchCommAmt(comm, win_amt, loose_amt) {
-    //     if ( comm >= 0 ) {
-    //         // Yeah, it's positive
-    //         return loose_amt * comm/100;
-    //     } else {
-    //         return  win_amt * comm/100;
-    //     }
-    // },
-
-    // lkCommAmt(comm, win_amt, loose_amt) {
-    //     if ( comm > 0 ) {
-    //         // Yeah, it's positive
-    //         return loose_amt * comm/100;
-    //     } else {
-    //         return win_amt * comm/100;
-    //     }
-    // },
-
-
 
     async getMatchEntryGridList(args = { match_id: null, book_no: null}, cb){
         var match = {};
@@ -217,9 +243,12 @@ module.exports = {
             account_id: 1,
             match_id: 1,
             match_team_id: 1,
-            is_declared: 1,
+            book_no : 1,
+            is_summarized: 1,
             "team_name": "$team.team_name",
             "account_name": "$account.account_name",
+            created_at: 1,
+            comm_yn: 1,
         };
 
         matchTeams.forEach(function(item,i) {
@@ -279,11 +308,9 @@ module.exports = {
            // total: { $sum: "$teams_data.59dc80039857c85e8d6d94a9" },
         }
 
-         matchTeams.forEach(function(item,i) {
-            // project[item.team_name] = "$teams_data."+item.team_id;
-            // group[item.team_name] = { $sum: "$teams_data."+item.team_id }
-             group[item.team_name] = { $sum: `$teams.${item.team_name}` }
-            
+        matchTeams.forEach(function(item,i) {
+             // group[item.team_name] = { $sum: `$teams.${item.team_name}` }
+             group[item.team_id] = { $sum: `$teams.${item.team_name}` } 
         });
 
        var aggregate = [
@@ -296,25 +323,47 @@ module.exports = {
        ];
 
        // console.log(aggregate);
+        var entries = await MatchEntryModel.aggregate(aggregate);
+        console.log(entries)
 
-       return MatchEntryModel.aggregate(aggregate).exec(cb);
+        var teamArray = []
+        matchTeams.map((item, i) => {
+            var amount = entries[0] ? entries[0][item.team_id] : 0
+            teamArray.push({
+                '_id' : item._id,
+                'team_id' : item.team_id,
+                'team_name' : item.team_name,
+                'status' : item.status,
+                'is_declared' : item.is_declared,
+                'amount' : amount
+            })
+        })
+       return cb(null, teamArray)
 
     },
 
-
     async remove(id, cb) {
-        try {
-            var matchEntry = await MatchEntryModel.findOne({"_id": id});
-            if(matchEntry && matchEntry.is_declared==false) {
+        var matchEntry = await MatchEntryModel.findOne({"_id": id});
+
+        var match = await MatchModel.findOne({_id: matchEntry.match_id})
+        if(match.is_declared) {
+            throw(ResponseHelper.error(400, 'Match is declared already.'))
+        }
+
+        if(match.is_abandoned) {
+            throw(ResponseHelper.error(400, 'Match is abandoned already.'))
+        }
+
+        if(matchEntry && matchEntry.is_summarized==false) {
+            try {
                 matchEntry.remove(cb)
-            } else {
-                cb(new Error('Cannot remove item.'), null)
             }
+            catch (e) {
+               throw(ResponseHelper.error(400, 'Cannot remove.'))
+            }
+        } else {
+            throw(ResponseHelper.error(400, 'Match Entry is declared already.'))
         }
-        catch (e) {
-           cb(new Error('Cannot remove item.'), null)
-        }
-        
     },
 
     // HOW TO USE

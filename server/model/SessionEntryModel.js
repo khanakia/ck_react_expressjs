@@ -18,7 +18,7 @@ var tableSchema = mongoose.Schema({
     amount: { type: Number, required: true },
 
     // it can be -ve or +ve it is the final balance column which we fill after declaring session
-    final_amount: { type: Number, default: null },
+    final_amount: { type: Number, default: 0 },
     is_declared: { type: Boolean, default: false },
     is_summarized: { type: Boolean, default: false },
 

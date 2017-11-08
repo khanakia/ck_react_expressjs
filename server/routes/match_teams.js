@@ -8,6 +8,7 @@ var Schema = mongoose.Schema,
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchTeamClass = require('../class/MatchTeamClass')
 var DeleteClass = require('../class/DeleteClass')
+var ResponseHelper = require('../class/ResponseHelper')
 
 router.get('/', function(req, res, next) {
 	MatchTeamClass.list({match_id: req.query.match_id}).then(function(err, docs){
@@ -28,18 +29,21 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/',function(req, res, next) {
-	// res.status(200).send(req.body);
-	delete req.body["_id"];
-	// res.status(200).send(req.body);
 
-	let item = new MatchTeamModel(req.body);  
-	item.save((err, obj) => {  
-	    if (err) {
-	        res.status(500).send(err);
-	    }
-	    res.status(200).send(obj);
-	});
-
+	MatchTeamModel.findOne({match_id: req.body.match_id, team_id: req.body.team_id}).exec(function (err, matchTeam) {
+	    if(err) return res.status(500).send(err);
+	    if(matchTeam) return res.status(401).send(ResponseHelper.error(400, 'Team already added.'));
+	    
+		// delete req.body["_id"];
+		let item = new MatchTeamModel(req.body);  
+		item.save((err, obj) => {  
+		    if (err) {
+		        res.status(500).send(err);
+		    }
+		    res.status(200).send(obj);
+		});
+	    
+	})
 });
 
 router.post('/set_winner',function(req, res, next) {
@@ -67,13 +71,13 @@ router.post('/unset_loser',function(req, res, next) {
 	})
 });
 
-router.post('/undeclare_match',function(req, res, next) {
-	MatchTeamClass.undeclareMatch(req.body.match_id).then((data)=>{
-		res.send(data)
-	}).catch((err) => {
-		res.status(401).send({cerror: err.message})
-	})
-});
+// router.post('/undeclare_match',function(req, res, next) {
+// 	MatchTeamClass.undeclareMatch(req.body.match_id).then((data)=>{
+// 		res.send(data)
+// 	}).catch((err) => {
+// 		res.status(401).send({cerror: err.message})
+// 	})
+// });
 
 router.put('/:id', function(req, res, next) {
 	MatchTeamModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){

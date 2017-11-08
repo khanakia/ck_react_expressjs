@@ -9,6 +9,12 @@ var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
 module.exports = {
 
+    async save(item) {
+        // var matchTeams = await MatchTeamModel.find({match_id: item.match_id, team_id: item.team_id})
+        // return matchTeams.length
+        
+    },
+
     list(args = { match_id: null}) {
         var aggregate = [];
 
@@ -73,6 +79,11 @@ module.exports = {
     },
 
 
+    async getWinnerTeam(matchId) {
+        var matchTeams = await MatchTeamModel.find({match_id: matchId, status : Constant.MATCH_TEAM_STATUS.WINNER})
+        return matchTeams ? matchTeams[0] : {}
+    },
+
     async countDeclaredTeams(matchId) {
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
         return matchTeams.length
@@ -101,6 +112,8 @@ module.exports = {
         matchTeam.is_declared = true
         await matchTeam.save();
 
+
+        //// If there is only single undeclared team left then set that team as winner
         var countUneclaredTeams = await this.countUneclaredTeams(matchTeam.match_id)
         console.log(countUneclaredTeams)
         if(countUneclaredTeams==1) {
@@ -114,6 +127,11 @@ module.exports = {
                     is_declared : true
                 }
             )
+
+
+            var winnerTeam = await this.getWinnerTeam(match._id)
+            match.is_declared = true
+            match.winnerTeam = winnerTeam.team_id
         }
 
       

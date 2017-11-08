@@ -11,6 +11,7 @@ var MatchTeamClass = require('../class/MatchTeamClass')
 var MatchSummaryClass = require('../class/MatchSummaryClass')
 
 var SessionEntryClass = require('../class/SessionEntryClass')
+var JournalEntryClass = require('../class/JournalEntryClass')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -125,13 +126,31 @@ router.get('/', function(req, res, next) {
 // 	res.send(err.message)
 // })
 
-MatchSummaryClass.session_buildJournal(5).then(function(data){
-	console.table(data)
-	res.send(data)
-	// res.send(data);
-}).catch((err)=>{
-	res.send(err.message)
-})
+// MatchSummaryClass.session_buildJournal(5).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
+
+// MatchSummaryClass.session_updateFinalWinLossAmt_onAccountUpdate(1).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
+
+
+
+// SessionEntryClass.session_updateEntries_onAccountUpdate(1).then(function(data){
+// 	console.table(data)
+// 	res.send(data)
+// 	// res.send(data);
+// }).catch((err)=>{
+// 	res.send(err.message)
+// })
 
 // MatchEntryClass.getTeamsWinLossList().then(function(data){
 // 	console.log(data)
@@ -155,6 +174,9 @@ MatchSummaryClass.session_buildJournal(5).then(function(data){
 // 	res.send(err.message)
 // })
 
+AccountClass.getCompanyAccounId();
+
+// JournalEntryClass.getBalanceTotal_byJournalId(171)
 
 // SessionEntryClass.buildWinLossList();
 
@@ -164,7 +186,7 @@ MatchSummaryClass.session_buildJournal(5).then(function(data){
 // AccountClass.getPattiTotalPercentage("59da24d61ae1d43d7373744c", function(err,obj){
 // 	res.send(obj)
 // })
-    // res.send('respond with a resource');
+    res.send('respond with a resource');
 });
 
 router.get('/migration', function(req, res, next) {

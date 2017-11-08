@@ -10,6 +10,7 @@ import MatchEntryAvgBlock from './MatchEntry/MatchEntryAvgBlock.jsx'
 import MatchEntryBookDdl from './MatchEntry/MatchEntryBookDdl.jsx'
 import MatchDeclare from './MatchEntry/MatchDeclare.jsx'
 
+@inject('matchStore')
 @inject('matchEntryStore')
 @observer
 class MatchEntry extends React.Component {
@@ -23,6 +24,7 @@ class MatchEntry extends React.Component {
 
     componentDidMount() {
         this.fetch()
+        this.props.matchStore.fetch(this.props.matchId)
     }
 
     onFormSubmitted = () => {
@@ -32,7 +34,7 @@ class MatchEntry extends React.Component {
     fetch = () => {
         this.props.matchEntryStore.fetchPlInfo(this.props.matchId, this.getBookNo())
         this.props.matchEntryStore.fetchList(this.props.matchId, this.getBookNo())
-        this.props.matchEntryStore.fetchTeams(this.props.matchId)
+        this.props.matchStore.fetchTeams(this.props.matchId)
     }
 
     onEditButtonClick = (data) => {
@@ -40,8 +42,16 @@ class MatchEntry extends React.Component {
         this.refs.matchEntryForm.edit(data)
     }
 
+    matchGridOnDataUpdate = () => {
+        this.fetch()
+    }
+
     getBookNo = () => {
-        return this.refs.bookddl.getSelectedValue()
+        try {
+            return this.refs.bookddl.getSelectedValue()
+        } catch(err) {
+            return 1
+        }
     }
 
     onBookNoChange = (bookNo) => {
@@ -50,37 +60,131 @@ class MatchEntry extends React.Component {
     }
 
 
+    onDeclareChange = () => {
+        this.props.matchStore.fetch(this.props.matchId)
+        this.fetch()
+    }
+
     openDeclareWindow = () => {
         let mainDemoContainer = document.getElementById('footerContainer');
             let widgetContainer = document.createElement('div');
             mainDemoContainer.appendChild(widgetContainer);
-            render(<MatchDeclare matchId={this.props.matchId} />, widgetContainer);
+            // console.log(this.props.matchEntryStore.matchPlInfo.teamsWinLossList.length)
+            render(<MatchDeclare teamList={this.props.matchStore.teamsList} onChange={this.onDeclareChange} />, widgetContainer);
+    }
+
+    undeclare = () => {
+        var r = confirm("Are you sure to Undeclare ?");
+        if (r == true) {
+           axios({
+                method: 'post',
+                url: "/matches/undeclare/" + this.props.matchId
+            }).then((res) => {
+                this.props.matchStore.fetch(this.props.matchId)
+                this.fetch()
+                
+            }).catch((err)=> {
+                toastr.error(err.response.data.message)
+            })
+        }
+    }
+
+    abandon = () => {
+        var r = confirm("Are you sure to Abandon ?");
+        if (r == true) {
+           axios({
+                method: 'post',
+                url: "/matches/abandon/" + this.props.matchId
+            }).then((res) => {
+                this.props.matchStore.fetch(this.props.matchId)
+                this.fetch()
+                
+            }).catch((err)=> {
+                toastr.error(err.response.data.message)
+            })
+        }
+    }
+
+    unAbandon = () => {
+        var r = confirm("Are you sure to UnAbandon ?");
+        if (r == true) {
+           axios({
+                method: 'post',
+                url: "/matches/unabandon/" + this.props.matchId
+            }).then((res) => {
+                this.props.matchStore.fetch(this.props.matchId)
+                this.fetch()
+                
+            }).catch((err)=> {
+                toastr.error(err.response.data.message)
+            })
+        }
+    }
+
+
+    renderDeclareButtons = () => {
+        const {match} = this.props.matchStore
+        if(match.is_abandoned) return null;
+        if(match.is_declared) {
+            return (
+                <button className="btn btn-primary btn-sm" onClick={this.undeclare}>UnDeclare</button>
+            ) 
+        }
+        return (
+            <button className="btn btn-primary btn-sm" onClick={this.openDeclareWindow}>Declare</button>
+        )
+    }
+
+    renderAbandonButtons = () => {
+        const {match} = this.props.matchStore
+        if(match.is_declared) return null;
+        if(match.is_abandoned) {
+            return (
+                <button className="btn btn-primary btn-sm ml-1" onClick={this.unAbandon}>Un Abandon</button>
+            ) 
+        }
+        return (
+            <button className="btn btn-primary btn-sm ml-1" onClick={this.abandon}>Abandon</button>
+        )
     }
 
     render() {
-        if (!this.props.matchId) return null;
         const {matchId} = this.props
-        const {entriesList, teamsList, matchPlInfo} = this.props.matchEntryStore
+        const {match, teamsList} = this.props.matchStore
+        if (!this.props.matchId) return null;
+        if (_.isEmpty(match)) return null;
+        const {entriesList, matchPlInfo} = this.props.matchEntryStore
         const {bookNoList, teamsWinLossList} = matchPlInfo
+
+        // console.table(entriesList.slice())
+
+        const cssClassHidden = match.match_type=="Cup" ? ' hidden' : ''
         return ( 
             <div>
                 <div className="row">
                     <div className="col-md-2">
-                        <button className="btn btn-primary btn-sm" onClick={this.openDeclareWindow}>Declare</button>
-                        <div className="mt-2">
+                        {this.renderDeclareButtons()}
+                        {this.renderAbandonButtons()}
+                        
+                        
+                        <div className={"mt-2" + cssClassHidden}>
                             <MatchEntryBookDdl ref="bookddl" bookNoList={bookNoList} onChange={this.onBookNoChange} /> 
                             <MatchEntryAvgBlock teamsWinLossList={teamsWinLossList} />
+                        </div>
+                        <div className="mt-2">
                             <MatchEntryTeamGrid ref="teamGrid" teamsWinLossList={teamsWinLossList} />
                         </div>
                     </div>
                     <div className="col-md-10">
                         <div className="mb-2">
-                            <MatchEntryForm ref="matchEntryForm" matchId={matchId} onFormSubmitted={this.onFormSubmitted} getBookNo={this.getBookNo} 
+                            <MatchEntryForm ref="matchEntryForm" 
+                                matchId={matchId} match={match}
+                                onFormSubmitted={this.onFormSubmitted} getBookNo={this.getBookNo} 
                                 teamsList={teamsList} />
                         </div>
                         <div className="uk-margin">
                             <MatchEntryGrid ref="matchGrid" 
-                                onEditButtonClick={this.onEditButtonClick} 
+                                onEditButtonClick={this.onEditButtonClick}  onDataUpdate={this.matchGridOnDataUpdate}
                                 entriesList={entriesList}
                                 teamsList={teamsList} />
                         </div>

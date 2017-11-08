@@ -14,6 +14,7 @@ class MdiMatch extends Component {
 
 	componentDidMount() {
 		const matchId = this.props.match.params.id
+		localStorage.setItem('matchId', matchId)
 	    this.props.matchStore.fetch(matchId)
 	  }
 
@@ -29,12 +30,12 @@ class MdiMatch extends Component {
 			    <ul className="nav nav-pills mb-3" id="mdi-tab" role="tablist">
 			        <li className="nav-item">
 			            <a className="nav-link active" id="pills-match-tab" data-toggle="tab" href="#pills-match" role="tab" aria-controls="pills-match" aria-expanded="true">
-			            	Match  <span className="badge badge-light">ALT+1</span>
+			            	Match  <span className="badge badge-light">CTRL+1</span>
 			            </a>
 			        </li>
 			        <li className="nav-item">
 			            <a className="nav-link" id="pills-session-tab" data-toggle="tab" href="#pills-session" role="tab" aria-controls="pills-session" aria-expanded="true">
-			            	Session <span className="badge badge-light">ALT+2</span>
+			            	Session <span className="badge badge-light">CTRL+2</span>
 			            </a>
 			        </li>
 			    </ul>

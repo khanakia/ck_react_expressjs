@@ -7,7 +7,15 @@ export const APP_URL_MATCHES = '/matches';
 export const APP_URL_MDI_MATCH = '/mdimatch';
 export const APP_URL_MATCH_ENTRIES = '/match_entries'
 export const APP_URL_JOURNALS = '/journals'
-export const APP_URL_REPORT_CONNECT = '/report_connect'
+export const APP_URL_JOURNAL_ENTRIES = '/journal_entries'
+export const APP_URL_REPORT_BSHEET = '/report_bsheet'
+export const APP_URL_REPORT_JOURNAL_SUMMARY = '/report_journal_summary'
+export const APP_URL_REPORT_PL_MATCH_WISE = '/reports/pl_matchwise'
+export const APP_URL_REPORT_PL_MATCH_ACCOUNTWISE = '/reports/pl_match_accountwise'
+
+export const APP_LOCATION_HREF_MDI_MATCH = '/#' + APP_URL_MDI_MATCH + '/'
+
+
 
 
 export const URL_MATCHES = '/matches';

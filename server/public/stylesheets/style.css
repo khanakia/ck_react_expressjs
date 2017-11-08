@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+
+#contentjqxgrid > span:last-of-type {
+  display: none !important;
+}

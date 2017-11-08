@@ -10,7 +10,8 @@ class SessionEntryGrid extends Component {
 
     static defaultProps = {
         entriesList : [],
-        onEditButtonClick: function(data) {}
+        onEditButtonClick: function(data) {},
+        onDataUpdate: function() {}
     }
 
     componentWillMount() {
@@ -33,13 +34,19 @@ class SessionEntryGrid extends Component {
             { name: 'rate', type: 'string' },
             { name: 'runs', type: 'string' },
             { name: 'amount', type: 'string' },
+            { name: 'amount_patti', type: 'string' },
             { name: 'yn', type: 'string' },
-            { name: 'account_name', type: 'string' },            
+            { name: 'account_name', type: 'string' },       
             { name: 'account_id', type: 'string' },
             { name: 'match_id', type: 'string' },
             { name: 'created_at', type: 'date'},
             { name: 'comm_yn', type: 'boolean' },
             { name: 'session_id', type: 'Number' },
+            { name: 'is_declared', type: 'boolean' },
+            { name: 'is_summarized', type: 'boolean' },
+            { name: 'patti_total_per', type: 'string' },
+            { name: 'sess_comm', type: 'string' },
+            { name: 'comm_amt', type: 'string' },
         ];
 
         this.source = {
@@ -53,7 +60,7 @@ class SessionEntryGrid extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
         this.columns = [{
-                text: 'Delete',
+                text: '',
                 datafield: 'Delete',
                 columntype: 'button',
                 width: 50,
@@ -69,17 +76,20 @@ class SessionEntryGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    SessionEntryHelper.delete(dataRecord.uid).then((res) => {
-                        this.refresh()
-                    }).catch((res)=> {
-                        toastr.error("Cannot Remove Item.")
-                    })
+                    // console.log(dataRecord.uid)
+                    var r = confirm("Are you sure!");
+                    if (r == true) {
+                        SessionEntryHelper.delete(dataRecord.uid).then((res) => {
+                            this.props.onDataUpdate()
+                        }).catch((err)=> {
+                            toastr.error(err.response.data.message)
+                        })
+                    }
 
                 }
             },
             {
-                text: 'Edit',
+                text: '',
                 datafield: 'Edit',
                 columntype: 'button',
                 width: 50,
@@ -105,7 +115,13 @@ class SessionEntryGrid extends Component {
             { text: 'Runs', datafield: 'runs', width: 70 },
             { text: 'L/K', datafield: 'yn', width: 50 },
             { text: 'Amount', datafield: 'amount', width: 100 , cellsformat: 'd2'},
+            { text: 'After Patti', datafield: 'amount_patti', width: 100 , cellsformat: 'd2'},
             { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Is Summarized', datafield: 'is_summarized', width: 120, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Patti (%)', datafield: 'patti_total_per', width: 100 , cellsformat: 'd2'},
+            // { text: 'Comm (%)', datafield: 'sess_comm', width: 100 , cellsformat: 'd2'},
+            { text: 'Comm Amt. (%)', datafield: 'comm_amt', width: 100 , cellsformat: 'd2'},
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
         ];
         

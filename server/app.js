@@ -6,6 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
+
+var EventEmitter = require('events').EventEmitter;
+global.emitter = new EventEmitter();
+
+
 // var db = require('./db')
 // var dbm = require('./config/dbm')
 var mongoose = require('mongoose');
@@ -26,6 +31,7 @@ global.MONGO_DB = uri;
 global.db = mongoose.createConnection(uri);
 autoIncrement.initialize(db);
 
+var EventHookClass = require('./class/EventHookClass')
 
 var index = require('./routes/index');
 var demo = require('./routes/demo');
@@ -37,10 +43,12 @@ var match_types = require('./routes/match_types');
 var matches = require('./routes/matches');
 var match_teams = require('./routes/match_teams');
 var match_entries = require('./routes/match_entries');
+var journals = require('./routes/journals');
 var journal_entries = require('./routes/journal_entries');
 var sessions = require('./routes/sessions');
 var session_entries = require('./routes/session_entries');
 var others = require('./routes/others');
+var reports = require('./routes/reports');
 
 var app = express();
 
@@ -66,11 +74,12 @@ app.use('/match_types', match_types);
 app.use('/matches', matches);
 app.use('/match_teams', match_teams);
 app.use('/match_entries', match_entries);
+app.use('/journals', journals);
 app.use('/journal_entries', journal_entries);
 app.use('/sessions', sessions);
 app.use('/session_entries', session_entries);
 app.use('/others', others);
-
+app.use('/reports', reports);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

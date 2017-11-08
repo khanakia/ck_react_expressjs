@@ -1,7 +1,8 @@
 import React from 'react'
 
 
-import ComboBoxSession from '../controls/ComboBoxSession.jsx'
+// import ComboBoxSession from '../controls/ComboBoxSession.jsx'
+import ComboBoxLocal from '../controls/ComboBoxLocal'
 import ComboBoxMember from '../controls/ComboBoxMember.jsx'
 import InputDecimal from '../controls/InputDecimal.jsx'
 
@@ -29,7 +30,8 @@ class SessionEntryForm extends React.Component {
         matchId: null,
         sessionId: null,
         onFormSubmitted: function() {},
-        comboSessionOnClose: function() {}
+        comboSessionOnClose: function() {},
+        sessionList: []
 
     }
 
@@ -66,12 +68,11 @@ class SessionEntryForm extends React.Component {
 
         let data = jQuery(this.refs.form).serialize()
         const dataJson = URI.parseQuery(data)
-        console.log(dataJson)
+        // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.props.onFormSubmitted(response.data);
-        }).catch((error) => {
-            console.log(error)
-            toastr.error("Validation failed.")
+        }).catch((err) => {
+            toastr.error(err.response.data.message)
         })
         return false;
     }
@@ -95,9 +96,14 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Session</label>
                             <div>
-                                <ComboBoxSession ref="comboSession" width={150} field_id="session_id" 
+                                {/*<ComboBoxSession ref="comboSession" width={150} field_id="session_id" 
                                     selectedValue={this.props.sessionId} onClose={this.props.comboSessionOnClose} 
-                                    url={URL_SESSIONS + "?match_id=" + this.props.matchId}/>
+                                    url={URL_SESSIONS + "?match_id=" + this.props.matchId}/>*/}
+
+                                <ComboBoxLocal ref="comboSession" width={150} field_id="session_id" 
+                                    data={this.props.sessionList} displayMember='session_name'
+                                    selectedValue={this.props.sessionId} onClose={this.props.comboSessionOnClose} />    
+ 
                             </div>
                         </div>
                         <div className="col-auto">

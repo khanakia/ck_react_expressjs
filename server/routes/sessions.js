@@ -29,15 +29,21 @@ router.post('/',function(req, res, next) {
 });
 
 router.post('/declare/:id',function(req, res, next) {
-	SessionModel.findOne({_id: parseInt(req.params.id)}, function(err, obj) {
-		if(err) return res.send('error')
-		obj.declared_runs = req.body.declared_runs
-		obj.save()
-		return res.send(obj)
+	SessionClass.declare(req.params.id, req.body.declared_runs).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
 	})
+});
 
-	// res.send('done')
-
+router.post('/undeclare/:id',function(req, res, next) {
+	SessionClass.undeclare(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 router.get('/:id', function(req, res, next) {

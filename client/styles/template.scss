@@ -9,8 +9,16 @@ main {
 	padding: 20px 0;
 }
 
+#contentjqxgrid > span:last-of-type {
+  display: none !important;
+}
+
 input.error {
 	border: 1px solid red;
+}
+
+.hidden {
+	display: none;
 }
 
 
@@ -95,6 +103,7 @@ input.error {
 		padding: 5px 10px;
 		font-weight: normal;
 		margin-right: 0;
+		font-size: 14px;
 	}
 	.val {
 		text-align: center;

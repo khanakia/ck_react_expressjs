@@ -35,6 +35,7 @@ class MatchGrid extends Component {
                 { name: 'match_name', type: 'string' },
                 { name: 'match_type', type: 'string' },
                 { name: 'is_declared', type: 'boolean' },
+                { name: 'is_abandoned', type: 'boolean' },
                 { name: 'team_name', type: 'string' },
             ],
 
@@ -59,6 +60,12 @@ class MatchGrid extends Component {
                 columntype: 'button',
                 width: 50,
                 filterable: false,
+                exportable: false,
+                cellclassname: function (row, column, value, data) {
+                     if(data.is_declared && data.is_abandoned) {
+                        return "jqx_cell_disabled"
+                     }
+                },
                 cellsrenderer: () => {
                     return 'Delete';
                 },
@@ -81,6 +88,7 @@ class MatchGrid extends Component {
                 columntype: 'button',
                 width: 50,
                 filterable: false,
+                exportable: false,
                 cellsrenderer: () => {
                     return 'Edit';
                 },
@@ -94,6 +102,7 @@ class MatchGrid extends Component {
             { text: 'Name', datafield: 'match_name', width: 150 },
             { text: 'Match Type', datafield: 'match_type', width: 100 },
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },
+            { text: 'Is Abandoned', datafield: 'is_abandoned', width: 100, columntype: 'checkbox'  },
             { text: 'Winner', datafield: 'team_name', width: 100  },
             { text: 'Dated', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
         ];

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 
 import JqxWindow from '../jqwidgets-react/react_jqxwindow.js';
-import ComboBoxTeam from '../controls/ComboBoxTeam'
+// import ComboBoxTeam from '../controls/ComboBoxTeam'
+import ComboBoxLocal from '../controls/ComboBoxLocal'
 import SessionHelper from '../../helpers/SessionHelper'
 class SessionForm extends Component {
 
@@ -17,7 +18,8 @@ class SessionForm extends Component {
 	static defaultProps = {
         matchId : null,
         onFormSubmitted: function() {},
-        id: null
+        id: null,
+        teamsList: []
     }
 
 	componentDidMount() {
@@ -56,12 +58,12 @@ class SessionForm extends Component {
 
         let data = jQuery(e.target).serialize()
         const dataJson = URI.parseQuery(data)
-        console.log(dataJson)
+        // console.log(dataJson)
         SessionHelper.save(dataJson, this.props.id).then((response) => {
         	this.refs.jqxWindow.close()
         	this.props.onFormSubmitted(response);
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
           toastr.error("Validation Failed")
         })
         return false;
@@ -94,7 +96,9 @@ class SessionForm extends Component {
                                     </div>
                                     <div className="form-group">
                                        <label>Team</label>
-                                       <ComboBoxTeam width={"100%"} field_id="team_id" selectedValue={this.state.item.team_id} />
+                                       {/*<ComboBoxTeam width={"100%"} field_id="team_id" selectedValue={this.state.item.team_id} />*/}
+                                       <ComboBoxLocal width={"100%"} field_id="team_id" valueMember='team_id'
+                                        displayMember='team_name' data={this.props.teamsList}  selectedValue={this.state.item.team_id} />
                                     </div>
                                     <div className="text-right">
         	                           <button className="btn btn-primary btn-sm text-right" type="submit">Save Session</button>

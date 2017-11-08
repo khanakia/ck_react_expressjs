@@ -16,10 +16,11 @@ class ComboBoxLocal extends Component {
         selectedValue: null,
     }
 
-    componentWillUnmount() {
-        // it was giving error on route change it was still calling the change method for eg. Journal Page select account and then change route
-        this.refs.Combo.off('change')
+    componentWillMount() {
+        this.initDataAdapter()
+     
     }
+
     componentDidMount() {
         this.refs.Combo.on('change', (e) => {
             var item = this.getSelectedItem();
@@ -49,10 +50,19 @@ class ComboBoxLocal extends Component {
     }
 
     componentDidUpdate() {
+        this.source.localdata = this.props.data.slice()
+        this.dataAdapter.dataBind()
+
         if (this.props.selectedValue) {
             this.setSelectedValue(this.props.selectedValue);
         }
     }
+    
+    componentWillUnmount() {
+        // it was giving error on route change it was still calling the change method for eg. Journal Page select account and then change route
+        this.refs.Combo.off('change')
+    }
+
     getSelectedValue() {
         var item = this.refs.Combo.getSelectedItem();
         if (item) return item.value;
@@ -70,12 +80,8 @@ class ComboBoxLocal extends Component {
     }
 
 
-    // buttonClick() {
-    //     console.log(this.refs.JqxComboBox.getSelectedItem().value)
-    // }
-
-    render() {
-        let source = {
+    initDataAdapter() {
+        this.source = {
             datatype: 'json',
             datafields: [
                 { name: this.props.valueMember },
@@ -85,7 +91,11 @@ class ComboBoxLocal extends Component {
             // url: this.props.url,
             // async: false
         };
-        this.dataAdapter = new $.jqx.dataAdapter(source, { async: false });
+        this.dataAdapter = new $.jqx.dataAdapter(this.source, { async: false });
+        
+    }
+
+    render() {
 
         return (
                 <div>
@@ -96,7 +106,6 @@ class ComboBoxLocal extends Component {
                           displayMember={this.props.displayMember} valueMember={this.props.valueMember}
                       />
 
-                      {/*<button onClick={() => this.buttonClick()}>Get Value</button>*/}
                 </div>
         )
     }

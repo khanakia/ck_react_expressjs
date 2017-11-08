@@ -2,15 +2,57 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 var _ = require('lodash');
-var Account = require('../model/AccountModel')
+const ObjectId1 = mongoose.Types.ObjectId;
+
+var AccountModel = require('../model/AccountModel')
+var SessionModel = require('../model/SessionModel')
 var SessionEntryModel = require('../model/SessionEntryModel')
 var AccountClass = require('./AccountClass')
-const ObjectId1 = mongoose.Types.ObjectId;
+var ResponseHelper = require('../class/ResponseHelper')
+
 module.exports = {
+    async save(item, id=null) {
+
+        var session = await SessionModel.findOne({_id: item.session_id})
+        if(session.is_declared) {
+            throw(ResponseHelper.error(400, 'Session is declared already.'))
+        }
+
+        if(id) {
+             try {
+                let sessionEntry = await SessionEntryModel.findOneAndUpdate({_id: id}, item);
+                await this.updateEntryAfterInsert(id)
+                // emitter.emit('accountUpdate', id);
+                return sessionEntry
+            } catch(err) {
+                throw(ResponseHelper.parseMongooseFirstError(err))
+            }
+        } else {
+            try {
+                let sessionEntry = new SessionEntryModel(item)
+                await sessionEntry.save();
+                await this.updateEntryAfterInsert(sessionEntry._id)
+                return sessionEntry
+            } catch(err) {
+                throw(ResponseHelper.parseMongooseFirstError(err))
+            }
+        }
+
+        return ResponseHelper.ok(200, 'Successfully saved.','',{item})
+    },
+    
+    async session_updateEntries_onAccountUpdate(accountId) {
+        var sessionEntries = await SessionEntryModel.find({account_id:accountId, is_declared: {$in: [null, false]}})
+        console.log('sessionEntries')
+        sessionEntries.map( async (item,i) => {
+            await this.updateEntryAfterInsert(item._id)
+        })
+    },
 
     async updateEntryAfterInsert(id, cb) {
         var item = await SessionEntryModel.findOne({"_id": id});
-        var account = await Account.findOne({_id: item.account_id})
+        var account = await AccountModel.findOne({_id: item.account_id})
+        // console.log(item.account_id)
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
         var win_amt = win_amt_subtotal = item.rate * item.amount
@@ -34,12 +76,16 @@ module.exports = {
 
         // Patti will be calculated on final amount after commission
         var patti_total_per = patti_aggregate.session;
+        var amount_patti = (item.amount *  patti_total_per / 100)
+        console.log(amount_patti)
         var win_patti_amt = (win_amt_subtotal *  patti_total_per / 100)
         var loose_patti_amt = (loose_amt_subtotal *  patti_total_per / 100)
 
         var win_amt_grandtotal = win_amt_subtotal - win_patti_amt
         var loose_amt_grandtotal = loose_amt_subtotal - loose_patti_amt
 
+        // this one i did so i can show amount after patti deduction on frontend
+        item.set("calcs.amount_patti", amount_patti)
 
         item.set("calcs.win_amt", win_amt)
         item.set("calcs.loose_amt", loose_amt)
@@ -54,7 +100,7 @@ module.exports = {
         item.set("calcs.win_amt_grandtotal", win_amt_grandtotal)
         item.set("calcs.loose_amt_grandtotal", loose_amt_grandtotal)
 
-        item.set("calcs.patti", account.patti);
+        // item.set("calcs.patti", account.patti);
 
         // return item;
 
@@ -65,13 +111,16 @@ module.exports = {
     async sessionPL_Info(sessionId) {
        var sessionEntries = await SessionEntryModel.find({session_id : parseInt(sessionId)})
 
-       let yes = no = commRec = commPay = 0;
+       let yes = no = yes_after_patti = no_after_patti = commRec = commPay = 0;
 
        sessionEntries.map( (item,i) => {
             const {calcs} = item
-            console.log(item.amount1, typeof item.amount1)
+            // console.log(item.amount1, typeof item.amount1)
             yes += item.yn == "Y" ? item.amount : 0;
             no += item.yn == "N" ? item.amount : 0;
+
+            yes_after_patti += item.yn == "Y" ? calcs.amount_patti : 0;
+            no_after_patti += item.yn == "N" ? calcs.amount_patti : 0;
 
             var sess_comm = calcs.sess_comm;
             commRec += sess_comm <= 0 ? sess_comm : 0
@@ -82,6 +131,8 @@ module.exports = {
        return {
             yes: yes.toFixed(2),
             no: no.toFixed(2),
+            yes_after_patti: isNaN(yes_after_patti) ? 'N/A' : yes_after_patti.toFixed(2),
+            no_after_patti: isNaN(no_after_patti) ? 'N/A' : no_after_patti.toFixed(2),
             comm_rec: (-1 * commRec).toFixed(2),
             comm_pay: (-1 * commPay).toFixed(2)
        }
@@ -173,15 +224,20 @@ module.exports = {
             rate: 1,
             runs: 1, 
             amount: 1,
+            amount_patti: "$calcs.amount_patti",
+            patti_total_per: "$calcs.patti_total_per",
             yn: 1,
             team_id: 1,
             account_id: 1,
             match_id: 1,
             session_id: 1,
             is_declared: 1,
+            is_summarized: 1,
             created_at: 1,
             comm_yn: 1,
             "account_name": "$account.account_name",
+            sess_comm: "$calcs.sess_comm",
+            comm_amt: "$calcs.comm_amt",
         };
 
         SessionEntryModel.aggregate( [ 

@@ -33,20 +33,22 @@ class MatchEntries extends React.Component {
 
         let dataAdapter = new $.jqx.dataAdapter(source);
 
-        let columns = [{
-                text: 'Select',
-                datafield: 'Select',
-                columntype: 'button',
-                width: 50,
-                filterable: false,
-                cellsrenderer: () => {
-                    return 'Select';
-                },
-                buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    _this.props.history.push(URL_MATCH_ENTRIES_MATCH + "/" + dataRecord.uid)
-                }
-            },
+        let columns = [
+            // {
+            //     text: 'Select',
+            //     datafield: 'Select',
+            //     columntype: 'button',
+            //     width: 50,
+            //     filterable: false,
+            //     cellsrenderer: () => {
+            //         return 'Select';
+            //     },
+            //     buttonclick: (row) => {
+            //         let dataRecord = this.refs.jqxgrid.getrowdata(row);
+            //         _this.props.history.push(URL_MATCH_ENTRIES_MATCH + "/" + dataRecord.uid)
+            //     }
+            // },
+            
             {
                 text: '',
                 datafield: 'Select1',

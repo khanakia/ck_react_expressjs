@@ -2,49 +2,26 @@ import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 
 import JqxWindow from '../jqwidgets-react/react_jqxwindow.js';
-import { URL_MATCH_TEAMS, URL_MATCH_TEAMS_SET_LOSER, URL_MATCH_TEAMS_SET_WINNER , URL_MATCH_TEAMS_SET_UNSET_LOSER, URL_MATCH_TEAMS_SET_UNDECLARE_MATCH} from '../../Constant'
+import { URL_MATCH_TEAMS, URL_MATCH_TEAMS_SET_LOSER, URL_MATCH_TEAMS_SET_WINNER , URL_MATCH_TEAMS_SET_UNSET_LOSER} from '../../Constant'
 class MatchDeclare extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-        	scount: 0,
-            items: []
-        }
     }
 
     static defaultProps = {
-        matchId: null,
+        // matchId: null,
+        onChange: function() {},
+        teamList: []
     }
 
     componentDidMount() {
-        // console.log(this.props.matchId)
         this.refs.jqxWindow.move($(window).width() / 2 - this.refs.jqxWindow.width() / 2, $(window).height() / 2 - this.refs.jqxWindow.height() / 2)
-
         this.refs.jqxWindow.on('close', (event) => {            
             ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
         }); 
-        this.fetchData()
     }
 
     componentDidUpdate() {
-        // console.log(this.props.matchId)
-        // this.fetchData()
-    }
-
-    fetchData() {
-        axios({
-            method: 'get',
-            url: URL_MATCH_TEAMS,
-            params: {
-                match_id: this.props.matchId
-            }
-        }).then((res) => {
-            this.setState({
-            	scount: this.state.scount + 1,
-                items: res.data
-            })
-        })
     }
 
     setWinner = (matchTeamId) => {
@@ -55,8 +32,9 @@ class MatchDeclare extends Component {
                 match_team_id: matchTeamId
             }
         }).then((res) => {
-            console.log(res)
-            this.fetchData()
+            // console.log(res)
+            this.refs.jqxWindow.close()
+            this.props.onChange()
         })
     }
 
@@ -68,8 +46,9 @@ class MatchDeclare extends Component {
                 match_team_id: matchTeamId
             }
         }).then((res) => {
-            console.log(res)
-            this.fetchData()
+            // console.log(res)
+            this.refs.jqxWindow.close()
+            this.props.onChange()
         })
     }
 
@@ -81,29 +60,15 @@ class MatchDeclare extends Component {
                 match_team_id: matchTeamId
             }
         }).then((res) => {
-            console.log(res)
-            this.fetchData()
-        })
-    }
-
-    undeclareMatch = () => {
-    	axios({
-            method: 'post',
-            url: URL_MATCH_TEAMS_SET_UNDECLARE_MATCH,
-            data: {
-                match_id: this.props.matchId
-            }
-        }).then((res) => {
-            console.log(res)
-            this.fetchData()
+            // console.log(res)
+            this.refs.jqxWindow.close()
+            this.props.onChange()
         })
     }
 
     renderItems = () => {
-    	const {items} = this.state
-        if (items.length < 1) return null;
-
-
+    	const items = this.props.teamList
+        if (items.length == 0) return null;
         return items.map((item, i) => {
             var classname_winner = item.status == "Winner" ? " table-success" : "";
             var classname_loser = item.status == "Loser" ? " table-danger" : "";
@@ -137,6 +102,7 @@ class MatchDeclare extends Component {
     }
 
     render() {
+        // console.log(this.props.teamList.slice())
         return (
             <div>
             	<JqxWindow ref='jqxWindow' autoOpen={true}

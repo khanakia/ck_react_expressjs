@@ -2,9 +2,7 @@ import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 
-import JournalEntryHelper from '../../helpers/JournalEntryHelper'
-
-class JournalEntryGrid extends Component {
+class JournalEntryListGrid extends Component {
     constructor(props) {
         super(props);
     }
@@ -34,9 +32,12 @@ class JournalEntryGrid extends Component {
             { name: 'bal', type: 'string' },
             { name: 'narration', type: 'string' },
             { name: 'account_id', type: 'string' },
+            { name: 'match_id', type: 'string' },
             { name: 'journal_id', type: 'string' },
             { name: 'created_at', type: 'date' },
             { name: 'is_monday_final', type: 'boolean' },
+            { name: 'ref_type', type: 'string`' },
+            { name: 'ref_id', type: 'string' },
         ];
 
         let source = {
@@ -50,31 +51,17 @@ class JournalEntryGrid extends Component {
 
         this.dataAdapter = new $.jqx.dataAdapter(source);
 
-        let columns = [{
-                text: 'Delete',
-                datafield: 'Delete',
-                columntype: 'button',
-                width: 50,
-                filterable: false,
-                cellsrenderer: () => {
-                    return 'Delete';
-                },
-                buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    JournalEntryHelper.delete(dataRecord.uid).then((res) => {
-                        this.refreshComponent()
-                    })
-
-                }
-            },
+        let columns = [
             { text: 'Id', datafield: '_id', width: 50 },
+            { text: 'Match Id', datafield: 'match_id', width: 100 },
+            { text: 'Ref. Type', datafield: 'ref_type', width: 100 },
+            { text: 'Ref. Id', datafield: 'ref_id', width: 100 },
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             { text: 'Account', datafield: 'account_name', width: 150 },
             { text: 'Narration', datafield: 'narration', width: 500 },
-            { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2' },
-            { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2' },
-            { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2' },
+            { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Is Monday Final', datafield: 'is_monday_final', width: 100, columntype: 'checkbox', filterable: false },
         ];
 
@@ -84,10 +71,11 @@ class JournalEntryGrid extends Component {
                         width={ "100%"} height={400} source={this.dataAdapter} 
                         pageable={true} sortable={true} altrows={false} enabletooltips={false} 
                         editable={false} columns={columns} filterable={true} showfilterrow={true} 
-                        columnsresize={true} />
+                        columnsresize={true} 
+                        showstatusbar={true} showaggregates={true} statusbarheight={25} pagesize={500} />
             </div>
         );
     }
 }
 
-export default JournalEntryGrid;
+export default JournalEntryListGrid;

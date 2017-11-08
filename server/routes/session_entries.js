@@ -30,46 +30,27 @@ router.get('/session_plinfo', function(req, res, next) {
 });
 
 router.post('/',function(req, res, next) {
-	// res.status(200).send(req.body);
-	delete req.body["_id"];
-	// res.status(200).send(req.body);
-
-	let item = new SessionEntryModel(req.body);  
-	item.save((err, obj) => {  
-	    if (err) {
-	        return res.status(500).send(err);
-	    }
-
-	    SessionEntryClass.updateEntryAfterInsert(obj._id, function(err, item){
-	    	if(err) {
-	    		return res.status(401).send(err);	
-	    	}
-	    	return res.status(200).send(item);	
-	    })
-	    // return res.status(200).send(obj);
-	});
-
+	SessionEntryClass.save(req.body).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 router.put('/:id', function(req, res, next) {
-	SessionEntryModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
-    if (err) return res.send(500, { error: err });
-
-    	 SessionEntryClass.updateEntryAfterInsert(doc._id, function(err, item){
-	    	if(err) {
-	    		return res.status(401).send(err);	
-	    	}
-	    	return res.status(200).send(item);	
-	    })
-    // return res.send(doc);
-	});
-  
+	SessionEntryClass.save(req.body, req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 router.delete('/:id', function(req, res, next) {
-  SessionEntryModel.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
+  	SessionEntryClass.remove({_id: req.params.id}, function(err){
+	    if (err) return res.send(500, { error: err });
+	    return res.send("succesfully saved");
 	});
 });
 

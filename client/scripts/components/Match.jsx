@@ -70,15 +70,21 @@ class Match extends Component {
                         <MatchGrid entriesList={matchList} editItem={this.editItem} onDataUpdate={this.matchGrid_onDataUpdate} />
                     </div>
                     <div className="col-md-7" >
-                        <MatchForm ref="memberForm" 
-                            item={match}
-                            onSubmit={this.onFormSubmit} cancelFormClick={() => this.cancelFormClick()} />
+                    {!match.is_declared && !match.is_abandoned
+                        ?
+                        <div>
+                            <MatchForm ref="memberForm" 
+                                item={match}
+                                onSubmit={this.onFormSubmit} cancelFormClick={() => this.cancelFormClick()} />
                             <hr />
+                        </div>
+                        : ''
+                    }
 
                         <div className="row">
                             <div className="col-md-7">
                                 { match._id ?
-                                <MatchTeam matchId={match._id} /> : '' }
+                                <MatchTeam match={match} matchId={match._id} /> : '' }
                             </div>
                         </div>
                     </div>

@@ -3,25 +3,28 @@ import { inject, observer } from 'mobx-react';
 
 
 import ComboBoxMember from './controls/ComboBoxMember.jsx'
-import JournalEntryForm from './Journal/JournalEntryForm.jsx'
-import JournalEntryGrid from './Journal/JournalEntryGrid.jsx'
+import JournalEntryForm from './JournalEntry/JournalEntryForm.jsx'
+import JournalEntryGrid from './JournalEntry/JournalEntryGrid.jsx'
 import JournalEntryHelper from "helpers/JournalEntryHelper"
 
 
 @inject('journalEntryStore')
 @observer
-class Journal extends Component {
+class JournalEntry extends Component {
 
     onCloseComboMember = () => {
         const accountId = (this.refs.comboMember.getSelectedValue())
         // console.log(accountId)
-        this.props.history.push("/journals/account/" + accountId)       
+        this.props.history.push("/journal_entries/account/" + accountId)       
     }
 
     componentDidMount() {
-        this.refs.comboMember.setSelectedValue(this.props.match.params.account_id)
-        this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
-        this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+        if(this.props.match.params.account_id) {
+            this.refs.comboMember.setSelectedValue(this.props.match.params.account_id)
+            // this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+            // this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+            this.fetch()
+        }
     }
 
 
@@ -33,18 +36,24 @@ class Journal extends Component {
         }
     }
 
+    fetch = () => {
+        this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+        this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+    }
 
     onFormSubmitted = () => {
-        console.log("FORM SUBMITTED")
-        this.refs.entryGrid.refresh()
+        // this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+        // this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+        this.fetch()
+        
     }
 
     mondayFinal = () => {
         axios({
             method: 'post',
             url: "/journal_entries/monday_final"
-        }).then((res)=>{
-
+        }).then((res) => {
+            this.fetch()
         })
     }
 
@@ -57,13 +66,24 @@ class Journal extends Component {
         this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, show)
     }
 
+    entryGrid_onDataUpdate = () => {
+        // this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+        // this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+        this.fetch()
+    }
+
+
+    exportToPdf = () => {
+        this.refs.entryGrid.refs.jqxgrid.exportdata('pdf', 'journal');
+    }
+
     render() {  
         const account_id = this.props.match.params.account_id
         const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal} = this.props.journalEntryStore
 
         return (
             <div>
-                <h3>Journal</h3>
+                <h5>Journal Entry</h5>
                 <div className="mb-2">
                     <div className="row">
                         <div className="col-md-6">
@@ -74,10 +94,14 @@ class Journal extends Component {
                                     <label className="ml-2">Bal: <strong>{selectedAccBal}</strong></label>
                         </div>
                         <div className="col-md-6 text-right">
+                            { account_id ?
+                            <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
+                            : '' }
                             <button className="btn btn-primary btn-sm" onClick={this.mondayFinal}>Monday Final</button>
                             <br />
                             <label className="form-check-label">
-                                <input className="form-check-input" type="checkbox" ref="showMondayFinalChk" defaultChecked={false} onChange={this.onShowMondayFinalChange} /> Show Monday Final
+                                <input className="form-check-input" type="checkbox" ref="showMondayFinalChk" defaultChecked={false} 
+                                        onChange={this.onShowMondayFinalChange} /> Show Monday Final
                             </label>
                         </div>
                     </div>
@@ -89,6 +113,7 @@ class Journal extends Component {
                             <JournalEntryForm accountId={account_id} onFormSubmitted={this.onFormSubmitted} />
                         </div>    
                         <JournalEntryGrid ref="entryGrid"
+                                onDataUpdate={this.entryGrid_onDataUpdate}
                                 onEditButtonClick={this.onEditButtonClick} 
                                 entriesList={journalEntriesList} />
                     </div>
@@ -100,4 +125,4 @@ class Journal extends Component {
     }
 }
 
-export default Journal;
+export default JournalEntry;

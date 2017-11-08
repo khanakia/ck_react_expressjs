@@ -87,9 +87,19 @@ module.exports = {
     async matchTeam(id) {
         id = parseInt(id)
         var q = {
-            match_id: parseInt(id)
+            match_team_id: parseInt(id)
         }
         var i = 0
+
+        var matchTeam = await MatchTeamModel.findOne({_id: id})
+        if(matchTeam && matchTeam.is_declared) {
+            throw(ResponseHelper.error(401, 'Declared Team cannot be removed.'))            
+        }
+
+        var declaredTeamsCount = await MatchTeamModel.find({is_declared: true}).count()
+        if(declaredTeamsCount > 0) {
+            throw(ResponseHelper.error(401, 'Some Team is already declared in this match.'))
+        }
         
         i += await MatchEntryModel.find(q).count()
         

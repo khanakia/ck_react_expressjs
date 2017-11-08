@@ -57,7 +57,13 @@ class MatchEntryAvgBlock extends Component {
         //     avgk = (t2_bidamt / t1_bidamt).toFixed(2)
         // }
 
-        // let item = this.props.teamsWinLossList[0]
+        let matchTeams = this.props.teamsWinLossList
+        var t1_bidamt = matchTeams[0] ? Math.abs(matchTeams[0].amount) : 0
+        var t2_bidamt = matchTeams[1] ? Math.abs(matchTeams[1].amount) : 0
+        if(t1_bidamt>0 && t2_bidamt>0) {
+            avgl = (t1_bidamt / t2_bidamt).toFixed(2)
+            avgk = (t2_bidamt / t1_bidamt).toFixed(2)
+        }
         
 
         return (

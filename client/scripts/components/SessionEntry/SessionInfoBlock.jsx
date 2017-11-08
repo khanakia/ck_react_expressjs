@@ -4,8 +4,10 @@ class SessionInfoBlock extends Component {
         super(props)
 
         this.defaultItem = {
-           yes: 0,
+            yes: 0,
             no: 0,
+            yes_after_patti: 0,
+            no_after_patti: 0,
             comm_rec: 0,
             comm_pay: 0
         }
@@ -26,6 +28,14 @@ class SessionInfoBlock extends Component {
          				<label>No</label>
          				<div className="val">{item.no}</div>
          			</div>
+                    <div className="col-auto">
+                        <label>Yes After Patti</label>
+                        <div className="val">{item.yes_after_patti}</div>
+                    </div>
+                    <div className="col-auto">
+                        <label>No After Patti</label>
+                        <div className="val">{item.no_after_patti}</div>
+                    </div>
          			<div className="col-auto">
          				<label>Comm. Rec.</label>
          				<div className="val">{item.comm_rec}</div>

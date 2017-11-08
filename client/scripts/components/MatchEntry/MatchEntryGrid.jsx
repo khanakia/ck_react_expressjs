@@ -12,7 +12,8 @@ class MatchEntryGrid extends Component {
         matchId: null,
         teamsList: [],
         entriesList : [],
-        onEditButtonClick: function(data) {}
+        onEditButtonClick: function(data) {},
+        onDataUpdate: function() {},
     }
 
     refresh = () => {
@@ -39,7 +40,9 @@ class MatchEntryGrid extends Component {
             { name: 'match_id', type: 'string' },
             { name: 'match_team_id', type: 'number' },
             { name: 'amounts', type: 'string' },
-            { name: 'is_declared', type: 'string' },
+            { name: 'comm_yn', type: 'boolean' },
+            { name: 'is_summarized', type: 'boolean' },
+            { name: 'created_at', type: 'date'}
         ];
 
         if (teamsList.length > 0) {
@@ -61,14 +64,14 @@ class MatchEntryGrid extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [{
-                text: 'Delete',
+                text: '',
                 datafield: 'Delete',
                 columntype: 'button',
                 width: 50,
                 filterable: false,
                 cellclassname: function (row, column, value, data) {
                      // console.log(row, column , value, data)
-                     if(data.is_declared) {
+                     if(data.is_summarized) {
                         return "jqx_cell_disabled"
                      }
                 },
@@ -77,24 +80,27 @@ class MatchEntryGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    MatchEntryHelper.delete(dataRecord.uid).then((res) => {
-                        // this.refresh()
-                    }).catch((res)=> {
-                        toastr.error("Cannot Remove Item.")
-                    })
+                    // console.log(dataRecord.uid)
+                    var r = confirm("Are you sure!");
+                    if (r == true) {
+                        MatchEntryHelper.delete(dataRecord.uid).then((res) => {
+                            this.props.onDataUpdate()
+                        }).catch((err)=> {
+                            toastr.error(err.response.data.message)
+                        })
+                    }
 
                 }
             },
             {
-                text: 'Edit',
+                text: '',
                 datafield: 'Edit',
                 columntype: 'button',
                 width: 50,
                 filterable: false,
                 cellclassname: function (row, column, value, data) {
                      // console.log(row, column , value, data)
-                     if(data.is_declared) {
+                     if(data.is_summarized) {
                         return "jqx_cell_disabled"
                      }
                 },
@@ -103,7 +109,7 @@ class MatchEntryGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord)
+                    // console.log(dataRecord)
                     this.props.onEditButtonClick(dataRecord);
                 }
             },
@@ -112,7 +118,7 @@ class MatchEntryGrid extends Component {
             { text: 'Rate', datafield: 'rate', width: 100 },
             { text: 'Amount', datafield: 'amount', width: 100 },
             { text: 'L/K', datafield: 'lk', width: 50 },
-            { text: 'Team', datafield: 'team_name', width: 100 }
+            { text: 'Team', datafield: 'team_name', width: 100 },
         ];
 
         teamsList.map(function(item, i) {
@@ -122,6 +128,12 @@ class MatchEntryGrid extends Component {
                 width: 100
             })
         })
+
+        columns.push(
+                { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
+                { text: 'Is Summarized', datafield: 'is_summarized', width: 100, columntype: 'checkbox', filtertype:'bool'},
+                { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
+            )
 
         return (
             <div>

@@ -3,8 +3,25 @@ var _ = require('lodash');
 
 var ResponseHelper = require('../class/ResponseHelper')
 var MatchModel = require('../model/MatchModel')
+var MatchTeamModel = require('../model/MatchTeamModel')
+var MatchSummaryClass = require('./MatchSummaryClass')
 
 module.exports = {
+    async undeclare(id) {
+        id = parseInt(id)
+        var match = await MatchModel.findOne({_id: id})
+        try {
+            await MatchTeamModel.updateMany({"match_id": id}, {"is_declared": false, "status" : null});
+            await MatchSummaryClass.cleanUndeclaredData(id)
+            match.is_declared = false
+            match.winner_teamid = null
+            await match.save()
+        } catch(err) {
+            console.log(err)
+            throw(ResponseHelper.error(400, 'Cannot undeclare.'))
+        }
+    },
+
     list() {
         var aggregate = [];
         aggregate.push(
@@ -33,6 +50,7 @@ module.exports = {
                     match_name :1 ,
                     match_type: 1,
                     is_declared: 1,
+                    is_abandoned: 1,
                     winner_teamid : 1 ,                    
                     "team_name" :"$team.team_name"
                 } 

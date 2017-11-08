@@ -16,6 +16,7 @@ class MatchEntryForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            match: {},
             matchId: this.props.matchId,
             isNew: true,
             item: {
@@ -45,7 +46,7 @@ class MatchEntryForm extends React.Component {
     }
 
     resetForm = () => {
-        console.log(this.state)
+        // console.log(this.state)
         this.setState({
             isNew: false,
             item: {
@@ -60,28 +61,35 @@ class MatchEntryForm extends React.Component {
         var book_no = this.props.getBookNo();
         // console.log("book_no", book_no)
 
+        // return false;
+
         if (!this.props.matchId) {
             toastr.error("Please Select Match First.")
         }
 
         let data = jQuery(this.refs.form).serialize()
-
         const dataJson = URI.parseQuery(data)
         dataJson.book_no = book_no;
-        // console.log(dataJson)
-        MatchEntryHelper.save(data, this.state.item._id).then((response) => {
+
+        MatchEntryHelper.save(dataJson, this.state.item._id).then((response) => {
+            // If in Edit Mode then clear form after submit
+            if(this.state.item._id) {
+                this.resetForm()
+            }
+
             this.props.onFormSubmitted(response);
-        }).catch((error) => {
-            // console.log(error)
-            toastr.error("Validation failed.")
+
+        }).catch((err) => {
+            toastr.error(err.response.data.message)
         })
+        
         return false;
     }
 
     render() {
 
         const { item } = this.state
-        console.log(item)
+        const comm_yn = this.props.match.match_type=="Cup" ? false : true
         return (
             <div>
                 <form ref="form">
@@ -115,13 +123,13 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">Team</label>
                             <div>
-                                <ComboBoxMatchTeam width={100} height={35} selectedValue={item.match_team_id} key={this.state.item._id} data={this.props.teamsList.slice()} />
+                                <ComboBoxMatchTeam width={150} height={35} selectedValue={item.match_team_id} key={this.state.item._id} data={this.props.teamsList.slice()} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Party</label>
                             <div>
-                                <ComboBoxMember width={100} field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
                             </div>
                         </div>
                         <div className="col-auto ">
@@ -143,7 +151,7 @@ class MatchEntryForm extends React.Component {
                             <div>
                                 <label className="form-check-label">
                                     <input type="hidden" value="false" name="comm_yn" />
-                                    <input className="form-check-input" type="checkbox" name="comm_yn" value={true} defaultChecked={true}/> Add Commission
+                                    <input className="form-check-input" type="checkbox" name="comm_yn" value={comm_yn} defaultChecked={comm_yn}/> Add Commission
                                 </label>
                             </div>
                         </div>

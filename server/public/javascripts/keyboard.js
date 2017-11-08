@@ -1,4 +1,4 @@
-(function(a){var c={},d=a.prototype.stopCallback;a.prototype.stopCallback=function(e,b,a,f){return this.paused?!0:c[a]||c[f]?!1:d.call(this,e,b,a)};a.prototype.bindGlobal=function(a,b,d){this.bind(a,b,d);if(a instanceof Array)for(b=0;b<a.length;b++)c[a[b]]=!0;else c[a]=!0};a.init()})(Mousetrap);
+// (function(a){var c={},d=a.prototype.stopCallback;a.prototype.stopCallback=function(e,b,a,f){return this.paused?!0:c[a]||c[f]?!1:d.call(this,e,b,a)};a.prototype.bindGlobal=function(a,b,d){this.bind(a,b,d);if(a instanceof Array)for(b=0;b<a.length;b++)c[a[b]]=!0;else c[a]=!0};a.init()})(Mousetrap);
 
 jQuery(document).ready(function(){
 	var mousetrapGlobal = new  Mousetrap()
@@ -10,7 +10,15 @@ jQuery(document).ready(function(){
     mousetrapGlobal.bind('f2', function() { window.location.href = "/#/teams" });
     mousetrapGlobal.bind('f3', function() { window.location.href = "/#/matches" });
     mousetrapGlobal.bind('f4', function() { window.location.href = "/#/match_entries" });
-    mousetrapGlobal.bind('f6', function() { window.location.href = "/#/report_connect" });
+    mousetrapGlobal.bind('f8', function() { window.location.href = "/#/journal_entries" });
+    mousetrapGlobal.bind('f6', function() { window.location.href = "/#/report_journal_summary" });
+    mousetrapGlobal.bind('f9', function() { window.location.href = "/#/report_bsheet" });
+    mousetrapGlobal.bind('f7', function() {
+    	var matchId = localStorage.getItem('matchId')
+        if(matchId) {
+            window.location.href = "/#/mdimatch/" + matchId
+        }
+    });
 
 
     // Mousetrap.bind('alt+s', function() { window.location.href = "/#/states" });
@@ -18,22 +26,20 @@ jQuery(document).ready(function(){
     // Mousetrap.bind('g o', function() { alert("dsfds")});
 
 
-
-
     if(window.currentPage=="mdiMatchPage") {
 	    var moustrapMdiPageClass = new  Mousetrap()
 		moustrapMdiPageClass.stopCallback = function(e, element, combo) {
 		    return false;
 		}
-		moustrapMdiPageClass.bind('option+1', function(e) {
-			console.log("Sdfsd")
+		moustrapMdiPageClass.bind('ctrl+1', function(e) {
 	    	$('#mdi-tab li:eq(0) a').tab('show')
-	    	
 	    });
-	    moustrapMdiPageClass.bind('alt+2', function(e) {
+
+	    moustrapMdiPageClass.bind('ctrl+2', function(e) {
 	    	$('#mdi-tab li:eq(1) a').tab('show')
 	    });
-	    moustrapMdiPageClass.bind('alt+3', function(e) {
+
+	    moustrapMdiPageClass.bind('ctrl+3', function(e) {
 	    	$('#mdi-tab li:eq(2) a').tab('show')
 	    });
 
