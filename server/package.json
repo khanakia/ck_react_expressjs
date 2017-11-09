@@ -12,13 +12,26 @@
   "scripts": {
     "start": "DEBUG=express:* nodemon ./bin/www",
     "nw": "nw .",
-    "nwjs": "../nwjs.app/Contents/MacOS/nwjs server/."
+    "nwjs": "../nwjs.app/Contents/MacOS/nwjs server/.",
+    "start_win": "set DEBUG=express:* && nodemon ./bin/www",
+    "nwjs_win": "..\nwjs\nw.exe server/."
   },
   "nodemonConfig": {
     "ignore": [
       "public/*"
     ]
   },
+
+  "bin": "./bin/www",
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ],
+    "targets": [
+      "node8"
+    ]
+  },
+
   "dependencies": {
     "async": "^2.5.0",
     "axios": "^0.16.2",
@@ -34,8 +47,7 @@
     "morgan": "~1.8.1",
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
-    "shelljs": "^0.7.8",
-    "webworker-threads": "^0.7.13"
+    "shelljs": "^0.7.8"
   },
   "devDependencies": {
     "nw-dev": "^3.0.1"

@@ -64,6 +64,8 @@ credits.html
 nwjs
 chromedriver
 
+/dist/
+
 # ignore other files
 ckdb.archive
-
+ck-server.exe

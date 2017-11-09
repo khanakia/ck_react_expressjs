@@ -23,6 +23,23 @@ class Header extends React.Component {
         }
     }
 
+    showServerStatuses = (e) => {
+        e.preventDefault()
+        console.log(window.global.nwUrl)
+        // Load native UI library
+        var gui = require('nw.gui'); //or global.window.nwDispatcher.requireNwGui() (see https://github.com/rogerwang/node-webkit/issues/707)
+
+        // Get the current window
+        var win = gui.Window.get();
+
+        var win1 = nw.Window.open("index.html", {}, function callback(nwWindow){
+           console.log("OPENENENENENE")
+           win.close()
+        })
+
+        
+    }
+
     render() {
         return (
             <div className="row">
@@ -57,6 +74,7 @@ class Header extends React.Component {
                         </li>
                         <li>Utilities
                             <ul>
+                                <li><a href="#" onClick={this.showServerStatuses}>Server Status</a></li>
                                 <li><a href={'/others/db_backup'}>Backup DB</a></li>
                                 <li><Link to={'/others/db_remove_all_records'}>Remove All Records</Link></li>
                             </ul>
