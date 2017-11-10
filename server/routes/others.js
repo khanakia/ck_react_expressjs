@@ -16,42 +16,54 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/start_anydesk', function(req, res, next) {
+	var commandExec = exec("start anydesk.exe", { silent: true })
+    res.send({success: 1})
+    // res.redirect("/")
+})
 
-router.get('/db_backup', function(req, res, next) {
 
-	exec('rm ckdb.archive')
- 	exec('mongodump -d ckdb --archive=ckdb.archive', { silent: true })
-	// res.send(stdout)
-	// res.send("Sdfs")
+router.get('/start_ammy', function(req, res, next) {
+	var commandExec = exec("start ammy.exe", { silent: true })
+    res.send({success: 1})
+})
 
-	var filePath = path.resolve('./') + "/ckdb.archive" // or any file format
 
-  	// Check if file specified by the filePath exists 
-	fs.exists(filePath, function(exists){
-		if (exists) {     
-			// Content-type is very interesting part that guarantee that
-			// Web browser will handle response in an appropriate manner.
-			res.writeHead(200, {
-			  "Content-Type": "application/octet-stream",
-			  "Content-Disposition" : "attachment; filename=" + "ckdb.archive"
-			});
-			fs.createReadStream(filePath).pipe(res);
-		} else {
-			// res.writeHead(400, {"Content-Type": "text/plain"});
-			// res.end("ERROR File does NOT Exists");
-			res.redirect("/")
-		}
-	});
-});
+// router.get('/db_backup', function(req, res, next) {
 
-router.get('/restore', function(req, res, next) {
-	restore({
-	  uri: 'mongodb://localhost:27017/ckdb11', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
-	  root: __dirname,
-	  tar: "dump.tar"
-	});
-	res.send('restored')
-});
+// 	exec('rm ckdb.archive')
+//  	exec('mongodump -d ckdb --archive=ckdb.archive', { silent: true })
+// 	// res.send(stdout)
+// 	// res.send("Sdfs")
+
+// 	var filePath = path.resolve('./') + "/ckdb.archive" // or any file format
+
+//   	// Check if file specified by the filePath exists 
+// 	fs.exists(filePath, function(exists){
+// 		if (exists) {     
+// 			// Content-type is very interesting part that guarantee that
+// 			// Web browser will handle response in an appropriate manner.
+// 			res.writeHead(200, {
+// 			  "Content-Type": "application/octet-stream",
+// 			  "Content-Disposition" : "attachment; filename=" + "ckdb.archive"
+// 			});
+// 			fs.createReadStream(filePath).pipe(res);
+// 		} else {
+// 			// res.writeHead(400, {"Content-Type": "text/plain"});
+// 			// res.end("ERROR File does NOT Exists");
+// 			res.redirect("/")
+// 		}
+// 	});
+// });
+
+// router.get('/restore', function(req, res, next) {
+// 	restore({
+// 	  uri: 'mongodb://localhost:27017/ckdb11', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
+// 	  root: __dirname,
+// 	  tar: "dump.tar"
+// 	});
+// 	res.send('restored')
+// });
 
 
 

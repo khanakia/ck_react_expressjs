@@ -36,8 +36,16 @@ class Header extends React.Component {
            console.log("OPENENENENENE")
            win.close()
         })
+    }
 
-        
+    openAnydesk(e) {
+        e.preventDefault()
+        axios.get('/others/start_anydesk')
+    }
+
+    openAmmy(e) {
+        e.preventDefault()
+        axios.get('/others/start_ammy')
     }
 
     render() {
@@ -80,6 +88,9 @@ class Header extends React.Component {
                                 {/*<li><a href={'/others/db_backup'}>Backup DB</a></li>*/}
                                 <li><Link to={'/backupdb'}>Backup DB</Link></li>
                                 <li><Link to={'/others/db_remove_all_records'}>Remove All Records</Link></li>
+
+                                <li><a href="#" onClick={this.openAnydesk}>Anydesk Online Support</a></li>
+                                <li><a href="#" onClick={this.openAmmy}>Ammy Online Support</a></li>
                             </ul>
                         </li>
                     </ul>

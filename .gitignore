@@ -64,14 +64,14 @@ credits.html
 nwjs
 chromedriver
 
+# ignore other files
+ckdb.archive
+ck-server.exe
 
 # For Development purpose one
 /server/public/dist/
 /server/mongodb/
 /server/backup/
 /dist/
-
-
-# ignore other files
-ckdb.archive
-ck-server.exe
+ammy.exe
+anydesk.exe
