@@ -14,7 +14,39 @@ var SessionClass = require('../class/SessionClass')
 var SessionEntryClass = require('../class/SessionEntryClass')
 var JournalEntryClass = require('../class/JournalEntryClass')
 
-/* GET users listing. */
+
+
+
+var fs = require('fs');
+var path = require('path');
+
+router.get('/list_files', function(req, res, next) {
+	var rootPath = path.resolve('./')
+	var backupDir = rootPath + "/backup"
+	if (!fs.existsSync(backupDir)){
+	    fs.mkdirSync(backupDir);
+	}
+
+	var filesArray = []
+	var files = fs.readdirSync(backupDir);
+	for(var i in files) {
+	   if(path.extname(files[i]) === ".archive") {
+	   		filesArray.push(files[i])
+	       //do something
+	   }
+	}
+
+	var files1 = fs.readdir(backupDir, function(err, items) {
+		res.send(items)
+	})
+	// res.send(files)
+})
+
+router.get('/ls1', function(req, res, next) {
+	
+	res.send(__dirname)
+})
+
 router.get('/', function(req, res, next) {
 
 	// var account = new Account({

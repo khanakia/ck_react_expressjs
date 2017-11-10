@@ -49,6 +49,7 @@ var sessions = require('./routes/sessions');
 var session_entries = require('./routes/session_entries');
 var others = require('./routes/others');
 var reports = require('./routes/reports');
+var backups = require('./routes/backups');
 
 var app = express();
 
@@ -80,6 +81,7 @@ app.use('/sessions', sessions);
 app.use('/session_entries', session_entries);
 app.use('/others', others);
 app.use('/reports', reports);
+app.use('/backups', backups);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

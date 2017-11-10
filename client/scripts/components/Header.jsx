@@ -77,7 +77,8 @@ class Header extends React.Component {
                         <li><i className="fa fa-gear"></i> Utilities
                             <ul>
                                 <li><a href="#" onClick={this.showServerStatuses}>Server Status</a></li>
-                                <li><a href={'/others/db_backup'}>Backup DB</a></li>
+                                {/*<li><a href={'/others/db_backup'}>Backup DB</a></li>*/}
+                                <li><Link to={'/backupdb'}>Backup DB</Link></li>
                                 <li><Link to={'/others/db_remove_all_records'}>Remove All Records</Link></li>
                             </ul>
                         </li>

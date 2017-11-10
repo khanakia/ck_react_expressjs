@@ -23,6 +23,7 @@ import { SessionStoreClass } from './stores/SessionStoreClass';
 import { SessionEntryStoreClass } from './stores/SessionEntryStoreClass';
 import { AccountStoreClass } from './stores/AccountStoreClass';
 import { ReportStoreClass } from './stores/ReportStoreClass';
+import { BackupStoreClass } from './stores/BackupStoreClass';
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
@@ -36,6 +37,7 @@ const sessionStore = new SessionStoreClass()
 const sessionEntryStore = new SessionEntryStoreClass()
 const accountStore = new AccountStoreClass()
 const reportStore = new ReportStoreClass()
+const backupStore = new BackupStoreClass()
 
 const stores = {
   // Key can be whatever you want
@@ -49,7 +51,8 @@ const stores = {
   sessionStore : sessionStore,
   sessionEntryStore : sessionEntryStore,
   accountStore: accountStore,
-  reportStore: reportStore
+  reportStore: reportStore,
+  backupStore: backupStore
   // ...other stores
 };
 
@@ -73,6 +76,7 @@ import ReportJournalSummary from './components/ReportJournalSummary.jsx'
 import ReportPlMatchAccountWise from './components/ReportPlMatchAccountWise.jsx'
 import ReportPlMatchWise from './components/ReportPlMatchWise.jsx'
 import ReportConnect from './components/ReportConnect.jsx'
+import BackupDb from './components/BackupDb.jsx'
 
 
 // import observableTodoStore from './components/Todo.jsx'
@@ -110,6 +114,8 @@ const Root = () => (
             <Route path={APP_URL_REPORT_BSHEET} component={ReportBalanceSheet}/>
             <Route path={APP_URL_REPORT_PL_MATCH_WISE} component={ReportPlMatchWise}/>
             <Route path={APP_URL_REPORT_PL_MATCH_ACCOUNTWISE} component={ReportPlMatchAccountWise}/>
+
+            <Route path="/backupdb" component={BackupDb}/>
 	    </Layout>
       </Switch>
       

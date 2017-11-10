@@ -14,7 +14,8 @@
     "nw": "nw .",
     "nwjs": "../nwjs.app/Contents/MacOS/nwjs server/.",
     "start_win": "set DEBUG=express:* && nodemon ./bin/www",
-    "nwjs_win": "..\nwjs\nw.exe server/."
+    "nwjs_win": "..\nwjs\nw.exe server/.",
+    "build": "pkg -t node8-win-x86 ."
   },
   "nodemonConfig": {
     "ignore": [

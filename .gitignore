@@ -64,7 +64,13 @@ credits.html
 nwjs
 chromedriver
 
+
+# For Development purpose one
 /server/public/dist/
+/server/mongodb/
+/server/backup/
+/dist/
+
 
 # ignore other files
 ckdb.archive
