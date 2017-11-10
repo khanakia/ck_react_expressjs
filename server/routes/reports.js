@@ -3,8 +3,33 @@ var router = express.Router();
 var async = require("async");
 var _ = require('lodash');
 
+var ReportClass = require('../class/ReportClass')
 var JournalEntryModel = require('../model/JournalEntryModel')
 var JournalEntryClass = require('../class/JournalEntryClass')
+
+router.get('/connect_list_matches', function(req, res, next) {
+    ReportClass.connectListMatches().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+})
+
+router.post('/connect_report', function(req, res, next) {
+    ReportClass.connectReport(req.body).then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+})
+
+router.get('/connect_report', function(req, res, next) {
+    ReportClass.connectReport(req.body).then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+})
 
 
 router.get('/pl_matchwise', function(req, res, next) {

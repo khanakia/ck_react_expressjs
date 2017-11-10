@@ -10,6 +10,7 @@ var AccountClass = require('../class/AccountClass')
 var MatchTeamClass = require('../class/MatchTeamClass')
 var MatchSummaryClass = require('../class/MatchSummaryClass')
 
+var SessionClass = require('../class/SessionClass')
 var SessionEntryClass = require('../class/SessionEntryClass')
 var JournalEntryClass = require('../class/JournalEntryClass')
 
@@ -158,7 +159,7 @@ router.get('/', function(req, res, next) {
 // })
 
 
-// SessionEntryClass.updateEntryAfterInsert(9).then(function(data){
+// SessionEntryClass.updateEntryAfterInsert(7).then(function(data){
 // 	console.table(data)
 // 	res.send(data)
 // 	// res.send(data);
@@ -174,7 +175,20 @@ router.get('/', function(req, res, next) {
 // 	res.send(err.message)
 // })
 
-AccountClass.getCompanyAccounId();
+
+SessionClass.undeclare(1).then(function(data){
+	SessionClass.declare(1).then(function(data){
+		res.send(data)
+	}).catch((err)=>{
+		res.send(err)
+	})	
+}).catch((err)=>{
+	res.send(err)
+})
+
+// AccountClass.getSessCommAggregate(2)
+
+// AccountClass.getCompanyAccounId();
 
 // JournalEntryClass.getBalanceTotal_byJournalId(171)
 
@@ -186,7 +200,7 @@ AccountClass.getCompanyAccounId();
 // AccountClass.getPattiTotalPercentage("59da24d61ae1d43d7373744c", function(err,obj){
 // 	res.send(obj)
 // })
-    res.send('respond with a resource');
+    // res.send('respond with a resource');
 });
 
 router.get('/migration', function(req, res, next) {

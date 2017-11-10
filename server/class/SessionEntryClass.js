@@ -52,32 +52,31 @@ module.exports = {
     async updateEntryAfterInsert(id, cb) {
         var item = await SessionEntryModel.findOne({"_id": id});
         var account = await AccountModel.findOne({_id: item.account_id})
+        var sess_comm_aggregate = await AccountClass.getSessCommAggregate(item.account_id)
+
         // console.log(item.account_id)
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
         var win_amt = win_amt_subtotal = item.rate * item.amount
         var loose_amt = loose_amt_subtotal = item.amount
         
-        var sess_comm = account.sess_comm;
-        var sess_comm_to = account.sess_comm_to==null ? item.account_id : account.sess_comm_to;
+        // var sess_comm = account.sess_comm;
+        // var sess_comm_to = account.sess_comm_to==null ? item.account_id : account.sess_comm_to;
         var comm_amt = loose_comm_amt = 0
         if(item.comm_yn==true) {
             
-            comm_amt = item.amount * sess_comm/100;
-            
-            // if it is same accoutn id then add or subtract commission and display on frontend otherwise we will add commision for third parties directly in match summary
-            // so in match summary win amt or loss amt will be always without commissino we will add new entry for commission in match summary always
-            if(sess_comm_to == item.account_id) {
-                win_amt_subtotal = win_amt_subtotal + comm_amt
-                loose_amt_subtotal = loose_amt_subtotal - comm_amt
-            }
+            // comm_amt = item.amount * sess_comm/100;
+            comm_amt = item.amount * sess_comm_aggregate/100;
+            win_amt_subtotal +=  comm_amt
+            loose_amt_subtotal -= comm_amt
+        
         }
         
 
         // Patti will be calculated on final amount after commission
         var patti_total_per = patti_aggregate.session;
         var amount_patti = (item.amount *  patti_total_per / 100)
-        console.log(amount_patti)
+        // console.log(amount_patti)
         var win_patti_amt = (win_amt_subtotal *  patti_total_per / 100)
         var loose_patti_amt = (loose_amt_subtotal *  patti_total_per / 100)
 
@@ -89,8 +88,9 @@ module.exports = {
 
         item.set("calcs.win_amt", win_amt)
         item.set("calcs.loose_amt", loose_amt)
-        item.set("calcs.sess_comm", sess_comm)
-        item.set("calcs.sess_comm_to", sess_comm_to)
+        // item.set("calcs.sess_comm", sess_comm)
+        // item.set("calcs.sess_comm_to", sess_comm_to)
+        item.set("calcs.comm_total_per", sess_comm_aggregate)
         item.set("calcs.comm_amt", comm_amt)
         item.set("calcs.win_amt_subtotal", win_amt_subtotal)
         item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
@@ -236,8 +236,9 @@ module.exports = {
             created_at: 1,
             comm_yn: 1,
             "account_name": "$account.account_name",
-            sess_comm: "$calcs.sess_comm",
+            // sess_comm: "$calcs.sess_comm",
             comm_amt: "$calcs.comm_amt",
+            comm_total_per: "$calcs.comm_total_per",
         };
 
         SessionEntryModel.aggregate( [ 

@@ -10,7 +10,7 @@ var SessionModel = require('../model/SessionModel')
 var SessionClass = require('../class/SessionClass')
     
 router.get('/', function(req, res, next) {
-  SessionClass.list({match_id: req.query.match_id}).exec(function (err, items) {
+  SessionClass.list(req.query).exec(function (err, items) {
 	    res.setHeader('Content-Type', 'application/json');
 	    res.send(JSON.stringify(items));
 	})

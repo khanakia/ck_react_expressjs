@@ -131,10 +131,8 @@ module.exports = {
 
             var winnerTeam = await this.getWinnerTeam(match._id)
             match.is_declared = true
-            match.winnerTeam = winnerTeam.team_id
+            match.winner_teamid = winnerTeam.team_id
         }
-
-      
 
         // match.declare_method = Constant.MATCH_DECLARE_METHOD.TEAM
         await match.save()
@@ -176,6 +174,7 @@ module.exports = {
 
         // match.declare_method = Constant.MATCH_DECLARE_METHOD.MATCH
         match.is_declared = true
+        match.winner_teamid = matchTeam.team_id
         await match.save()
 
         await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{

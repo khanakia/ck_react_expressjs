@@ -33,6 +33,20 @@ module.exports = {
     
     },
 
+    async getSessCommAggregate(id, cb) {
+        var _this = this;
+        var account = await AccountModel.findOne({_id: id})
+        var aggregate = account.sess_comm_accounts.reduce(function(totals, v) {
+                    if(v.account_id) {
+                        totals += parseFloat(v.sess_comm);
+                    }
+                    return totals;
+                }, 0);
+
+        // console.log(aggregate)
+        return aggregate;
+    },
+
     // async demo() {
     //     throw(ResponseHelper.errorThrow(400, 'Error', 'Validate Field'))
     //     return ResponseHelper.ok(200, '1', "Message", {status: 'dd'})

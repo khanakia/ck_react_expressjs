@@ -29,9 +29,9 @@ class AccountGrid extends Component {
 
     componentDidMount() {
         // console.log("DID MOUnt")
-        window.grid = this.refs.jqxgrid
-        window.grid_data = this.props.entriesList.slice()
-        window.dataAdapter = this.dataAdapter
+        // window.grid = this.refs.jqxgrid
+        // window.grid_data = this.props.entriesList.slice()
+        // window.dataAdapter = this.dataAdapter
     }
 
     initDataAdapter() {
@@ -103,7 +103,7 @@ class AccountGrid extends Component {
                 }
             },
             { text: 'Id', datafield: '_id', width: 50 },
-            { text: 'Name', datafield: 'account_name', width: 230 },
+            { text: 'Name', datafield: 'account_name', width: 150 },
             { text: 'Limit', datafield: 'limit', width: 100 },
             { text: 'Status', datafield: 'status', width: 50, columntype: 'checkbox' },
             { text: 'Hide', datafield: 'hide', width: 50, columntype: 'checkbox' },
@@ -115,7 +115,7 @@ class AccountGrid extends Component {
             <div>
          		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns}
-                    width={"100%"} height={400} pageable={true} pagermode={'simple'} pagesize={1000}
+                    width={"100%"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={false} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false} />

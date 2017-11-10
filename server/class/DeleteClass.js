@@ -51,7 +51,7 @@ module.exports = {
             throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
         } else {
             try {
-                // await TeamModel.remove({_id: id});
+                await TeamModel.remove({_id: id});
             } catch(err) {
                 // throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
             }

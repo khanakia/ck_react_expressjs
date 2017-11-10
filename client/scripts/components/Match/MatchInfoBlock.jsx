@@ -37,6 +37,10 @@ class SessionInfoBlock extends Component {
                         <label>Is Abandoned:</label>
                         {item.is_abandoned ? 'True' : 'False'}
                     </div>
+                    <div className="col-auto">
+                        <label>Is Monday Final:</label>
+                        {item.is_monday_final ? 'True' : 'False'}
+                    </div>
                 </div>
             </div>
         );

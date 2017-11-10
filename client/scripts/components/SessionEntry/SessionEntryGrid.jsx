@@ -45,8 +45,10 @@ class SessionEntryGrid extends Component {
             { name: 'is_declared', type: 'boolean' },
             { name: 'is_summarized', type: 'boolean' },
             { name: 'patti_total_per', type: 'string' },
-            { name: 'sess_comm', type: 'string' },
+            // { name: 'sess_comm', type: 'string' },
             { name: 'comm_amt', type: 'string' },
+            { name: 'comm_total_per', type: 'string' },
+            
         ];
 
         this.source = {
@@ -115,13 +117,13 @@ class SessionEntryGrid extends Component {
             { text: 'Runs', datafield: 'runs', width: 70 },
             { text: 'L/K', datafield: 'yn', width: 50 },
             { text: 'Amount', datafield: 'amount', width: 100 , cellsformat: 'd2'},
-            { text: 'After Patti', datafield: 'amount_patti', width: 100 , cellsformat: 'd2'},
+            { text: 'Patti Amt.', datafield: 'amount_patti', width: 100 , cellsformat: 'd2'},
+            { text: 'Comm Amt.', datafield: 'comm_amt', width: 100 , cellsformat: 'd2'},
             { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Patti (%)', datafield: 'patti_total_per', width: 100 , cellsformat: 'd2'},
+            { text: 'Comm (%)', datafield: 'comm_total_per', width: 100 , cellsformat: 'd2'},
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox', filtertype:'bool' },
             { text: 'Is Summarized', datafield: 'is_summarized', width: 120, columntype: 'checkbox', filtertype:'bool' },
-            { text: 'Patti (%)', datafield: 'patti_total_per', width: 100 , cellsformat: 'd2'},
-            // { text: 'Comm (%)', datafield: 'sess_comm', width: 100 , cellsformat: 'd2'},
-            { text: 'Comm Amt. (%)', datafield: 'comm_amt', width: 100 , cellsformat: 'd2'},
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
         ];
         

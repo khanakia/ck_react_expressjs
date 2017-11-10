@@ -21,6 +21,7 @@ class Team extends Component {
     }
 
     refreshComponent() {
+        this.refs.name.value = ""
         this.refs.jqxgrid.updatebounddata();
     }
 
@@ -88,8 +89,8 @@ class Team extends Component {
                         </div>
                     </div>
                 </form>
-                <JqxGrid ref="jqxgrid" width={400} height={600} source={dataAdapter} 
-                            pageable={true} sortable={true} altrows={true} enabletooltips={true} 
+                <JqxGrid ref="jqxgrid" width={400} height={600} source={dataAdapter}
+                            pageable={false} sortable={true} altrows={true} enabletooltips={true} 
                             editable={true} columns={columns} filterable={true} showfilterrow={true} />
             </div>
 

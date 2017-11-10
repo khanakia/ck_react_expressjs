@@ -9,7 +9,7 @@ import { render } from 'react-dom'
 import createBrowserHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
 
-import {APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
+import {APP_URL_REPORT_CONNECT, APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
 
 
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
@@ -72,6 +72,7 @@ import ReportBalanceSheet from './components/ReportBalanceSheet.jsx'
 import ReportJournalSummary from './components/ReportJournalSummary.jsx'
 import ReportPlMatchAccountWise from './components/ReportPlMatchAccountWise.jsx'
 import ReportPlMatchWise from './components/ReportPlMatchWise.jsx'
+import ReportConnect from './components/ReportConnect.jsx'
 
 
 // import observableTodoStore from './components/Todo.jsx'
@@ -104,7 +105,8 @@ const Root = () => (
             <Route exact path="/match_entries" component={MatchEntries}/>
             <Route path="/match_entries/match/:id" component={MatchEntry}/>
             <Route path="/mdimatch/:id" component={MdiMatch}/>
-            <Route exact path={APP_URL_REPORT_JOURNAL_SUMMARY} component={ReportJournalSummary}/>            
+            <Route exact path={APP_URL_REPORT_JOURNAL_SUMMARY} component={ReportJournalSummary}/>
+            <Route path={APP_URL_REPORT_CONNECT} component={ReportConnect}/>
             <Route path={APP_URL_REPORT_BSHEET} component={ReportBalanceSheet}/>
             <Route path={APP_URL_REPORT_PL_MATCH_WISE} component={ReportPlMatchWise}/>
             <Route path={APP_URL_REPORT_PL_MATCH_ACCOUNTWISE} component={ReportPlMatchAccountWise}/>

@@ -11,9 +11,29 @@ class SessionEntryWinLossGrid extends Component {
     static defaultProps = {
         // sessionId: null,
         entriesList: [],
-        onEditButtonClick: function(data) {}
+        onEditButtonClick: function(data) {},
+        lastEnteredRun: null
     }
 
+    componentDidMount() {
+        // window.abc = this
+    }
+
+    componentDidUpdate() {
+        this.scrollToRow(this.props.lastEnteredRun)
+    }
+
+    scrollToRow(index) {
+        // var rows = this.refs.jqxgrid.getrows()
+        // console.log(rows.length)
+        // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
+        // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
+        // console.log(index)
+        if(index>0) {
+            this.refs.jqxgrid.ensurerowvisible(index)
+            this.refs.jqxgrid.ensurerowvisible(index)            
+        }
+    }
 
     refresh = () => {
         this.refs.jqxgrid.updatebounddata();
@@ -45,7 +65,7 @@ class SessionEntryWinLossGrid extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(source);
 
         let columns = [
-            { text: 'Runs', datafield: 'runs', width: 150, cellclassname: cellclassname_Amt },
+            { text: 'Runs', datafield: 'runs', width: 60, cellclassname: cellclassname_Amt },
             {
                 text: 'Amount',
                 datafield: 'amount',
@@ -58,7 +78,7 @@ class SessionEntryWinLossGrid extends Component {
             <div>
                 <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter}
-                    width={ "100%"} height={600} 
+                    width={180} height={600} 
                     sortable={false} altrows={false} enabletooltips={false} 
                     editable={false} columns={columns} 
                     filterable={false} showfilterrow={false} pagesize={100} pageable={false} />

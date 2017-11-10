@@ -12,6 +12,11 @@ var tableSchema = mongoose.Schema({
     winner_teamid: { type: Number, default: null },
     is_declared: { type: Boolean, default: false },
     is_abandoned: { type: Boolean, default: false },
+
+    /* When we will monday final we will loop through Journal entrires and set each match as monday_final to true 
+        and once it is monday finaled it cannot be undeclared
+    */
+    is_monday_final: { type: Boolean, default: false },
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

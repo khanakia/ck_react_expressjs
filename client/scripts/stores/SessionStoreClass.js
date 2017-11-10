@@ -6,7 +6,7 @@ export class SessionStoreClass {
 	@observable fetched = false;
 	@observable sessionList = [];
 	
-	fetchList(matchId) {
+	fetchList(matchId=null) {
 		axios.get('/sessions', {
   			params : {
   				match_id: matchId,

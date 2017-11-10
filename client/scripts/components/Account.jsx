@@ -56,7 +56,7 @@ class Account extends Component {
         const {accountList, account} = this.props.accountStore
         return ( 
             <div>
-                <h5>Account</h5>
+                <h5><i className="fa fa-user"></i> Account</h5>
                 <div className="row">
                     <div className="col-md-4">
                         <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate}/>

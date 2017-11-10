@@ -15,13 +15,17 @@ var tableSchema = mongoose.Schema({
     cr_amt: { type: Number, default: 0},
     bal: { type: Number, default: 0},
     is_monday_final: { type: Boolean, default: false},
+    monday_final_date: { type: Date, default: Date.now },
 
     locked: { type: Boolean, default: false},
     // Patti, Commission, PL, Manual
     type: { type: String, default: 'Manual'},
 
     is_company: { type: Boolean, default: false},
-    narration: String
+    narration: String,
+
+    // i created this so i can show the Amount after deducting pattin in Connect Report
+    patti_amt: { type: Number, default: 0},
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

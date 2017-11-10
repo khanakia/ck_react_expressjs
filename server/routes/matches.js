@@ -12,7 +12,7 @@ var MatchTeamClass = require('../class/MatchTeamClass')
 var DeleteClass = require('../class/DeleteClass')
     
 router.get('/', function(req, res, next) {
-  	MatchClass.list().then(function(err, docs){
+  	MatchClass.list(req.query).then(function(err, docs){
 		if (err) return res.send(err)
 		return res.send(docs)
 	})

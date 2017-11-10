@@ -292,7 +292,7 @@ module.exports = {
         ], cb )
     },
 
-    async teamsWinLossList(args = { match_id: null, book_no: null}, cb) {
+    async teamsWinLossList(args = { match_id: null, book_no: null, account_id: null}, cb) {
         var matchTeams = await MatchTeamClass.list({match_id:args.match_id});
 
         var match = {};
@@ -301,6 +301,10 @@ module.exports = {
         }
         if(args.book_no) {
             match['book_no'] = parseInt(args.book_no)
+        }
+
+        if(args.account_id) {
+            match['account_id'] = parseInt(args.account_id)
         }
 
         var group = {
@@ -341,6 +345,15 @@ module.exports = {
        return cb(null, teamArray)
 
     },
+
+    async lastEntryAccountTeamsWinLossList(args = { match_id: null, book_no: null, account_id: null}, cb) {
+        var matchEntry = await MatchEntryModel.find({match_id: args.match_id, book_no: args.book_no}).limit(1).sort({$natural:-1})
+        args.account_id = matchEntry[0] ? matchEntry[0].account_id : null
+        
+        // return cb(null, matchEntry)
+        this.teamsWinLossList(args, cb)
+    },
+
 
     async remove(id, cb) {
         var matchEntry = await MatchEntryModel.findOne({"_id": id});

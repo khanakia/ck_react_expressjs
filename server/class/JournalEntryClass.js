@@ -2,10 +2,12 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 var moment = require('moment');
+var _ = require('lodash');
 
 const ObjectId1 = mongoose.Types.ObjectId;
 var JournalModel = require('../model/JournalModel')
 var JournalEntryModel = require('../model/JournalEntryModel')
+var MatchModel = require('../model/MatchModel')
 var ResponseHelper = require('../class/ResponseHelper')
 
 module.exports = {
@@ -171,5 +173,42 @@ module.exports = {
         
         return ResponseHelper.ok(200, 'Successfully removed.')
     },
+
+    async mondayFinal() {
+        await JournalEntryModel.updateMany({is_monday_final: false}, { is_monday_final: true, monday_final_date: Date.now() })
+
+        var aggregate = [];
+        aggregate.push(
+            {
+                $match:  {
+                    is_monday_final: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "journals",
+                    localField: "journal_id",
+                    foreignField: "_id",
+                    as: "journal"
+                }
+            },
+
+            {
+                $unwind: "$journal"
+            },
+
+            {
+                $group: {
+                    _id: "$journal.match_id",
+                    // "match_id" : { $first: "$journal.match_id"  }
+                }
+            }
+        );
+
+        var matches = await JournalEntryModel.aggregate(aggregate);
+        var matchIdArray = _.map(matches, '_id');
+        await MatchModel.updateMany({ _id: { $in: matchIdArray } }, {  $set: { is_monday_final: true} })
+        return matches
+    }
 
 };

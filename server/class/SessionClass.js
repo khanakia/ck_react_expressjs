@@ -44,20 +44,24 @@ module.exports = {
         return ResponseHelper.ok(200, 'Successfully undeclared')
     },
 
-    list(args = { match_id: null}) {
+    list(args = { match_id: null, is_declared: null}) {
         var aggregate = [];
 
+        var match = {}
         if(args.match_id) {
-            aggregate.push(
-                {
-                    $match: {
-                        'match_id' : parseInt(args.match_id)
-                    }
-                }
-            )
+            match['match_id'] = parseInt(args.match_id)
+        }
+
+        if(args.is_declared) {
+            match['is_declared'] = JSON.parse(args.is_declared)
         }
 
         aggregate.push(
+            {
+                $match: match
+            },
+
+            { $sort: { created_at: -1 } },
             {
                 $lookup:
                 {

@@ -44,6 +44,35 @@ module.exports = {
         return false;
     },
 
+    async createJournalEntryItem1(args = {
+                                     journal_id: null,
+                                     by_account_id: null,
+                                     account_id: null,
+                                     amount: 0,
+                                     type: 'Manual',
+                                     is_company: false,
+                                     narration: null,
+                                     dr_amt: 0,
+                                     cr_amt: 0,
+                                     bal: 0,
+                                     locked: true,
+                                     patti_amt: 0
+                                 }) {
+        var jentryItem = new JournalEntryModel(args)
+
+        if(args.amount > 0) {
+            jentryItem.cr_amt = Math.abs(args.amount);
+        } else {
+            jentryItem.dr_amt = Math.abs(args.amount);
+        }
+        jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+        jentryItem.narration = args.narration
+        if(jentryItem.bal!==0) {
+            return await jentryItem.save()
+        }
+        return false;
+    },
+
     //  SESSION DECLARE FUNCTIONS ======================================================
     async session_deleteJournal(sessionId) {
         var journalItems = await JournalModel.find({
@@ -181,31 +210,76 @@ module.exports = {
 
             // Distribute Profit
             var final_amount = sessionEntry.final_amount
-            var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, sessionEntry.account_id, final_amount, 'PL', false, "PL -" + narration)
-            // await jeitem1.save()
-
+            // var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, sessionEntry.account_id, final_amount, 'PL', false, "PL -" + narration)
+            
 
             // Distribute Commission
-            var comm_amt = Math.abs(sessionEntry.amount) * account.sess_comm/100;
-            var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.sess_comm_to, comm_amt, "Commission", false, "Comm -" + narration)
-            // await jeitem2.save()
+            // var comm_amt = Math.abs(sessionEntry.amount) * account.sess_comm/100;
+            // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.sess_comm_to, comm_amt, "Commission", false, "Comm -" + narration)
+            var com_amt_total = 0
+            await Promise.all(account.sess_comm_accounts.map(async (item) => {
+                if(!item.account_id) return null
+                var comm_amt = Math.abs(sessionEntry.amount) * item.sess_comm/100
+                com_amt_total += comm_amt
+                var n = `Comm (${item.sess_comm}%) - ${narration}`
+                // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, comm_amt, "Commission", false, n)
+                var jeitem2 = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: comm_amt, 
+                    type: 'Commission', 
+                    narration: n
+                })
+                // return await jeitem.save()
+            }))
 
 
             // Distribute Patti
-            var patti_final_amount = final_amount + comm_amt
+            var final_amount_with_comm = final_amount + com_amt_total
+            var patti_distributed_total = 0 
             await Promise.all(account.patti.map(async (item) => {
-                var patti_amt = -1* patti_final_amount * item.session/100
-                var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, "Patti -" + narration)
+                var patti_amt = -1 * final_amount_with_comm * item.session/100
+                patti_distributed_total += patti_amt
+                // patti_amt = -1 * patti_amt
+                var n = `Patti (${item.session}%) - ${narration}`
+                // var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
+                var jeitem = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: patti_amt, 
+                    type: 'Patti', 
+                    narration: n
+                })
                 // return await jeitem.save()
             }))
+
+            var jeitem1 = await this.createJournalEntryItem1({
+                journal_id: journalItem._id, 
+                by_account_id: companyAccountId, 
+                account_id: sessionEntry.account_id, 
+                amount: final_amount, 
+                type: 'PL', 
+                narration: "PL -" + narration,
+                patti_amt: patti_distributed_total
+            })
         }))
 
         // Distribute PL to Book Account
         var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
         console.log(pl_bal)
         if(pl_bal!==0) {
-            var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
-            // await jeitemBook.save();
+            // var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
+            var jeitemBook = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: companyAccountId, 
+                    amount: pl_bal, 
+                    type: 'PL', 
+                    narration: "PL -" + narration,
+                    is_company: true
+                })
         }
 
         await SessionEntryModel.updateMany({session_id: parseInt(sessionId)}, {is_summarized:true})  
@@ -406,113 +480,80 @@ module.exports = {
 
             narration = ` (Match: ${matchEntry.match_id} - ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
 
-            // Distribute Profit
-            // var jentryItem = new JournalEntryModel({
-            //     journal_id : journalItem._id,
-            //     account_id: matchEntry.account_id,
-            //     dr_amt: 0,
-            //     cr_amt: 0,
-            //     bal: 0,
-            // })
-            // if(amount >0) {
-            //     jentryItem.cr_amt = Math.abs(amount);
-            // } else {
-            //     jentryItem.dr_amt = Math.abs(amount);
-            // }
-            // jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-            // jentryItem.narration = "PL -" + narration
-            // await jentryItem.save()
-
-            var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, matchEntry.account_id, amount, 'PL', false, "PL -" + narration)
-
+            
 
             // Distribute Commission
-            
-
-            // var jentryItem1 = new JournalEntryModel({
-            //     journal_id : journalItem._id,
-            //     account_id: account.match_comm_to,
-            //     dr_amt: 0,
-            //     cr_amt: 0,
-            //     bal: 0
-            // })
-            
-            // if(account.match_comm_type=="entrywise") {
-            //     console.log("ENTRY")
-            //     if(account.match_comm > 0) {
-            //         jentryItem1.cr_amt = Math.abs(amount_neg) * account.match_comm/100;
-            //     }
-            //     if(account.match_comm < 0) {
-            //         jentryItem1.cr_amt = Math.abs(amount_pos) * account.match_comm/100;
-            //     }
-            //     jentryItem1.narration = "Commission - Entrywise" + narration
-
-            // } else {
-            //     if(account.match_comm > 0 && amount < 0) {
-            //         jentryItem1.cr_amt = Math.abs(amount) * account.match_comm/100;
-            //     }
-
-            //     if(account.match_comm < 0 && amount > 0) {
-            //         jentryItem1.dr_amt = Math.abs(amount) * account.match_comm/100;
-            //     }
-            //     jentryItem1.narration = "Commission - NET" + narration
-            // }
-            
-            // jentryItem1.bal = jentryItem1.dr_amt - jentryItem1.cr_amt
-            // await jentryItem1.save()
-
-
             var narration1 = narration
             var amountForComm = 0
             if(account.match_comm_type=="entrywise") {
                 amountForComm = amount_neg
-                narration1 = `Comm Entrywise - (Party: ${account._id} - ${account.account_name}) ` + narration
+                narration1 = `Comm Entrywise (${account.match_comm}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
 
             } else {
                 amountForComm = amount;
-                narration1 = `Comm Net - (Party: ${account._id} - ${account.account_name}) ` + narration
+                narration1 = `Comm Net (${account.match_comm}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
             }
 
             var comm_amt = Math.abs(amountForComm * account.match_comm/100);
-            var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.match_comm_to, comm_amt, "Commission", false, narration1)
-
+            // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.match_comm_to, comm_amt, "Commission", false, narration1)
+            var jeitem2 = await this.createJournalEntryItem1({
+                journal_id: journalItem._id, 
+                by_account_id: companyAccountId, 
+                account_id: account.match_comm_to, 
+                amount: comm_amt, 
+                type: 'Commission', 
+                narration: narration1
+            })
 
             // Distribute Patti
-
-            // var final_amount = jentryItem.bal + jentryItem1.bal
-            // Promise.all(account.patti.map(async (item) => {
-            //     console.log(item._id)
-            //     var jentryItem2 = new JournalEntryModel({
-            //         journal_id : journalItem._id,
-            //         account_id: item.account_id,
-            //         dr_amt: 0,
-            //         cr_amt: 0,
-            //         bal: 0
-            //     })
-                
-                
-            //     var patti_amt = final_amount * item.match/100
-            //     jentryItem2.dr_amt = patti_amt < 0 ? patti_amt : 0;
-            //     jentryItem2.cr_amt = patti_amt > 0 ? patti_amt : 0;
-            //     jentryItem2.bal = jentryItem2.dr_amt - jentryItem2.cr_amt
-            //     jentryItem2.narration = "Patti -" + narration
-            //     return await jentryItem2.save();
-            // }))
-
-            var patti_final_amount = amount + comm_amt
+            var final_amount = amount + comm_amt
+            var patti_distributed_total = 0
             await Promise.all(account.patti.map(async (item) => {
-                // i added -1 bcause patti_final_amount is Funter PL so if Funter is in profit then book will have losss and vice versa so we are reversing the amount
-                var patti_amt = -1 * patti_final_amount * item.match/100
-                var n = `Patti - (Party: ${account._id} - ${account.account_name}) ` + narration
-                var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
+                // i added -1 bcause final_amount is Funter PL so if Funter is in profit then book will have losss and vice versa so we are reversing the amount
+                var patti_amt = -1 * final_amount * item.match/100
+                patti_distributed_total += patti_amt
+                // patti_amt = -1 * patti_amt
+                var n = `Patti (${item.match}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
+                // var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
+                var jeitem = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: patti_amt, 
+                    type: 'Patti', 
+                    narration: n
+                })
             }))
+
+
+            // Distribute Profit
+            // var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, matchEntry.account_id, amount, 'PL', false, "PL -" + narration)
+            var jeitem1 = await this.createJournalEntryItem1({
+                journal_id: journalItem._id, 
+                by_account_id: companyAccountId, 
+                account_id: matchEntry.account_id, 
+                amount: amount, 
+                type: 'PL', 
+                narration: "PL -" + narration,
+                patti_amt: patti_distributed_total
+            })
+
         }))
 
         // Distribute PL to Book Account
         var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
         console.log(pl_bal)
         if(pl_bal!==0) {
-            var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
+            // var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
+            var jeitemBook = await this.createJournalEntryItem1({
+                journal_id: journalItem._id, 
+                by_account_id: companyAccountId, 
+                account_id: companyAccountId, 
+                amount: pl_bal, 
+                type: 'PL', 
+                narration: "PL -" + narration,
+                is_company: true
+            })
         }
 
         // console.log('matchTeamId', matchTeamId)

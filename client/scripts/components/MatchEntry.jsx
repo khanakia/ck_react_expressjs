@@ -10,8 +10,14 @@ import MatchEntryAvgBlock from './MatchEntry/MatchEntryAvgBlock.jsx'
 import MatchEntryBookDdl from './MatchEntry/MatchEntryBookDdl.jsx'
 import MatchDeclare from './MatchEntry/MatchDeclare.jsx'
 
+import SessionEntryForm from './SessionEntry/SessionEntryForm'
+import SessionEntryWinLossGrid from './SessionEntry/SessionEntryWinLossGrid'
+
+@inject('globalStore')
 @inject('matchStore')
 @inject('matchEntryStore')
+@inject('sessionStore')
+@inject('sessionEntryStore')
 @observer
 class MatchEntry extends React.Component {
     constructor(props) {
@@ -25,6 +31,9 @@ class MatchEntry extends React.Component {
     componentDidMount() {
         this.fetch()
         this.props.matchStore.fetch(this.props.matchId)
+
+        // For Session Form
+        this.props.sessionStore.fetchList(this.props.matchId)
     }
 
     onFormSubmitted = () => {
@@ -124,7 +133,7 @@ class MatchEntry extends React.Component {
 
     renderDeclareButtons = () => {
         const {match} = this.props.matchStore
-        if(match.is_abandoned) return null;
+        if(match.is_abandoned || match.is_monday_final) return null;
         if(match.is_declared) {
             return (
                 <button className="btn btn-primary btn-sm" onClick={this.undeclare}>UnDeclare</button>
@@ -137,7 +146,7 @@ class MatchEntry extends React.Component {
 
     renderAbandonButtons = () => {
         const {match} = this.props.matchStore
-        if(match.is_declared) return null;
+        if(match.is_declared || match.is_monday_final) return null;
         if(match.is_abandoned) {
             return (
                 <button className="btn btn-primary btn-sm ml-1" onClick={this.unAbandon}>Un Abandon</button>
@@ -148,21 +157,47 @@ class MatchEntry extends React.Component {
         )
     }
 
+
+
+     //// SESSION ENTRY FUNCTIONS ========================================================
+    comboSessionOnClose = (e) => {
+        const sessionId = (this.refs.sessionEntryForm.refs.comboSession.getSelectedValue())
+        this.props.globalStore.setSessionId(sessionId)
+        this.props.sessionEntryStore.fetchAll(sessionId)
+    }
+    sessionEntry_onFormSubmitted = (response) => {
+        this.refs.sessionEntryForm.resetForm()
+        // console.log(response.session_id)
+        this.props.sessionEntryStore.fetchAll(response.session_id)
+    }
+
+    
+    refresh1 = () => {
+        // this.props.matchStore.count = Math.random()
+        this.props.matchStore.fetch(this.props.matchId)
+    }
+
     render() {
         const {matchId} = this.props
         const {match, teamsList} = this.props.matchStore
         if (!this.props.matchId) return null;
         if (_.isEmpty(match)) return null;
         const {entriesList, matchPlInfo} = this.props.matchEntryStore
-        const {bookNoList, teamsWinLossList} = matchPlInfo
+        const {bookNoList, teamsWinLossList, lastEntryAccountTeamsWinLossList} = matchPlInfo
 
-        // console.table(entriesList.slice())
+
+        // For Session Form
+        const {selectedSessionId} = this.props.globalStore
+        const {sessionList} = this.props.sessionStore
+        const {sessionWinLossList} = this.props.sessionEntryStore
+        
 
         const cssClassHidden = match.match_type=="Cup" ? ' hidden' : ''
         return ( 
             <div>
                 <div className="row">
                     <div className="col-md-2">
+                        {/*<button className="btn btn-primary btn-sm ml-1" onClick={this.refresh1}>Refresh</button>*/}
                         {this.renderDeclareButtons()}
                         {this.renderAbandonButtons()}
                         
@@ -173,20 +208,33 @@ class MatchEntry extends React.Component {
                         </div>
                         <div className="mt-2">
                             <MatchEntryTeamGrid ref="teamGrid" teamsWinLossList={teamsWinLossList} />
+                            <MatchEntryTeamGrid ref="teamGrid" teamsWinLossList={lastEntryAccountTeamsWinLossList} />
                         </div>
                     </div>
                     <div className="col-md-10">
+                        <div className="mt-2 mb-2">
+                            <SessionEntryForm ref="sessionEntryForm" matchId={this.props.matchId} 
+                                        sessionId={selectedSessionId} sessionList={sessionList}
+                                        onFormSubmitted={this.sessionEntry_onFormSubmitted} 
+                                        comboSessionOnClose={this.comboSessionOnClose} />
+                        </div>
                         <div className="mb-2">
                             <MatchEntryForm ref="matchEntryForm" 
                                 matchId={matchId} match={match}
                                 onFormSubmitted={this.onFormSubmitted} getBookNo={this.getBookNo} 
                                 teamsList={teamsList} />
                         </div>
-                        <div className="uk-margin">
-                            <MatchEntryGrid ref="matchGrid" 
-                                onEditButtonClick={this.onEditButtonClick}  onDataUpdate={this.matchGridOnDataUpdate}
-                                entriesList={entriesList}
-                                teamsList={teamsList} />
+
+                        <div className="row">
+                            <div className="col-md-10">
+                                <MatchEntryGrid ref="matchGrid" 
+                                    onEditButtonClick={this.onEditButtonClick}  onDataUpdate={this.matchGridOnDataUpdate}
+                                    entriesList={entriesList}
+                                    teamsList={teamsList} />
+                            </div>
+                            <div className="col-md-2">
+                               <SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} />
+                            </div>
                         </div>
                     </div>
                 </div>

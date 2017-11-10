@@ -123,6 +123,8 @@ class SessionEntry extends Component {
 		this.refs.entryForm.resetForm()
 		// console.log(response.session_id)
 		this.fetch(response.session_id)
+
+		this.props.sessionEntryStore.lastEnteredRun = response.runs
 	}
 
 	entryGrid_onEditButtonClick = (data) => {
@@ -137,7 +139,7 @@ class SessionEntry extends Component {
     	
     	const {selectedSessionId} = this.props.globalStore
     	const {sessionList} = this.props.sessionStore
-    	const {sessionEntriesList, sessionPlInfo, sessionWinLossList} = this.props.sessionEntryStore
+    	const {sessionEntriesList, sessionPlInfo, sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
 
     	// console.log(selectedSessionId)
 
@@ -159,8 +161,16 @@ class SessionEntry extends Component {
 	     								onFormSubmitted={this.sessionEntry_onFormSubmitted} 
 	     								comboSessionOnClose={this.comboSessionOnClose} />
 		         		</div>
-         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
-         						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
+
+		         		<div className="row">
+		         			<div className="col-md-10">
+		         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
+		         						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
+		         			</div>
+		         			<div className="col-md-2">
+		         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
+		         			</div>
+		         		</div>
          			</div>
          			<div className="col-md-3">
          				<button className="btn btn-primary btn-sm mr-2" type="button" onClick={this.showAddSessionWindow}>Add</button>
@@ -170,7 +180,7 @@ class SessionEntry extends Component {
 	         				<SessionGrid ref="sessionGrid" entriesList={sessionList} sessionId={selectedSessionId}
 	         							 onRowSelect={this.sessionGrid_onRowSelect} onEditButtonClick={this.sessionGrid_onEdit} />
          				</div>
-         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} />
+         				
          			</div>
          		</div>
 

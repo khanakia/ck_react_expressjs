@@ -6,8 +6,29 @@ export class ReportStoreClass {
 	
 	@observable plMatchAccountWiseList = [];
 	@observable plMatchWiseList = [];
+	@observable connectListMatches = [];
+	@observable connectReportList = [];
 	
+	fetchConnectListMatches() {
+		axios.get('/reports/connect_list_matches', {
+  		})
+	    .then((res) => {
+	    	this.connectListMatches = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
 
+	fetchConnectReportList(filters = []) {
+		axios({
+	    method: 'post',
+	      url: "/reports/connect_report",
+	      data: filters
+	    })
+	    .then((res) => {
+	    	this.connectReportList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
 
 	fetchPlMatchAccountWiseList() {
 		axios.get('/reports/pl_match_accountwise', {

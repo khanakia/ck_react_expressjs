@@ -123,10 +123,16 @@ router.get('/balance', function(req, res, next) {
 
 
 router.post('/monday_final', function(req, res, next) {
-    JournalEntryModel.updateMany({}, { is_monday_final: true }, function(err, obj) {
-        if (err) return res.send(err)
-        return res.send(obj)
+    JournalEntryClass.mondayFinal().then((data)=>{
+        res.send(data)
+    }).catch((err) => {
+        // console.log('ERROR', err)
+        res.status(401).send(err)
     })
+    // JournalEntryModel.updateMany({}, { is_monday_final: true }, function(err, obj) {
+    //     if (err) return res.send(err)
+    //     return res.send(obj)
+    // })
 });
 
 router.get('/account/:id/balance', function(req, res, next) {

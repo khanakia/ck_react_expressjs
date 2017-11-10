@@ -10,6 +10,9 @@ export class SessionEntryStoreClass {
     @observable sessionPlInfo = {};
     @observable sessionWinLossList = [];
 
+    // this is we are using to scroll to that run in SessionEntryWinLossGrid
+    @observable lastEnteredRun = null;
+
     @observable displayData = {
         sessionEntriesList: [],
         sessionPlInfo: {},
