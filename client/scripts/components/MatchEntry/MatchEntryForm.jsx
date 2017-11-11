@@ -136,14 +136,14 @@ class MatchEntryForm extends React.Component {
                             <label className="">&nbsp;</label>
                             <div>
                                 <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                    <button className="btn btn-primary btn-sm" type="button" onClick={this.formSubmit}>Save</button>
+                                    <button className="btn btn-primary btn-sm" type="button" onClick={this.formSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                                 </div>
                             </div>
                         </div>
                         <div className="col-auto ">
                             <label className="">&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="button" onClick={this.resetForm}>Cancel</button>
+                                <button className="btn btn-danger btn-sm" type="button" onClick={this.resetForm}><i className="fa fa-undo"></i> Cancel</button>
                             </div>
                         </div>
                         <div className="col-auto ">

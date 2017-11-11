@@ -55,13 +55,13 @@ class Account extends Component {
     render() {
         const {accountList, account} = this.props.accountStore
         return ( 
-            <div>
-                <h5><i className="fa fa-user"></i> Account</h5>
+            <div className="page1200">
+                <h6><i className="fa fa-user"></i> Account</h6>
                 <div className="row">
                     <div className="col-md-4">
                         <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate}/>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-8">
                         
                         <MemberForm ref="memberForm" 
                             item={account} accountsList={accountList} 

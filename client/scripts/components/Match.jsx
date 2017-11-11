@@ -63,13 +63,13 @@ class Match extends Component {
 
         // console.log(matchList)
         return (
-            <div>
-                <h3>Match</h3>
+            <div className="page1200">
+                <h6><i className="fa fa-futbol-o"></i> Match</h6>
                 <div className="row">
-                    <div className="col-md-5">
+                    <div className="col-md-6">
                         <MatchGrid entriesList={matchList} editItem={this.editItem} onDataUpdate={this.matchGrid_onDataUpdate} />
                     </div>
-                    <div className="col-md-7" >
+                    <div className="col-md-6" >
                     {!match.is_declared && !match.is_abandoned
                         ?
                         <div>
@@ -82,7 +82,7 @@ class Match extends Component {
                     }
 
                         <div className="row">
-                            <div className="col-md-7">
+                            <div className="col-md-12">
                                 { match._id ?
                                 <MatchTeam match={match} matchId={match._id} /> : '' }
                             </div>

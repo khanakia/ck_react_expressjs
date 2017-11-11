@@ -66,7 +66,7 @@ class MatchTeam extends Component {
         // console.log(matchTeamList)
         return (
             <div>
-                <h3>Match Teams</h3>
+                <h6><i className="fa fa-users"></i> Match Teams</h6>
                 {
                     this.props.match && !this.props.match.is_declared && !this.props.match.is_abandoned 
                     ?
@@ -77,7 +77,7 @@ class MatchTeam extends Component {
                                     <ComboBoxTeam ref="comboTeam" field_id="match_id" />
 
                                     <span className="input-group-btn">
-                                      <button className="btn btn-primary btn-sm ml-1" type="button" onClick={this.onSubmit}>Add</button>
+                                      <button className="btn btn-primary btn-sm ml-1" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Add</button>
                                     </span>
                                 </div>
                             </div>

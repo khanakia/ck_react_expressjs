@@ -86,7 +86,7 @@ class MatchTeamGrid extends Component {
             { text: 'Team', datafield: 'team_name', width: 150 },
             { text: 'Status', datafield: 'status', width: 100 },
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },
-            { text: 'Created', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
+            { text: 'Created', datafield: 'created_at', width: 120, cellsformat: 'dd/MM/yyyy' },
         ];
     }
 

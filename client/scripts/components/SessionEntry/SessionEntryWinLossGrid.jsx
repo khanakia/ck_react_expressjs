@@ -78,7 +78,7 @@ class SessionEntryWinLossGrid extends Component {
             <div>
                 <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter}
-                    width={180} height={600} 
+                    width={160} height={390} 
                     sortable={false} altrows={false} enabletooltips={false} 
                     editable={false} columns={columns} 
                     filterable={false} showfilterrow={false} pagesize={100} pageable={false} />

@@ -146,11 +146,8 @@ class SessionEntry extends Component {
         return (
             <div>
             	<div className="row info-heading-block">
-            		<div className="col-md-6">
+            		<div className="col-md-8">
 		         		<SessionInfoBlock plInfo={sessionPlInfo} />
-            		</div>
-            		<div className="col-md-6 text-right">
-            			
             		</div>
             	</div>
          		<div className="row">

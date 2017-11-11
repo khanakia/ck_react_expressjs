@@ -50,24 +50,24 @@ class MatchForm extends Component {
             <div>
             	<form className="" ref="form"  key={`form_${item._id}`}>
                     <div className="form-row align-items-center">
-                        <div className="form-group col-md-2">
+                        <div className="form-group col-auto">
                             <label className="col-form-label">Name</label>
                             <input type="text" className="form-control form-control-sm required error-hide" 
                                         name="match_name" defaultValue={item.match_name} />
                         </div>
                   
-                        <div className="form-group col-md-2">
+                        <div className="form-group col-auto">
                             <label className="col-form-label">Match Type</label>
                             {/*<ComboBoxMatchType ref="combo" field_id="match_type" selectedValue={item.match_type} />*/}
-                            <ComboBoxLocal ref="combo" width={"100%"} field_id="match_type" valueMember='id'
+                            <ComboBoxLocal ref="combo" width={"100"} field_id="match_type" valueMember='id'
                                         displayMember='text' data={LIST_MATCH_TYPE}  selectedValue={item.match_type} />
                         </div>
                     
-                        <div className="form-group col-md-3">
+                        <div className="form-group col-auto">
                             <label className="col-form-label">&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="submit" onClick={this.onSubmit}>Save</button>
-                                <button className="btn btn-danger btn-sm ml-1" type="button" onClick={()=>this.props.cancelFormClick()}>Cancel</button>
+                                <button className="btn btn-primary btn-sm" type="submit" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                                <button className="btn btn-danger btn-sm ml-1" type="button" onClick={()=>this.props.cancelFormClick()}><i className="fa fa-undo"></i> Cancel</button>
                             </div>
                         </div>
                     </div>

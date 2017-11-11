@@ -105,7 +105,7 @@ class ComboBoxMatchTeam extends Component {
                       <input type="hidden" ref="idInput" name={this.props.field_id} />
                       <input type="hidden" ref="teamIdInput" name={this.props.field_team_id} />
                       <JqxComboBox ref='Combo' key={Math.random()}
-                          width={this.props.width} height={28} selectedIndex={-1} source={this.dataAdapter}
+                          width={this.props.width} height={22} selectedIndex={-1} source={this.dataAdapter}
                           displayMember={this.props.displayMember} valueMember={this.props.valueMember}
                       />
 

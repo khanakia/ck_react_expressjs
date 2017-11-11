@@ -98,7 +98,7 @@ class ComboBox extends Component {
           <input type="hidden" ref="nameInput" name={this.props.field_name} />
           <input type="hidden" ref="idInput" name={this.props.field_id} />
           <JqxComboBox ref='Combo'
-              width={this.props.width} height={28} selectedIndex={-1} source={this.dataAdapter}
+              width={this.props.width} height={22} selectedIndex={-1} source={this.dataAdapter}
               displayMember={this.props.displayMember} valueMember={this.props.valueMember}
           />
 
