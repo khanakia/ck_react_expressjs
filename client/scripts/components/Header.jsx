@@ -74,10 +74,10 @@ class Header extends React.Component {
                         </li>
                         <li><i className="fa fa-bar-chart"></i> Reports
                             <ul>
-                                <li><Link to={APP_URL_REPORT_CONNECT}>Connect Report</Link></li>
+                                <li><Link to={APP_URL_REPORT_CONNECT}>Connect Report (F6)</Link></li>
                                 <li><Link to={APP_URL_REPORT_PL_MATCH_WISE}>PL Match Wise</Link></li>
                                 <li><Link to={APP_URL_REPORT_PL_MATCH_ACCOUNTWISE}>PL Match Account Wise</Link></li>
-                              <li><Link to={APP_URL_REPORT_JOURNAL_SUMMARY}>Journal Summary (F6)</Link></li>
+                              <li><Link to={APP_URL_REPORT_JOURNAL_SUMMARY}>Journal Summary</Link></li>
                               <li><Link to={APP_URL_REPORT_BSHEET}>Balance Sheet (F9)</Link></li>
 
                             </ul>

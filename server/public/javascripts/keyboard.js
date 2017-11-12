@@ -11,7 +11,7 @@ jQuery(document).ready(function(){
     mousetrapGlobal.bind('f3', function() { window.location.href = "/#/matches" });
     mousetrapGlobal.bind('f4', function() { window.location.href = "/#/match_entries" });
     mousetrapGlobal.bind('f8', function() { window.location.href = "/#/journal_entries" });
-    mousetrapGlobal.bind('f6', function() { window.location.href = "/#/report_journal_summary" });
+    mousetrapGlobal.bind('f6', function() { window.location.href = "/#/reports/connect" });
     mousetrapGlobal.bind('f9', function() { window.location.href = "/#/report_bsheet" });
     mousetrapGlobal.bind('f7', function() {
     	var matchId = localStorage.getItem('matchId')
@@ -27,41 +27,64 @@ jQuery(document).ready(function(){
 
 
     if(window.currentPage=="mdiMatchPage") {
-	    var moustrapMdiPageClass = new  Mousetrap()
-		moustrapMdiPageClass.stopCallback = function(e, element, combo) {
-		    return false;
-		}
-		moustrapMdiPageClass.bind('ctrl+1', function(e) {
-	    	$('#mdi-tab li:eq(0) a').tab('show')
-	    });
+	 //    var moustrapMdiPageClass = new  Mousetrap()
+		// moustrapMdiPageClass.stopCallback = function(e, element, combo) {
+		//     return false;
+		// }
+		// moustrapMdiPageClass.bind('ctrl+1', function(e) {
+	 //    	// $('#mdi-tab li:eq(0) a').tab('show')
+	 //    	$mdiTab.find('li:eq(0) a').tab('show')
+	 //    });
 
-	    moustrapMdiPageClass.bind('ctrl+2', function(e) {
-	    	$('#mdi-tab li:eq(1) a').tab('show')
-	    });
+	 //    moustrapMdiPageClass.bind('ctrl+2', function(e) {
+	 //    	// $('#mdi-tab li:eq(1) a').tab('show')
+	 //    	$mdiTab.find('li:eq(1) a').tab('show')
+	 //    });
 
-	    moustrapMdiPageClass.bind('ctrl+3', function(e) {
-	    	$('#mdi-tab li:eq(2) a').tab('show')
-	    });
+	 //    moustrapMdiPageClass.bind('ctrl+3', function(e) {
+	 //    	// $('#mdi-tab li:eq(2) a').tab('show')
+	 //    	$mdiTab.find('li:eq(2) a').tab('show')
+	 //    });
 
-	    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		  	var href = jQuery(e.target).attr('href');
-		  	if(href=="#pills-match") {
-		  		jQuery(".idinput-session").focus();
-		  	}
-		})
+	 //    $mdiTab.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		//   	var href = jQuery(e.target).attr('href');
+		//   	console.log(href)
+		//   	if(href=="#pills-match") {
+		//   		jQuery(".idinput-match").focus();
+		//   	}
+
+		//   	if(href=="#pills-session") {
+		//   		jQuery(".idinput-session").focus();
+		//   	}
+
+		//   	if(href=="#pills-meter") {
+		//   		jQuery(".idinput-meter").focus();
+		//   	}
+		// })
     }
 
 
-    var moustrapForm = document.querySelector('.moustrapform');
-    var moustrapFormClass = new  Mousetrap(moustrapForm)
-	moustrapFormClass.stopCallback = function(e, element, combo) {
-	    return element.tagName == 'BUTTON' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
-	}
-    moustrapFormClass.bind('enter', function(e) {
-    	console.log("enter")
-	    // Submit button was automaticall clicking on tabnext because both enter and tabnext event firing together so i delayed the tabnext event
-	    setTimeout(function(){
-	    	$.tabNext();
-	    }, 50)
-    });
+  //   function mounstrapFormInit() {
+	 //    var moustrapForm = document.querySelector('.moustrapform');
+	 //    var moustrapFormClass = new  Mousetrap(moustrapForm)
+		// moustrapFormClass.stopCallback = function(e, element, combo) {
+		//     return element.tagName == 'BUTTON' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+		// }
+	 //    moustrapFormClass.bind('enter', function(e) {
+	 //    	console.log("enter")
+		//     // Submit button was automaticall clicking on tabnext because both enter and tabnext event firing together so i delayed the tabnext event
+		//     setTimeout(function(){
+		//     	$.tabNext();
+		//     }, 50)
+	 //    });    	
+  //   }
+
+ //    $('body').on('DOMNodeInserted',function(e){
+	//     var target = e.target; //inserted element;
+	//     	console.log(target)
+	//     if(typeof target.classList!=="undefined" && target.classList.contains('moustrapform')) {
+	//     	mounstrapFormInit(target)
+	//     }
+	    
+	// });
 })

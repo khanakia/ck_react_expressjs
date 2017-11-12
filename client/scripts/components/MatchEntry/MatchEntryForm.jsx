@@ -12,6 +12,8 @@ import CSelect from '../controls/CSelect'
 
 import { LIST_MATCH_LK } from '../../Constant'
 
+import GlobalHelper from "../../helpers/GlobalHelper"
+
 class MatchEntryForm extends React.Component {
     constructor(props) {
         super(props);
@@ -36,6 +38,10 @@ class MatchEntryForm extends React.Component {
         matchId: null,
         onFormSubmitted: function() {},
         getBookNo: function() {}
+    }
+
+    componentDidMount() {
+        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
     }
 
     edit(rowdata) {
@@ -98,7 +104,7 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-50p error-hide required number" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
+                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">

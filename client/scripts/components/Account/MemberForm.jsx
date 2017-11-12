@@ -7,6 +7,9 @@ import CSelect from '../controls/CSelect.jsx'
 import AccountHelper from '../../helpers/AccountHelper'
 
 import {LIST_COMM_TYPE, LIST_STATUS_BOOLEAN} from '../../Constant'
+
+import GlobalHelper from "../../helpers/GlobalHelper"
+
 class MemberForm extends Component {
 
     constructor(props) {
@@ -39,6 +42,10 @@ class MemberForm extends Component {
         onSubmit: function() {},
         cancelFormClick: function() {},
         item: {}
+    }
+
+    componentDidUpdate() {
+        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
     }
 
     onSubmit = (e) => {

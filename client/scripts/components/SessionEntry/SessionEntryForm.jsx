@@ -12,6 +12,7 @@ import CSelect from '../controls/CSelect'
 
 import {LIST_SESSION_YN, URL_SESSIONS} from '../../Constant'
 
+import GlobalHelper from "../../helpers/GlobalHelper"
 
 class SessionEntryForm extends React.Component {
     constructor(props) {
@@ -33,6 +34,10 @@ class SessionEntryForm extends React.Component {
         comboSessionOnClose: function() {},
         sessionList: []
 
+    }
+
+    componentDidMount() {
+        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
     }
 
 

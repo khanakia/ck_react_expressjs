@@ -4,19 +4,70 @@ import { inject, observer } from 'mobx-react';
 import MatchInfoBlock from "./Match/MatchInfoBlock"
 import MatchEntry from "./MatchEntry"
 import SessionEntry from "./SessionEntry"
+import GlobalHelper from "../helpers/GlobalHelper"
+
+
 
 @inject('matchStore')
 @observer
 class MdiMatch extends Component {
 	componentWillMount() {
+		// console.log("Mounted")
 		window.currentPage = "mdiMatchPage"
 	}
 
 	componentDidMount() {
+		window.$mdiTab = $(this.refs.mdiTab)
+
 		const matchId = this.props.match.params.id
 		localStorage.setItem('matchId', matchId)
 	    this.props.matchStore.fetch(matchId)
-	  }
+
+		this.init()
+	    
+	}
+
+	componentDidUpdate() {
+		// GlobalHelper.mounstrapFormInit()
+	}
+
+
+	init() {
+		var moustrapMdiPageClass = new  Mousetrap()
+		moustrapMdiPageClass.stopCallback = function(e, element, combo) {
+		    return false;
+		}
+		moustrapMdiPageClass.bind('ctrl+1', function(e) {
+	    	// $('#mdi-tab li:eq(0) a').tab('show')
+	    	$mdiTab.find('li:eq(0) a').tab('show')
+	    });
+
+	    moustrapMdiPageClass.bind('ctrl+2', function(e) {
+	    	// $('#mdi-tab li:eq(1) a').tab('show')
+	    	$mdiTab.find('li:eq(1) a').tab('show')
+	    });
+
+	    moustrapMdiPageClass.bind('ctrl+3', function(e) {
+	    	// $('#mdi-tab li:eq(2) a').tab('show')
+	    	$mdiTab.find('li:eq(2) a').tab('show')
+	    });
+
+	    $mdiTab.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		  	var href = jQuery(e.target).attr('href');
+		  	// console.log(href)
+		  	if(href=="#pills-match") {
+		  		jQuery(".idinput-match").focus();
+		  	}
+
+		  	if(href=="#pills-session") {
+		  		jQuery(".idinput-session").focus();
+		  	}
+
+		  	if(href=="#pills-meter") {
+		  		jQuery(".idinput-meter").focus();
+		  	}
+		})
+	}
 
     render() {
     	const matchId = this.props.match.params.id
@@ -27,7 +78,7 @@ class MdiMatch extends Component {
 	        	<div>
 	        		<MatchInfoBlock item={match} />
 	        	</div>
-			    <ul className="nav nav-pills mb-2" id="mdi-tab" role="tablist">
+			    <ul className="nav nav-pills mb-2" id="mdi-tab" role="tablist" ref="mdiTab">
 			        <li className="nav-item">
 			            <a className="nav-link active" id="pills-match-tab" data-toggle="tab" href="#pills-match" role="tab" aria-controls="pills-match" aria-expanded="true">
 			            	Match  <span className="badge badge-light">CTRL+1</span>
