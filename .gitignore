@@ -67,11 +67,15 @@ chromedriver
 # ignore other files
 ckdb.archive
 ck-server.exe
+.env
 
 # For Development purpose one
 /server/public/dist/
 /server/mongodb/
 /server/backup/
+/server/log/
 /dist/
+/electron/
+/nwjs/
 ammy.exe
 anydesk.exe

@@ -10,7 +10,8 @@
     "bower_components",
     "public",
     "test",
-    "tests"
+    "tests",
+    "external"
   ],
   "dependencies": {
     "jqwidgets": "^5.3.2",
@@ -25,5 +26,10 @@
     "jQuery.tabbable": "^1.0.2",
     "font-awesome": "^4.7.0",
     "mousetrap": "^1.6.1"
-  }
+  },
+
+  "dependenciesIgnore": {
+    "jquery": [ "!**/jquery.js" ],
+    "underscore": [ "!**/underscore.js" ]
+  } 
 }

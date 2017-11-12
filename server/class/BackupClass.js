@@ -6,20 +6,20 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 
-var HelperClass = require('./HelperClass')
+// var HelperClass = require('./HelperClass')
 
-var rootPath = path.resolve('./')
-var backupDir = rootPath + "/backup"
+// var rootPath = path.resolve('./')
+// var backupDir = rootPath + "/backup"
 module.exports = {
     
     async listDbBackupFiles() {
         
-        if (!fs.existsSync(backupDir)){
-            fs.mkdirSync(backupDir);
-        }
+        // if (!fs.existsSync(backupDir)){
+        //     fs.mkdirSync(backupDir);
+        // }
 
         var filesArray = []
-        var files = await fs.readdirSync(backupDir);
+        var files = await fs.readdirSync(DIR_BACKUP);
 
          // await fs.stat("package.json", function (err, stats) {
          //        console.log(err)
@@ -30,7 +30,7 @@ module.exports = {
 
         await Promise.all(
         files.map( async (filename , i) => {
-            var filePath = backupDir + "/" + filename
+            var filePath = DIR_BACKUP + "/" + filename
             // console.log(filePath)
             var fileStat = await fs.statSync(filePath)
             // console.log(fileStat)
@@ -58,13 +58,16 @@ module.exports = {
 
     async backupDb() {
         var dirName = Date.now()
-        var dirPath = backupDir + "/" + dirName
-        if (!fs.existsSync(dirPath)){
-            fs.mkdirSync(dirPath);
-        }
+        var dirPath = DIR_BACKUP + "/" + dirName
+        // if (!fs.existsSync(dirPath)){
+        //     fs.mkdirSync(dirPath);
+        // }
 
-        var command = `cd backup && ..\\mongodb\\mongodump --db ckdb --gzip --out ${dirName}`
+        HelperClass.createDirIfNotExists(dirPath)
 
+        // var command = `cd backup && ..\\mongodb\\mongodump --db ckdb --gzip --out ${dirName}`
+        var command = `cd ${DIR_BACKUP} && ..\\mongodb\\mongodump --db ckdb --gzip --out ${dirName}`
+        
         // var filename = "ckdb_"+ Date.now()+".archive"
         // var command = `cd backup && ..\\mongodb\\mongodump -d ckdb --archive=${filename}`
         // var commandExec = exec('cd backup && ..\\mongodb\\mongodump -d ckdb --archive=ckdb.archive', { silent: true })
@@ -82,7 +85,7 @@ module.exports = {
 
     async restoreDb(dirName) {
         if(!dirName) return false
-        var command = `cd backup && ..\\mongodb\\mongorestore --db ckdb --drop --gzip --dir ${dirName}/ckdb`
+        var command = `cd ${DIR_BACKUP} && ..\\mongodb\\mongorestore --db ckdb --drop --gzip --dir ${dirName}/ckdb`
         // var command = `cd backup && ..\\mongodb\\mongorestore --archive=${filename}`
         var commandExec = exec(command, { silent: true })
         commandExec.stderr.on('data', (data) => {

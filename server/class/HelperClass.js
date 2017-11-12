@@ -1,7 +1,12 @@
+// NOTE ONLY NODE MODULES CAN BE INCLUDED IN THAT CLASS DO NOT INCLUDE CUSTOM MODULES
+
 var async = require("async");
 var await = require("async").await;
 var _ = require('lodash');
 
+var fs = require('fs');
+var path = require('path');
+var exec = require('child_process').exec;
 
 const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
@@ -25,6 +30,14 @@ module.exports = {
             l++;
         }
         return (n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
-    }
+    },
 
+
+    createDirIfNotExists(dirPath) {
+        if (!fs.existsSync(dirPath)){
+            fs.mkdirSync(dirPath);
+        } else {
+          console.log(dirPath)
+        }
+    }
 };

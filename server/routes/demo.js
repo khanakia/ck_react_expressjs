@@ -17,6 +17,10 @@ var JournalEntryClass = require('../class/JournalEntryClass')
 var fs = require('fs');
 var path = require('path');
 
+router.get('/env', function(req, res, next) {
+	res.send(req.app.get('env'))
+})
+
 router.get('/', function(req, res, next) {
 
 	// var account = new Account({

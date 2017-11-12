@@ -1,0 +1,77 @@
+# test directories
+__tests__
+test
+tests
+powered-test
+
+# asset directories
+docs
+doc
+website
+images
+assets
+
+# examples
+example
+examples
+
+# code coverage directories
+coverage
+.nyc_output
+
+# build scripts
+Makefile
+Gulpfile.js
+Gruntfile.js
+
+# configs
+.tern-project
+.gitattributes
+.editorconfig
+.*ignore
+.eslintrc
+.jshintrc
+.flowconfig
+.documentup.json
+.yarn-metadata.json
+.*.yml
+*.yml
+
+# misc
+*.md
+
+
+!@bower_components/jquery/dist/jquery.min.js
+@bower_components/jquery/*
+!@bower_components/axios/dist/axios.js
+@bower_components/axios/*
+!@bower_components/bootstrap/dist
+@bower_components/bootstrap/*
+
+!@bower_components/font-awesome/css
+!@bower_components/font-awesome/fonts
+@bower_components/font-awesome/*
+
+!@bower_components/jquery-confirm2/dist
+@bower_components/jquery-confirm2/*
+
+!@bower_components/jquery-validation/dist
+@bower_components/jquery-validation/*
+
+
+!@bower_components/moment/min
+@bower_components/moment/*
+
+!@bower_components/popper.js/dist
+@bower_components/popper.js/*
+
+!@bower_components/urijs/src
+@bower_components/urijs/*
+
+
+!@bower_components/lodash/dist
+@bower_components/lodash/*
+
+!@bower_components/jqwidgets/jqwidgets
+!@bower_components/jqwidgets/styles
+@bower_components/jqwidgets/*

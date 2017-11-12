@@ -1,42 +1,20 @@
 var express = require('express');
+var router = express.Router()
+
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-
+var mongoose = require('mongoose');
 
 var EventEmitter = require('events').EventEmitter;
 global.emitter = new EventEmitter();
-
-
-// var db = require('./db')
-// var dbm = require('./config/dbm')
-var mongoose = require('mongoose');
-var  autoIncrement = require('mongoose-auto-increment');
-// Connect to Mongo on start
-// db.connect('mongodb://localhost:27017/ckdb', function(err) {
-//   // if (err) {
-//   //   console.log('Unable to connect to Mongo.')
-//   //   process.exit(1)
-//   // } else {
-//   //   app.listen(3000, function() {
-//   //     console.log('Listening on port 3000...')
-//   //   })
-//   // }
-// })
-var uri = 'mongodb://localhost:27017/ckdb';
-global.MONGO_DB = uri;
-global.db = mongoose.createConnection(uri);
-autoIncrement.initialize(db);
-
 var EventHookClass = require('./class/EventHookClass')
 
 var index = require('./routes/index');
 var demo = require('./routes/demo');
-var users = require('./routes/users');
-var states = require('./routes/states');
+// var users = require('./routes/users');
 var teams = require('./routes/teams');
 var accounts = require('./routes/accounts');
 var match_types = require('./routes/match_types');
@@ -55,20 +33,37 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bower', express.static(path.join(__dirname, 'node_modules/@bower_components')));
+
+
+var routerMiddleware = router.use(function (req, res, next) {
+	// console.log('Aman')
+	// console.log(req.path)
+	if(req.path.indexOf("server_") !== -1) {
+		return next()
+	}
+	if(mongoose.connection.readyState!==1) {
+		return res.status(400).send(ResponseHelper.error(400, 'DB Server not running.', 5001))
+	} 
+  	// console.log(db.readyState)
+	next()
+})
+
+app.use(routerMiddleware)
+
 
 app.use('/', index);
 app.use('/demo', demo);
-app.use('/users', users);
-app.use('/states', states);
+// app.use('/users', users);
 app.use('/teams', teams);
 app.use('/accounts', accounts);
 app.use('/match_types', match_types);

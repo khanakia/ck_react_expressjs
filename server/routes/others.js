@@ -4,14 +4,12 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 
-var shell = require('shelljs');
-
 var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 
 router.get('/', function(req, res, next) {
-
+	res.send(aman)
 
 
 });
@@ -26,6 +24,24 @@ router.get('/start_anydesk', function(req, res, next) {
 router.get('/start_ammy', function(req, res, next) {
 	var commandExec = exec("start ammy.exe", { silent: true })
     res.send({success: 1})
+})
+
+
+
+router.get('/server_db_status', function(req, res, next) {
+	// console.log(mongoose.connection.readyState)
+	var status = 0
+	if(mongoose.connection.readyState==1) status = 1
+    res.send({status: mongoose.connection.readyState})
+})
+
+
+router.get('/server_startdb', function(req, res, next) {
+	aman = "NEW AMAN"
+	if(mongoose.connection.readyState!==1) {
+		AppClass.startMongoDBServer()
+	}
+    res.send({message: 'Db Server Starting'})
 })
 
 

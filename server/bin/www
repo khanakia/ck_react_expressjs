@@ -1,5 +1,43 @@
 #!/usr/bin/env node
 
+// process.env.NODE_ENV = 'production'
+var mongoose = require('mongoose');
+var  autoIncrement = require('mongoose-auto-increment');
+
+require('dotenv').config()
+global.AppClass = require('../class/AppClass')
+global.HelperClass = require('../class/HelperClass')
+global.ResponseHelper = require('../class/ResponseHelper')
+
+global.DIR_DIST = process.env.DIR_DIST || "."
+global.DIR_MONGODB = `${DIR_DIST}/mongodb`
+global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
+global.DIR_BACKUP = `${DIR_DIST}/backup`
+global.DIR_LOG = `${DIR_DIST}/log`
+global.LOGFILE_APP = `${DIR_LOG}/app.log`
+global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/app.exe`
+
+global.MONGO_DB_URI = 'mongodb://localhost:27017/ckdb';;
+
+// Iniit Empty Mongoose Connection so we can create shcemas
+global.db = mongoose.connection
+autoIncrement.initialize(db);
+
+// Init App Default Functions required to run the app
+AppClass.init()
+global.Logger = AppClass.logger()
+
+process.on('uncaughtException', function (err) {
+  console.log(err)
+  Logger.error('uncaughtException', { message : err.message, stack : err.stack, exit: true  }); // logging with MetaData
+  setTimeout(function () {
+     process.exit(1); // exit with failure
+  },1000);
+});
+
+
+
+
 /**
  * Module dependencies.
  */
@@ -87,6 +125,11 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  console.log(app.get('env'))
+  if ( app.get('env') === 'production' ) {
+    AppClass.startNwJsApp()
+  }
 }
 
 
