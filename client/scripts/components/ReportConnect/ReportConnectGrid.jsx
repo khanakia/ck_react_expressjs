@@ -9,6 +9,7 @@ class ReportConnectGrid extends Component {
 
     static defaultProps = {
         entriesList: [],
+        exportReportClick: function() {}
     }
 
     componentDidUpdate() {
@@ -19,9 +20,7 @@ class ReportConnectGrid extends Component {
         this.dataAdapter.dataBind()
     }
 
-    exportToPdf = () => {
-        this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
-    }
+    
 
     render() {
         // console.log(this.props.entriesList.slice())
@@ -65,12 +64,12 @@ class ReportConnectGrid extends Component {
 
         return (
             <div>
-                <div className="mb-1 text-right">
-                    <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
+                <div className="mt-3 mb-1 text-left">
+                    <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "100%"} height={400} source={this.dataAdapter} 
-                        pageable={true} sortable={false} altrows={false} enabletooltips={false}
+                        width={ "1100"} height={400} source={this.dataAdapter} 
+                        pageable={false} sortable={false} altrows={false} enabletooltips={false}
                         editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}/>
             </div>

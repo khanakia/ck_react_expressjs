@@ -53,7 +53,7 @@ class Header extends React.Component {
             <div className="row">
                 <div id='jqxMenu' className="jqxMenu-topmenu">
                     <ul>
-                        <li><Link to={'/'}><label className="text-danger font-weight-bold">{APP_TITLE}</label></Link></li>
+                        <li><span className="logo"></span><Link to={'/'}><label className="text-danger font-weight-bold">{APP_TITLE}</label></Link></li>
                         <li><i className="fa fa-database"></i> Master
                             <ul>
                                 <li><Link to={APP_URL_ACCOUNTS}>Parties (F1)</Link></li>

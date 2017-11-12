@@ -22,13 +22,14 @@ router.post('/', function(req, res, next) {
 
 });
 
-// router.put('/:id', function(req, res, next) {
-// 	TeamModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:true}, function(err, doc){
-//     if (err) return res.send(500, { error: err });
-//     return res.send("succesfully saved");
-// 	});
+router.put('/:id', function(req, res, next) {
+	console.log(req.body)
+	TeamModel.findOneAndUpdate({_id: req.params.id}, req.body, {upsert:false}, function(err, doc){
+    if (err) return res.send(500, { error: err });
+    return res.send("succesfully saved");
+	});
   
-// });
+});
 
 router.delete('/:id', function(req, res, next) {
     DeleteClass.team(req.params.id).then((data)=>{

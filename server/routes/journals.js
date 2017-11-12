@@ -10,10 +10,10 @@ var JournalClass = require('../class/JournalClass')
 /* GET users listing. */
 router.get('/entries', function(req, res, next) {
     JournalClass.entriesList({ ref_id: req.query.ref_id, ref_type: req.query.ref_type })
-        .then((err, docs) => {
-            if (err) return res.send(err)
-            return res.send(docs)
-        })
+    .then((err, docs) => {
+        if (err) return res.send(err)
+        return res.send(docs)
+    })
 });
 
 

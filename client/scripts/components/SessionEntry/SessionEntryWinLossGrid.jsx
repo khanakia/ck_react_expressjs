@@ -20,6 +20,7 @@ class SessionEntryWinLossGrid extends Component {
     }
 
     componentDidUpdate() {
+        // console.log(this.props.lastEnteredRun)
         this.scrollToRow(this.props.lastEnteredRun)
     }
 
@@ -30,8 +31,11 @@ class SessionEntryWinLossGrid extends Component {
         // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
         // console.log(index)
         if(index>0) {
-            this.refs.jqxgrid.ensurerowvisible(index)
-            this.refs.jqxgrid.ensurerowvisible(index)            
+            try {
+                this.refs.jqxgrid.ensurerowvisible(index)
+            } catch(err) {
+                
+            }
         }
     }
 
@@ -78,7 +82,7 @@ class SessionEntryWinLossGrid extends Component {
             <div>
                 <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter}
-                    width={160} height={390} 
+                    width={'100%'} height={400} 
                     sortable={false} altrows={false} enabletooltips={false} 
                     editable={false} columns={columns} 
                     filterable={false} showfilterrow={false} pagesize={100} pageable={false} />

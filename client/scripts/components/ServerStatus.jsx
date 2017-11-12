@@ -28,10 +28,10 @@ class ServerStatus extends Component {
     render() {
     	const { dbServerStatus } = this.props.serverStatusStore
         return (
-            <div>
-         		<h5>Server Status</h5>
+            <div className="page mx-w-600px mx-2">
+                <h6><i className="fa fa-server"></i> Server Status</h6>
      			<div className="row">
-         			<div className="col-md-4">
+         			<div className="col-md-12">
 	         		    <div className="mt-2 mb-2">
 					        <button className="btn btn-sm btn-primary" onClick={this.checkStatuses}>Check Statues</button>
 					    </div>

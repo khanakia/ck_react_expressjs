@@ -4,21 +4,20 @@ import { inject, observer } from 'mobx-react';
 
 import ReportBalanceSheetGrid from './Report/ReportBalanceSheetGrid.jsx'
 
-@inject('journalEntryStore')
+@inject('reportStore')
 @observer
 class ReportBalanceSheet extends Component {
 	 componentDidMount() {
-        this.props.journalEntryStore.fetchAccountBalanceList()
+        this.props.reportStore.fetchAccountBalanceList()
     }
 
 
 
     render() {
-    	const {accountBalanceList} = this.props.journalEntryStore
+    	const {accountBalanceList} = this.props.reportStore
         return (
-            <div>
-         		<h5>Report - Balance Sheet</h5>
-
+            <div className="page d-inline-block mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Report - Balance Sheet</h6>
          		<ReportBalanceSheetGrid  entriesList={accountBalanceList} />
             </div>
         );

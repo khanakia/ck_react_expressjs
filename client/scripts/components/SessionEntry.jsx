@@ -24,12 +24,26 @@ class SessionEntry extends Component {
         sessionId: null
     }
 
+    componentWillMount() {
+
+        // Check if different Match is Selected then clear the sessionId to prevent show wrong Session Data under Wrong Match ID
+        const matchId = this.props.matchId
+        const storedMatchId = localStorage.getItem('matchId')
+        // console.log(storedMatchId)
+        if(storedMatchId!==matchId) {
+            localStorage.removeItem('sessionId')
+            this.props.globalStore.selectedSessionId = null
+        }
+    }
+
     componentDidMount() {
     	this.props.matchStore.fetchTeams(this.props.matchId)
     	this.props.sessionStore.fetchList(this.props.matchId)
     	if(this.props.globalStore.selectedSessionId) {
     		this.fetch(this.props.globalStore.selectedSessionId)
-    	}
+    	} else {            
+            this.props.sessionEntryStore.clearAll()
+        }
 	}
 
     fetch = (sessionId) => {
@@ -146,30 +160,28 @@ class SessionEntry extends Component {
         return (
             <div>
             	<div className="row info-heading-block">
-            		<div className="col-md-8">
+            		<div className="col-md-12">
 		         		<SessionInfoBlock plInfo={sessionPlInfo} />
             		</div>
             	</div>
-         		<div className="row">
-         			<div className="col-md-9">
-		         		<div className="mt-2 mb-2">
-	     					<SessionEntryForm ref="entryForm" matchId={this.props.matchId} 
-	     								sessionId={selectedSessionId} sessionList={sessionList}
-	     								onFormSubmitted={this.sessionEntry_onFormSubmitted} 
-	     								comboSessionOnClose={this.comboSessionOnClose} />
-		         		</div>
-
-		         		<div className="row">
-		         			<div className="col-md-10">
-		         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
-		         						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
-		         			</div>
-		         			<div className="col-md-2">
-		         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
-		         			</div>
-		         		</div>
+            	<div className="row mt-2 mb-2">
+         			<div className="col-md-12">
+     					<SessionEntryForm ref="entryForm" matchId={this.props.matchId} 
+     								sessionId={selectedSessionId} sessionList={sessionList}
+     								onFormSubmitted={this.sessionEntry_onFormSubmitted} 
+     								comboSessionOnClose={this.comboSessionOnClose} />
          			</div>
-         			<div className="col-md-3">
+				</div>         			
+         		<div className="row sessionGridsRow">
+         			<div className="acol acol1">
+         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
+         						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
+         			</div>
+         			<div className="acol acol2">
+         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
+         			</div>
+         			
+         			<div className="acol acol3">
          				<button className="btn btn-primary btn-sm mr-2" type="button" onClick={this.showAddSessionWindow}>Add</button>
          				<button className="btn btn-primary btn-sm mr-2" onClick={this.openDeclareWindow}>Declare</button>
          				<button className="btn btn-primary btn-sm" onClick={this.sessionUndeclare}>Un Declare</button>

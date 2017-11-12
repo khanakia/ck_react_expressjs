@@ -1,5 +1,5 @@
 
-export const APP_TITLE = 'London Betfair v0.1';
+export const APP_TITLE = 'London Betexchange v1.0';
 
 export const APP_URL_ACCOUNTS = '/accounts';
 export const APP_URL_TEAMS = '/teams';

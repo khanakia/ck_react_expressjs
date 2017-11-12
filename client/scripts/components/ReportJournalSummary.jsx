@@ -28,8 +28,8 @@ class ReportJournalSummary extends Component {
         const {journalEntriesList} = this.props.journalStore
 
         return (
-            <div>
-                <h5>Report - Journal Summary</h5>
+            <div className="page mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Report - Journal Summary</h6>
                  <div className="mb-1 text-right">    
                     <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
                 </div>

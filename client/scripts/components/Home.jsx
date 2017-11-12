@@ -9,6 +9,8 @@ class Home extends Component {
 			<div className="pageHome">
 			    <div className="flex-center position-ref full-height">
 			        <div className="content">
+			        	<div className="logo">
+			        	</div>
 			            <div className="title m-b-md">
 			                {APP_TITLE}
 			            </div>

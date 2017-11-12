@@ -55,6 +55,10 @@ class SessionEntryForm extends React.Component {
     onSubmit = (e) => {
         e.preventDefault()
 
+        if(! $(this.refs.form).valid()) {
+          return false;
+        }
+
         if (!this.props.matchId) {
             toastr.error("Please Select Match First.")
             return false;
@@ -90,7 +94,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-100p idinput-session" readOnly={true} defaultValue={item._id} key={item._id}/>
+                                <input className="form-control form-control-sm w-50p idinput-session" readOnly={true} defaultValue={item._id} key={item._id}/>
                             </div>
                         </div>
                         <div className="col-auto">
@@ -109,13 +113,13 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" value={item.rate} />
+                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" name="rate" value={item.rate} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label>Runs</label>
                             <div>
-                                <input type="number" className="form-control form-control-sm w-100p error-hide required number" name="runs" defaultValue={item.runs} key={item._id} />
+                                <input type="number" className="form-control form-control-sm w-50p error-hide required number" min="0" name="runs" defaultValue={item.runs} key={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
@@ -128,7 +132,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Amount</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="amount" value={item.amount} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} />
                             </div>
                         </div>
                         <div className="col-auto">

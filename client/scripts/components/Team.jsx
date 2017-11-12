@@ -39,7 +39,7 @@ class Team extends Component {
             updaterow: (rowid, rowdata, commit) => {
                 TeamHelper.update({
                     id: rowdata.uid,
-                    name: rowdata.name
+                    team_name: rowdata.team_name
                 })
                 commit(true);
             },
@@ -75,7 +75,7 @@ class Team extends Component {
             }
         ];
         return (
-            <div className="page1200">
+            <div className="page d-inline-block mx-2">
                 <h6><i className="fa fa-users"></i> Team</h6>
                 <form ref="form" onSubmit={this.onSubmit} className="mb-1">
                     <div className="w-310px">

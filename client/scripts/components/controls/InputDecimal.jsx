@@ -17,6 +17,7 @@ class InputDecimal extends React.Component {
       value: 0,
       scale: 2,
       tabIndex: null,
+      min: null,
       onChange: function() {}
     }
 
@@ -79,7 +80,9 @@ class InputDecimal extends React.Component {
             onBlur={this.handleBlur}  
             onChange={this.handleChange} 
             value={this.state.value} 
-            tabIndex={this.props.tabIndex}/>
+            tabIndex={this.props.tabIndex} 
+            min= {this.props.min}
+            />
       );
     }
 }

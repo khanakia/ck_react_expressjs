@@ -111,13 +111,13 @@ class SessionEntryGrid extends Component {
                     this.props.onEditButtonClick(dataRecord);
                 }
             },
-            { text: 'Id', datafield: '_id', width: 50 },
-            { text: 'Party', datafield: 'account_name', width: 150 },
-            { text: 'Rate', datafield: 'rate', width: 100, cellsformat: 'd2' },
-            { text: 'Runs', datafield: 'runs', width: 70 },
+            { text: 'Id', datafield: '_id', width: 70 },
+            { text: 'Party', datafield: 'account_name', width: 120 },
+            { text: 'Rate', datafield: 'rate', width: 60, cellsformat: 'd2' },
+            { text: 'Runs', datafield: 'runs', width: 60 },
             { text: 'L/K', datafield: 'yn', width: 50 },
-            { text: 'Amount', datafield: 'amount', width: 100 , cellsformat: 'd2'},
-            { text: 'Patti Amt.', datafield: 'amount_patti', width: 100 , cellsformat: 'd2'},
+            { text: 'Amount', datafield: 'amount', width: 80 , cellsformat: 'd2'},
+            { text: 'Patti Amt.', datafield: 'amount_patti', width: 80 , cellsformat: 'd2'},
             { text: 'Comm Amt.', datafield: 'comm_amt', width: 100 , cellsformat: 'd2'},
             { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
             { text: 'Patti (%)', datafield: 'patti_total_per', width: 100 , cellsformat: 'd2'},
@@ -134,7 +134,7 @@ class SessionEntryGrid extends Component {
             <div>
                 <JqxGrid ref="jqxgrid" 
                     source={this.dataAdapter} columns={this.columns}
-                    width={"100%"} height={400} pageable={true} pagermode={'simple'} pagesize={1000}
+                    width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={false} enabletooltips={true}
                     editable={false} 
                     filterable={true} showfilterrow={false}

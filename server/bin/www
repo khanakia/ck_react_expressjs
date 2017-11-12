@@ -9,12 +9,14 @@ global.AppClass = require('../class/AppClass')
 global.HelperClass = require('../class/HelperClass')
 global.ResponseHelper = require('../class/ResponseHelper')
 
+global.APP_URL = process.env.APP_URL || "http://localhost:3000"
 global.DIR_DIST = process.env.DIR_DIST || "."
-global.DIR_MONGODB = `${DIR_DIST}/mongodb`
-global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
+global.DIR_TEMP = `${DIR_DIST}/temp`
 global.DIR_BACKUP = `${DIR_DIST}/backup`
 global.DIR_LOG = `${DIR_DIST}/log`
 global.LOGFILE_APP = `${DIR_LOG}/app.log`
+global.DIR_MONGODB = `${DIR_DIST}/mongodb`
+global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
 global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/app.exe`
 
 global.MONGO_DB_URI = 'mongodb://localhost:27017/ckdb';;

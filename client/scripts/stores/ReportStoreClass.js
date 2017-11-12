@@ -4,11 +4,30 @@ export class ReportStoreClass {
 	@observable fetched = false;
 	
 	
+	@observable accountBalanceList = [];
 	@observable plMatchAccountWiseList = [];
 	@observable plMatchWiseList = [];
 	@observable connectListMatches = [];
 	@observable connectReportList = [];
 	
+	fetchAccountBalanceList() {
+		axios.get('/reports/balance_sheet', {
+  		})
+	    .then((res) => {
+	    	this.accountBalanceList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
+	fetchConnectListMatches() {
+		axios.get('/reports/connect_list_matches', {
+  		})
+	    .then((res) => {
+	    	this.connectListMatches = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
 	fetchConnectListMatches() {
 		axios.get('/reports/connect_list_matches', {
   		})

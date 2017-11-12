@@ -19,8 +19,15 @@ class ReportBalanceSheetGrid extends Component {
         this.dataAdapter.dataBind()
     }
 
-    exportToPdf = () => {
-        this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
+    exportReport = () => {
+        // this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
+        
+        axios.get('/exportreports/balance_sheet', {
+        })
+        .then((res) => {
+            window.location.href = res.data.fileDownloadUrl  
+        })
+    
     }
 
     render() {
@@ -48,11 +55,11 @@ class ReportBalanceSheetGrid extends Component {
 
         let columns = [
 
-            { text: 'AccountId', datafield: 'account_id', width: 100 },
+            // { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account', datafield: 'account_name', width: 150 },
             { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: '', datafield: 'empty', width: 200, filterable: false },
-            { text: 'AccountId', datafield: 'account_id1', width: 100 },
+            { text: '', datafield: 'empty', width: 100, filterable: false },
+            // { text: 'AccountId', datafield: 'account_id1', width: 100 },
             { text: 'Account', datafield: 'account_name1', width: 150 },
             { text: 'Balance', datafield: 'bal1', width: 100, cellsformat: 'd2', aggregates: ['sum'] }
         ];
@@ -60,10 +67,10 @@ class ReportBalanceSheetGrid extends Component {
         return (
             <div>
                 <div className="mb-1 text-right">
-                    <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
+                    <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "100%"} height={400} source={this.dataAdapter} 
+                        width={ "600"} height={400} source={this.dataAdapter} 
                         pageable={false} sortable={false} altrows={false} enabletooltips={false}
                         editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}/>

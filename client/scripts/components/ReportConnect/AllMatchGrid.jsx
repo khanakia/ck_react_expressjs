@@ -72,7 +72,7 @@ class AllMatchGrid extends Component {
         return (
             <div>
          		<JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"100%"} height={300} 
+                    width={"700"} height={150} 
          			pageable={false} sortable={true} altrows={true} enabletooltips={true} 
          			editable={false}  filterable={false} showfilterrow={false}
                     selectionmode={'checkbox'} />

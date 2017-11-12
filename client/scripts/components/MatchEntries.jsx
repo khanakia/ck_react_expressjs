@@ -71,7 +71,7 @@ class MatchEntries extends React.Component {
             { text: 'Dated', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
         ];
         return (
-            <div className="page1200 d-inline-block">
+            <div className="page d-inline-block mx-2">
                 <h6><i className="fa fa-futbol-o"></i> Select Match</h6>
                 <JqxGrid ref="jqxgrid" source={dataAdapter} columns={columns}
                     width={"750"} height={500}  

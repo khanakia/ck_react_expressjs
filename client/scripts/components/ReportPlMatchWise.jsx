@@ -17,7 +17,16 @@ class ReportPlMatchWise extends Component {
         // console.log(this.props.reportStore.plMatchWiseList.slice())
         // this.source.localdata = this.props.reportStore.plMatchWiseList.slice()
         // this.dataAdapter.dataBind()
-    }    
+    }
+
+    exportReport = () => {
+        // this.refs.jqxgrid.exportdata('pdf', 'pl_match_wise');
+        axios.get('/exportreports/pl_matchwise', {
+        })
+        .then((res) => {
+            window.location.href = res.data.fileDownloadUrl  
+        })
+    }
 
     initDataAdapter() {
         this.source = {
@@ -63,10 +72,13 @@ class ReportPlMatchWise extends Component {
         this.dataAdapter.dataBind()
 
         return (
-            <div>
-                <h5>Report - PL MatchWise</h5>
+            <div className="page d-inline-block mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Report - PL MatchWise</h6>
+                <div className="mb-1 text-right">
+                    <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
+                </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"100%"} height={500} 
+                    width={"1100"} height={500} pagesize={100}
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 
                     editable={false}  filterable={true} showfilterrow={true} />
             </div>

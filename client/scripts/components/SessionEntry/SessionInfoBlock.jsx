@@ -21,28 +21,28 @@ class SessionInfoBlock extends Component {
             <div>
          		<div className="form-row sessioninfo-block">
          			<div className="col-auto">
-         				<label>Yes</label>
-         				<div className="val">{item.yes}</div>
+         				<label>Yes: {item.yes}</label>
+         				{/*<div className="val">{item.yes}</div>*/}
          			</div>
          			<div className="col-auto">
-         				<label>No</label>
-         				<div className="val">{item.no}</div>
+         				<label>No: {item.no}</label>
+         				{/*<div className="val">{item.no}</div>*/}
          			</div>
                     <div className="col-auto">
-                        <label>Yes After Patti</label>
-                        <div className="val">{item.yes_after_patti}</div>
+                        <label>Yes After Patti: {item.yes_after_patti}</label>
+                        {/*<div className="val">{item.yes_after_patti}</div>*/}
                     </div>
                     <div className="col-auto">
-                        <label>No After Patti</label>
-                        <div className="val">{item.no_after_patti}</div>
+                        <label>No After Patti: {item.no_after_patti}</label>
+                        {/*<div className="val">{item.no_after_patti}</div>*/}
                     </div>
          			<div className="col-auto">
-         				<label>Comm. Rec.</label>
-         				<div className="val">{item.comm_rec}</div>
+         				<label>Comm. Rec.: {item.comm_rec}</label>
+         				{/*<div className="val">{item.comm_rec}</div>*/}
          			</div>
          			<div className="col-auto">
-         				<label>Comm. Pay</label>
-         				<div className="val">{item.comm_pay}</div>
+         				<label>Comm. Pay: {item.comm_pay}</label>
+         				{/*<div className="val">{item.comm_pay}</div>*/}
          			</div>
          		</div>
 

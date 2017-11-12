@@ -18,6 +18,15 @@ class ReportPlMatchAccountWise extends Component {
         // this.dataAdapter.dataBind()
     }    
 
+    exportReport = () => {
+        // this.refs.jqxgrid.exportdata('pdf', 'pl_match_wise');
+        axios.get('/exportreports/pl_match_accountwise', {
+        })
+        .then((res) => {
+            window.location.href = res.data.fileDownloadUrl  
+        })
+    }
+    
     initDataAdapter() {
         this.source = {
             datatype: 'json',
@@ -52,10 +61,13 @@ class ReportPlMatchAccountWise extends Component {
         this.dataAdapter.dataBind()
         
         return (
-            <div>
-                <h5>Report - PL Match AccountWise</h5>
+            <div className="page d-inline-block mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Report - PL Match AccountWise</h6>
+                <div className="mb-1 text-right">
+                    <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
+                </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"100%"} height={500} 
+                    width={"600"} height={500} 
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 
                     editable={false}  filterable={true} showfilterrow={true} />
             </div>

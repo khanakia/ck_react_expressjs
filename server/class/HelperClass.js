@@ -39,5 +39,14 @@ module.exports = {
         } else {
           console.log(dirPath)
         }
+    },
+
+
+    stringToBoolean(val) {
+        if(val==null || val=="false" || val==false ) {
+            return false
+        }
+        return true
     }
+
 };

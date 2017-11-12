@@ -7,14 +7,81 @@ body {
 	/*min-height: 900px;*/
 	font-size: 13px;
 }
+
+.container-fluid {
+	padding: 0 10px;
+}
+
+.row {
+	margin-right: -10px;
+    margin-left: -10px;
+}
+
 main {
 	padding: 10px 0;
 }
 
-#contentjqxgrid > span:last-of-type {
-  display: none !important;
+.page {
+	border: 1px solid #999;
+    padding: 10px;
 }
 
+.page1200 {
+	max-width: 1200px;
+	border: 1px solid #999;
+    padding: 10px;
+}
+
+
+
+/* UTILITIES */
+.hidden {
+	display: none;
+}
+
+.px-5px {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.w-50p {
+	width: 50px;
+}
+.w-100p {
+	width: 100px;
+}
+.w-300p {
+	width: 300px;
+}
+
+.w-310px {
+	max-width: 310px;
+}
+.mx-w-310px {
+	max-width: 310px;
+}
+.mx-w-600px {
+	max-width: 600px;
+}
+
+.m-b-md {
+    margin-bottom: 30px;
+}
+
+.v-align-middle {
+	vertical-align: middle;
+}
+
+input.error {
+	border: 1px solid red;
+}
+
+.error-hide+label.error {
+	display: none !important;
+}
+
+
+
+/* BOOTSTRAP */
 select.form-control-sm:not([size]):not([multiple]) {
 	height: 26px;
 }
@@ -31,44 +98,13 @@ select.form-control-sm:not([size]):not([multiple]) {
 
 .btn-sm, .btn-group-sm > .btn {
     padding: 2px 5px;
-}
-
-.w-310px {
-	max-width: 310px;
-}
-.mx-w-310px {
-	max-width: 310px;
+    font-size: 12px;
 }
 
 
-.page {
-	border: 1px solid #999;
-    padding: 10px;
-}
-
-.page1200 {
-	max-width: 1200px;
-	border: 1px solid #999;
-    padding: 10px;
-}
 
 
-.jqx-grid {
-	/*border: none;
-	&.jqx-widget-content
-	        {
-	            background-color: transparent !important;
-	}*/
-}
-
-/*.jqx-grid-cell.jqx-item {
-	background: #c7caef;
-}
-.jqx-grid-cell-alt.jqx-item {
-    background: #efc7ea;
-}*/
-
-
+/* OTHERS */
 fieldset 
 {
 	border: 1px solid #ddd !important;
@@ -95,48 +131,23 @@ legend
 }
 
 
-input.error {
-	border: 1px solid red;
+
+/* JQWIDGERS */
+.jqx-grid {
+	/*border: none;
+	&.jqx-widget-content
+	        {
+	            background-color: transparent !important;
+	}*/
 }
 
-.hidden {
-	display: none;
+/*.jqx-grid-cell.jqx-item {
+	background: #c7caef;
 }
+.jqx-grid-cell-alt.jqx-item {
+    background: #efc7ea;
+}*/
 
-
-.error-hide+label.error {
-	display: none !important;
-}
-
-.w-50p {
-	width: 50px;
-}
-.w-100p {
-	width: 100px;
-}
-.w-300p {
-	width: 300px;
-}
-.uk-width-1-12 {
-    width: calc(100% * 1 / 12.001);
-}
-
-@media screen and (max-width: 1200px) {
-	.uk-width-1-12 {
-	    width: calc(100% * 1 / 7.001);
-	}
-}
-.uk-padding-left-5 {
-	padding-left: 5px !important;
-}
-
-.uk-padding-right-5 {
-	padding-right: 5px !important;
-}
-
-.v-align-middle {
-	vertical-align: middle;
-}
 
 .jqx_cell_disabled input[type="button"] {
 	display: none;
@@ -150,8 +161,51 @@ input.error {
 	background: #f8d7da;
 }
 
+
+
 .jqxMenu-topmenu {
 	width: 100%;
+	padding-left: 10px;
+
+
+	.logo {
+		background-image: url('../images/icon-betfair.png');
+	    background-size: 20px;
+	    width: 23px;
+	    height: 18px;
+	    display: inline-block;
+	    background-repeat: no-repeat;
+	    background-position: left center;
+	}
+
+	.logo + a {
+	    display: inline-block;
+	    vertical-align: middle;
+	}
+
+	.jqx-menu-ul {
+		> li:first-child {
+			border: none;
+		}
+
+		> li {
+		    border: 1px solid #c7c0c0;
+		}
+	}
+}
+
+
+#contentjqxgrid > span:last-of-type {
+  display: none !important;
+}
+
+
+
+/* COMPONENTS */
+.mdiPage {
+	min-width: 1200px;
+	padding: 0 10px;
+	/*border: 1px solid #999;*/
 }
 
 .info-heading-block {
@@ -173,9 +227,11 @@ input.error {
 
 /*SESSION INFO BLOCK*/
 .sessioninfo-block {
+	margin-top: 2px;
+	margin-bottom: 2px;
 	.col-auto {
 		/*padding: 0;*/
-		width: 130px;
+		/*width: 130px;*/
 	}
 	label {
 		background: #353434;
@@ -194,6 +250,70 @@ input.error {
 }
 
 
+.sessionGridsRow {
+	.acol {
+		float: left;
+		padding: 0 5px;
+	}
+
+	.acol1 {
+		width: 68%;
+	}
+
+	.acol2 {
+		width: 12%;
+	}
+
+	.acol3 {
+		width: 20%;
+	}
+
+	@media screen and (max-width: 1200px) {
+		.acol1 {
+			width: 770px;
+		}
+
+		.acol2 {
+			width: 165px;
+		}
+
+		.acol3 {
+			width: 260px;
+		}
+	}
+}
+
+
+.matchEntryRow {
+	.acol {
+		float: left;
+		padding: 0 5px;
+	}
+
+	.acol1 {
+		width: 85%;
+	}
+
+	.acol2 {
+		width: 14%;
+	}
+
+	@media screen and (max-width: 1200px) {
+		.acol1 {
+			width: 810px;
+		}
+
+		.acol2 {
+			width: 165px;
+		}
+	}
+}
+
+
+
+
+
+
 /* HOEMPAGE*/
 .pageHome {
 	font-family: 'Raleway', sans-serif;
@@ -203,48 +323,58 @@ input.error {
     height: 100vh;
     margin: 0;
     margin: -20px;
+
+    .logo {
+		background-image: url('../images/icon-betfair.png');
+	    background-size: 50px;
+	    width: 50px;
+	    height: 50px;
+	    display: inline-block;
+	    background-repeat: no-repeat;
+	    background-position: left center;
+	}
+
+	.full-height {
+	    height: 100vh;
+	}
+
+	.flex-center {
+	    align-items: center;
+	    display: flex;
+	    justify-content: center;
+	}
+
+	.position-ref {
+	    position: relative;
+	}
+
+	.top-right {
+	    position: absolute;
+	    right: 10px;
+	    top: 18px;
+	}
+
+	.content {
+	    text-align: center;
+	    background: #fdf7f8;
+	    padding: 20px;
+	    border: 1px solid;
+	}
+
+	.title {
+	    font-size: 84px;
+	}
+
+	.links > a {
+	    color: #636b6f;
+	    padding: 0 25px;
+	    font-size: 12px;
+	    font-weight: 600;
+	    letter-spacing: .1rem;
+	    text-decoration: none;
+	    text-transform: uppercase;
+	}
 }
 
-.full-height {
-    height: 100vh;
-}
-
-.flex-center {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
-
-.position-ref {
-    position: relative;
-}
-
-.top-right {
-    position: absolute;
-    right: 10px;
-    top: 18px;
-}
-
-.content {
-    text-align: center;
-}
-
-.title {
-    font-size: 84px;
-}
-
-.links > a {
-    color: #636b6f;
-    padding: 0 25px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: .1rem;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-
-.m-b-md {
-    margin-bottom: 30px;
-}
 
 

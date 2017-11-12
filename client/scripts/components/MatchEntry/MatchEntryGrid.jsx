@@ -139,7 +139,7 @@ class MatchEntryGrid extends Component {
             <div>
                 <JqxGrid key={Math.random()}
                   ref="jqxgrid"
-                  width={"100%"} height={400} source={this.dataAdapter} pageable={true}
+                  width={"100%"} height={400} source={this.dataAdapter} pageable={false}
                   sortable={true} altrows={false} enabletooltips={false}
                   editable={false} columns={columns}
                   filterable={true} showfilterrow={true}

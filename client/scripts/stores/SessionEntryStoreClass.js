@@ -19,6 +19,12 @@ export class SessionEntryStoreClass {
         sessionWinLossList: [],
     }
 
+    clearAll() {
+        this.sessionEntriesList = []
+        this.sessionPlInfo = {}
+        this.sessionWinLossList = []
+    }
+
     fetchAll(sessionId) {
         axios.all([
             this.fetchList(sessionId),

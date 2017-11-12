@@ -77,7 +77,7 @@ class BackupDbGrid extends Component {
             <div>
          		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns}
-                    width={"100%"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
+                    width={"450"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={false} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false} />

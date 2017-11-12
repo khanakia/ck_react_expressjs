@@ -31,15 +31,15 @@ class SessionInfoBlock extends Component {
                     </div>
                     <div className="col-auto">
                         <label>Is Declared:</label>
-                        {item.is_declared ? 'True' : 'False'}
+                        {item.is_declared ? 'Yes' : 'No'}
                     </div>
                     <div className="col-auto">
                         <label>Is Abandoned:</label>
-                        {item.is_abandoned ? 'True' : 'False'}
+                        {item.is_abandoned ? 'Yes' : 'No'}
                     </div>
                     <div className="col-auto">
                         <label>Is Monday Final:</label>
-                        {item.is_monday_final ? 'True' : 'False'}
+                        {item.is_monday_final ? 'Yes' : 'No'}
                     </div>
                 </div>
             </div>

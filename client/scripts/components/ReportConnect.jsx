@@ -24,21 +24,38 @@ class ReportConnect extends Component {
 
     }
 
+
+    exportConnectReport = () => {
+        // this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
+
+        var filters = this.refs.allMatchGrid.getSelectedRowsData()
+
+        axios({
+        method: 'post',
+          url: "/exportreports/connect_report",
+          data: filters
+        })
+        .then((res) => {
+            window.location.href = res.data.fileDownloadUrl  
+        })
+
+    }
+
     render() {
         // const {matchList} = this.props.matchStore
         // const {sessionList} = this.props.sessionStore
         const {connectListMatches, connectReportList} = this.props.reportStore
 
         return (
-            <div>
-         		<h5>Report - Connect</h5>
-                <div className="row">
-                    <div className="col-md-6">
+            <div className="page mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Report - Connect</h6>
+                <div className="">
+                    <div className="">
                         <button className="btn btn-sm btn-primary" onClick={this.connectReport}>Connect</button>
                         <AllMatchGrid ref="allMatchGrid" entriesList={connectListMatches}  />
                     </div>
-                    <div className="col-md-6">
-                        <ReportConnectGrid entriesList={connectReportList} />
+                    <div className="">
+                        <ReportConnectGrid entriesList={connectReportList} exportReportClick={this.exportConnectReport} />
                     </div>
 
                 </div>

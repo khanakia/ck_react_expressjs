@@ -116,4 +116,14 @@ module.exports = {
 
         return ResponseHelper.ok(200, 'Successfully saved.')
     },
+
+    async list(args={is_company: null}) {
+        var filters = {}
+        if(args.is_company!==null) {
+            filters.is_company = args.is_company
+        }
+        return AccountModel.find(filters)
+    }
+
+
 };

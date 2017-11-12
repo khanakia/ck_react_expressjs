@@ -23,8 +23,8 @@ class BackupDb extends Component {
     render() {
     	const {dbBackupList} = this.props.backupStore
         return (
-            <div>
-         		<h5>Backup Databases</h5>
+            <div className="page d-inline-block mx-2">
+                <h6><i className="fa fa-bar-chart"></i> Backup Database</h6>
          		<div className="mb-1">
                     <button className="btn btn-sm btn-primary" onClick={this.backupDb}>Backup DB</button>
                 </div>

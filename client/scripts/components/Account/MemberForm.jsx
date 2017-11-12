@@ -58,7 +58,7 @@ class MemberForm extends Component {
         const item = Object.assign({}, this.defaultItem, this.props.item || {} )
         return (
             <div className="">
-                <form className="moustrapform" ref="form" key={`form_${item._id}`}>
+                <form className="moustrapform" ref="form" key={Math.random()}>
                     <div className="form-row">
                         <div className="form-group col-md-4">
                             <label className="col-form-label">Name</label>

@@ -45,6 +45,367 @@ module.exports = {
         return matches;
     },
 
+    async balanceSheet() {
+        var aggregate = [];
+        // if(args.account_id) {
+        //     aggregate.push(
+        //         {
+        //             $match: {
+        //                 // 'account_id' : parseInt(args.account_id)
+        //             }
+        //         }
+        //     )
+        // }
+
+        aggregate.push({
+            $lookup: {
+                    from: "journals",
+                    localField: "journal_id",
+                    foreignField: "_id",
+                    as: "journal"
+                }
+            },
+
+            {
+                $unwind: "$journal"
+            },
+
+            {
+                $lookup: {
+                    from: "accounts",
+                    localField: "account_id",
+                    foreignField: "_id",
+                    as: "account"
+                }
+            },
+
+            {
+                $unwind: "$account"
+            },
+
+
+            // {
+            //     $match: {
+            //         'journal_id' : parseInt(103)
+            //     }
+            // },
+
+            {
+                $group: {
+                    _id: {
+                        "account_id": "$account_id",
+                        // "account_name" : "$account.account_name" ,
+                    },
+                    "account_id": { $first: "$account_id" },
+                    "account_name": { $first: "$account.account_name" },
+                    "bal": { $sum: "$bal" },
+
+                }
+            },
+
+            {
+                $project: {
+                    _id: 1,
+                    journal_id: 1,
+                    match_id: "$journal.match_id",
+                    ref_type: "$journal.ref_type",
+                    ref_id: "$journal.ref_id",
+                    account_id: 1,
+                    dr_amt: 1,
+                    cr_amt: 1,
+                    bal: 1,
+                    created_at: 1,
+                    narration: 1,
+                    "account_name": 1,
+                }
+            }
+        );
+
+        var items = await JournalEntryModel.aggregate(aggregate)
+     
+        var items_pos = _.filter(items, function(o) { return o.bal > 0; });
+        var items_neg = _.filter(items, function(o) { return o.bal < 0; });
+
+        var newItems = [];
+        items_pos.map((item, i) => {
+            newItems[i] = {
+                account_id: item.account_id,
+                account_name: item.account_name,
+                bal: item.bal,
+                empty: '',
+                account_id1: '',
+                account_name1: '',
+                bal1: '',
+            }
+        })
+
+        items_neg.map((item1, i) => {
+            newItems[i] = Object.assign({}, newItems[i], {
+                account_id: newItems[i] ? newItems[i].account_id : null,
+                account_name: newItems[i] ? newItems[i].account_name : null,
+                bal: newItems[i] ? newItems[i].bal : null,
+                empty: '',
+                account_id1: item1.account_id,
+                account_name1: item1.account_name,
+                bal1: item1.bal,
+            })
+        })
+
+        return newItems
+
+    },
+
+    async plMatchWise() {
+        var aggregate = [];
+        aggregate.push(
+            {
+                $lookup: {
+                    from: "journals",
+                    localField: "journal_id",
+                    foreignField: "_id",
+                    as: "journal"
+                }
+            },
+
+            {
+                $unwind: "$journal"
+            },
+
+            {
+                $lookup: {
+                    from: "matches",
+                    localField: "journal.match_id",
+                    foreignField: "_id",
+                    as: "match"
+                }
+            },
+
+            {
+                $unwind: "$match"
+            },
+
+            {
+            "$match": {
+                    "journal.match_id": { "$exists": true, "$ne": null }
+                }
+            },
+
+            {
+                $project: {     
+                    match_name: "$match.match_name",
+                    match_id: "$journal.match_id",
+                    ref_type: "$journal.ref_type",
+                    type: 1,
+                    bal : 1,
+                    is_company: 1,
+                }
+            },
+
+            {
+                $group: {
+                    _id: {
+                        "match_id" : "$match_id",
+                    },
+                    "match_id" : { $first: "$match_id"  },
+                    "match_name" : { $first: "$match_name"  },
+                    
+                    'bal': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$type", "PL" ] },
+                                           { "$eq": [ "$is_company", true ] },
+                                       ]
+                                    },
+
+                                    // heree i added -1 becuase it is book account which is DR so it will show +ver
+                                    // infacet we have to take money from book if DR but we are book ourselves
+                                    {$multiply: ['$bal', -1] }, 
+                                    0
+                                ]
+                            }
+                    },
+
+                    'comm_match': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Match Team" ] },
+                                           { "$eq": [ "$type", "Commission" ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+                    'patti_match': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Match Team" ] },
+                                           { "$eq": [ "$type", "Patti" ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+                    'pl_match': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Match Team" ] },
+                                           { "$eq": [ "$type", "PL" ] },
+                                           { "$eq": [ "$is_company", false ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+
+                    'comm_session': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Session" ] },
+                                           { "$eq": [ "$type", "Commission" ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+                    'patti_session': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Session" ] },
+                                           { "$eq": [ "$type", "Patti" ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+                    'pl_session': { 
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$eq": [ "$ref_type", "Session" ] },
+                                           { "$eq": [ "$type", "PL" ] },
+                                           { "$eq": [ "$is_company", false ] },
+                                       ]
+                                    },
+                                    '$bal', 
+                                    0
+                                ]
+                            }
+                    },
+                }
+            }
+            
+        );
+
+        var items = await JournalEntryModel.aggregate(aggregate);
+        return items
+    },
+
+
+    async plMatchAccountWise() {
+        var aggregate = [];
+        aggregate.push(
+            {
+                $lookup: {
+                    from: "journals",
+                    localField: "journal_id",
+                    foreignField: "_id",
+                    as: "journal"
+                }
+            },
+
+            {
+                $unwind: "$journal"
+            },
+
+            {
+                $lookup: {
+                    from: "matches",
+                    localField: "journal.match_id",
+                    foreignField: "_id",
+                    as: "match"
+                }
+            },
+
+            {
+                $unwind: "$match"
+            },
+
+            {
+                $lookup: {
+                    from: "accounts",
+                    localField: "account_id",
+                    foreignField: "_id",
+                    as: "account"
+                }
+            },
+
+            {
+                $unwind: "$account"
+            },
+
+            {
+            "$match": {
+                    "journal.match_id": { "$exists": true, "$ne": null },
+                    "is_company" : { "$in": [null, false] },
+                }
+            },
+
+            {
+                $project: {     
+                    account_id: 1,
+                    account_name: "$account.account_name",
+                    match_id: "$journal.match_id",
+                    match_name: "$match.match_name",
+                    bal : 1,
+                }
+            },
+
+            {
+                $group: {
+                    _id: {
+                        "match_id" : "$match_id",
+                        "account_id" : "$account_id",
+                    },
+                    "match_id" : { $first: "$match_id"  },
+                    "match_name" : { $first: "$match_name"  },
+                    "account_id" : { $first: "$account_id"  },
+                    "account_name" : { $first: "$account_name"  },
+                    
+                    'bal': { 
+                            '$sum': '$bal'
+                    },
+                }        
+            } 
+        );
+
+        var items = await JournalEntryModel.aggregate(aggregate);
+
+        return items;
+    },
+
     async connectReport(filters=[]) {
 
         if(filters.length == 0) {

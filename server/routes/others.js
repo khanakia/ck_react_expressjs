@@ -8,11 +8,19 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 
+var AccountClass = require('../class/AccountClass')
+
+
 router.get('/', function(req, res, next) {
 	res.send(aman)
-
-
 });
+
+
+router.get('/create_book_account', function(req, res, next) {
+	var companyAccountId = AccountClass.getCompanyAccounId()
+    res.send({success: 1})
+    // res.redirect("/")
+})
 
 router.get('/start_anydesk', function(req, res, next) {
 	var commandExec = exec("start anydesk.exe", { silent: true })

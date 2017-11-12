@@ -8,8 +8,8 @@ export class AccountStoreClass {
 	@observable accountList = [];
 	
 	
-	fetchList() {
-        AccountHelper.index().then( (res) => {
+	fetchList(params={is_company: null}) {
+        AccountHelper.index(params).then( (res) => {
             this.accountList = res.data
         })
     }

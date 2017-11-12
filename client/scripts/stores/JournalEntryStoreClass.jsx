@@ -7,7 +7,7 @@ export class JournalEntryStoreClass {
 	@observable fetched = false;
 	@observable journal = {};
 	@observable journalEntriesList = [];
-	@observable accountBalanceList = [];
+	// @observable accountBalanceList = [];
 	@observable selectedAccMonFinalBal = 0;
 	@observable selectedAccBal = 0;
 
@@ -22,14 +22,14 @@ export class JournalEntryStoreClass {
 	    .catch(() => this.fetched = false);
 	}
 
-	fetchAccountBalanceList() {
-		axios.get('/journal_entries/balance', {
-  		})
-	    .then((res) => {
-	    	this.accountBalanceList = res.data
-	    })
-	    .catch(() => this.fetched = false);
-	}
+	// fetchAccountBalanceList() {
+	// 	axios.get('/journal_entries/balance', {
+ //  		})
+	//     .then((res) => {
+	//     	this.accountBalanceList = res.data
+	//     })
+	//     .catch(() => this.fetched = false);
+	// }
 
   	fetchListByAccount(account_id, is_monday_final=false) {
 		axios.get('/journal_entries', {

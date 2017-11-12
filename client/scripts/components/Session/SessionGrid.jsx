@@ -176,7 +176,7 @@ class SessionGrid extends Component {
             <div>
                 <JqxGrid ref="jqxgrid"
                     source={this.dataAdapter} columns={this.columns}
-                    width={"100%"} height={400} pageable={false}
+                    width={"100%"} height={365} pageable={false}
                     sortable={true} altrows={false} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false}

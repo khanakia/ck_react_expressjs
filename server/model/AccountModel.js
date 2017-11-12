@@ -44,5 +44,12 @@ tableSchema.plugin(autoIncrement.plugin, {
     startAt: 1,
 });
 
+
+tableSchema.pre('save', function (next) {
+  // capitalize
+  this.account_name = this.account_name.charAt(0).toUpperCase() + this.account_name.slice(1);
+  next();
+});
+
 /* global db */
 module.exports = db.model('Account', tableSchema);	

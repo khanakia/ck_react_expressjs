@@ -25,6 +25,11 @@ class JournalEntry extends Component {
             // this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
             this.fetch()
         }
+
+
+        axios.get("/others/create_book_account")
+
+
     }
 
 
@@ -73,8 +78,21 @@ class JournalEntry extends Component {
     }
 
 
-    exportToPdf = () => {
-        this.refs.entryGrid.refs.jqxgrid.exportdata('pdf', 'journal');
+    exportReport = () => {
+        // this.refs.entryGrid.refs.jqxgrid.exportdata('pdf', 'journal');
+        // var filters = this.refs.allMatchGrid.getSelectedRowsData()
+
+        axios({
+        method: 'post',
+          url: "/exportreports/journal_entries",
+          data: {
+            account_id: this.props.match.params.account_id,
+            is_monday_final : this.refs.showMondayFinalChk.checked
+          }
+        })
+        .then((res) => {
+            window.location.href = res.data.fileDownloadUrl  
+        })
     }
 
     render() {  
@@ -82,8 +100,8 @@ class JournalEntry extends Component {
         const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal} = this.props.journalEntryStore
 
         return (
-            <div>
-                <h5>Journal Entry</h5>
+            <div className="page mx-2">
+                <h6><i className="fa fa-book"></i> Journal Entry</h6>
                 <div className="mb-2">
                     <div className="row">
                         <div className="col-md-6">
@@ -95,7 +113,7 @@ class JournalEntry extends Component {
                         </div>
                         <div className="col-md-6 text-right">
                             { account_id ?
-                            <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
+                            <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                             : '' }
                             <button className="btn btn-primary btn-sm" onClick={this.mondayFinal}>Monday Final</button>
                             <br />

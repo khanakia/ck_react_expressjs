@@ -167,8 +167,10 @@ class MatchEntry extends React.Component {
     }
     sessionEntry_onFormSubmitted = (response) => {
         this.refs.sessionEntryForm.resetForm()
-        // console.log(response.session_id)
         this.props.sessionEntryStore.fetchAll(response.session_id)
+
+        console.log(response)
+        this.props.sessionEntryStore.lastEnteredRun = response.runs
     }
 
     
@@ -189,7 +191,7 @@ class MatchEntry extends React.Component {
         // For Session Form
         const {selectedSessionId} = this.props.globalStore
         const {sessionList} = this.props.sessionStore
-        const {sessionWinLossList} = this.props.sessionEntryStore
+        const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
         
 
         const cssClassHidden = match.match_type=="Cup" ? ' hidden' : ''
@@ -225,15 +227,15 @@ class MatchEntry extends React.Component {
                                 teamsList={teamsList} />
                         </div>
 
-                        <div className="row">
-                            <div className="col-md-10">
+                        <div className="matchEntryRow">
+                            <div className="acol acol1">
                                 <MatchEntryGrid ref="matchGrid" 
                                     onEditButtonClick={this.onEditButtonClick}  onDataUpdate={this.matchGridOnDataUpdate}
                                     entriesList={entriesList}
                                     teamsList={teamsList} />
                             </div>
-                            <div className="col-md-2">
-                               <SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} />
+                            <div className="acol acol2">
+                               <SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
                             </div>
                         </div>
                     </div>

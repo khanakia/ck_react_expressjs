@@ -63,7 +63,7 @@ class Match extends Component {
 
         // console.log(matchList)
         return (
-            <div className="page1200">
+            <div className="page1200 mx-2">
                 <h6><i className="fa fa-futbol-o"></i> Match</h6>
                 <div className="row">
                     <div className="col-md-6">

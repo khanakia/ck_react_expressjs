@@ -8,7 +8,7 @@ const ObjectId1 = mongoose.Types.ObjectId;
 var JournalModel = require('../model/JournalModel')
 var JournalEntryModel = require('../model/JournalEntryModel')
 var MatchModel = require('../model/MatchModel')
-var ResponseHelper = require('../class/ResponseHelper')
+// var ResponseHelper = require('../class/ResponseHelper')
 
 module.exports = {
 
@@ -63,6 +63,7 @@ module.exports = {
     },
 
     list(args = {}) {
+        // console.log(args)
         var aggregate = [];
         var match = {}
         if(args.account_id) {
@@ -70,11 +71,15 @@ module.exports = {
         }
 
         // By Default it will be false
-        if(args.is_monday_final==null || args.is_monday_final=="false") {
-            match['is_monday_final'] = false
-            
-        }
+        // if(args.is_monday_final==null || args.is_monday_final=="false" || args.is_monday_final==false ) {
+        //     match['is_monday_final'] = false
+        // }
+
+        match['is_monday_final'] = HelperClass.stringToBoolean(args.is_monday_final)
         
+
+        console.log(match)
+
         aggregate.push(
             {
                 $match: match

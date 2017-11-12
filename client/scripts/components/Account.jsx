@@ -14,7 +14,7 @@ class Account extends Component {
     }
 
     componentDidMount() {
-        this.props.accountStore.fetchList()
+        this.props.accountStore.fetchList({is_company: false})
         if(this.props.match.params.id) {
             this.props.accountStore.fetch(this.props.match.params.id)
         }
@@ -28,12 +28,17 @@ class Account extends Component {
     }
 
     onFormSubmit = () => {
-        if(!this.props.match.params.id) {
-            this.props.accountStore.account = {}
-        } else {
+        console.log(this.props.match.params.id)
+        if(typeof this.props.match.params.id!=="undefined" && this.props.match.params.id) {
+            console.log('1')
+            // this.props.accountStore.account = {}
             this.props.accountStore.fetch(this.props.match.params.id)
+        } else {
+            console.log('2')
+            this.props.accountStore.account = {}
+            // this.props.accountStore.fetch(this.props.match.params.id)
         }
-        this.props.accountStore.fetchList()
+        this.props.accountStore.fetchList({is_company: false})
     }
 
     editItem = (id) => {        
@@ -47,7 +52,7 @@ class Account extends Component {
     }
 
     accountGrid_onDataUpdate = () => {
-        this.props.accountStore.fetchList()
+        this.props.accountStore.fetchList({is_company: false})
         if(this.props.match.params.id) {
             this.props.accountStore.fetch(this.props.match.params.id)
         }
@@ -55,7 +60,7 @@ class Account extends Component {
     render() {
         const {accountList, account} = this.props.accountStore
         return ( 
-            <div className="page1200">
+            <div className="page1200 mx-2">
                 <h6><i className="fa fa-user"></i> Account</h6>
                 <div className="row">
                     <div className="col-md-4">

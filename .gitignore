@@ -75,6 +75,7 @@ ck-electron-app
 /server/mongodb/
 /server/backup/
 /server/log/
+/server/temp/
 /dist/
 /electron/
 /nwjs/

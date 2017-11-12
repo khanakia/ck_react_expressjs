@@ -28,12 +28,13 @@ var session_entries = require('./routes/session_entries');
 var others = require('./routes/others');
 var reports = require('./routes/reports');
 var backups = require('./routes/backups');
+var exportreports = require('./routes/exportreports');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -43,6 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower', express.static(path.join(__dirname, 'node_modules/@bower_components')));
+app.use('/temp', express.static(DIR_TEMP));
 
 
 var routerMiddleware = router.use(function (req, res, next) {
@@ -77,6 +79,7 @@ app.use('/session_entries', session_entries);
 app.use('/others', others);
 app.use('/reports', reports);
 app.use('/backups', backups);
+app.use('/exportreports', exportreports);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
