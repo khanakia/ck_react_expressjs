@@ -68,6 +68,7 @@ chromedriver
 ckdb.archive
 ck-server.exe
 .env
+ck-electron-app
 
 # For Development purpose one
 /server/public/dist/
