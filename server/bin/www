@@ -9,6 +9,7 @@ global.AppClass = require('../class/AppClass')
 global.HelperClass = require('../class/HelperClass')
 global.ResponseHelper = require('../class/ResponseHelper')
 
+global.APP_SECRET = process.env.APP_SECRET || "81F44FB42275569BF89A1946CC631"
 global.APP_URL = process.env.APP_URL || "http://localhost:3000"
 global.DIR_DIST = process.env.DIR_DIST || "."
 global.DIR_TEMP = `${DIR_DIST}/temp`

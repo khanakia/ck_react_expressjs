@@ -27,6 +27,7 @@ class MatchDeclare extends Component {
     setWinner = (matchTeamId) => {
     	axios({
             method: 'post',
+            headers: Auth.header(),
             url: URL_MATCH_TEAMS_SET_WINNER,
             data: {
                 match_team_id: matchTeamId
@@ -41,6 +42,7 @@ class MatchDeclare extends Component {
     setLoser = (matchTeamId) => {
     	axios({
             method: 'post',
+            headers: Auth.header(),
             url: URL_MATCH_TEAMS_SET_LOSER,
             data: {
                 match_team_id: matchTeamId
@@ -55,6 +57,7 @@ class MatchDeclare extends Component {
     unsetLoser = (matchTeamId) => {
     	axios({
             method: 'post',
+            headers: Auth.header(),
             url: URL_MATCH_TEAMS_SET_UNSET_LOSER,
             data: {
                 match_team_id: matchTeamId

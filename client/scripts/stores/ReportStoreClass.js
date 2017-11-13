@@ -9,6 +9,7 @@ export class ReportStoreClass {
 	@observable plMatchWiseList = [];
 	@observable connectListMatches = [];
 	@observable connectReportList = [];
+	@observable activityLogList = [];
 	
 	fetchAccountBalanceList() {
 		axios.get('/reports/balance_sheet', {
@@ -63,6 +64,15 @@ export class ReportStoreClass {
   		})
 	    .then((res) => {
 	    	this.plMatchWiseList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
+	fetchActivityLogList() {
+		axios.get('/reports/activity_log', {
+  		})
+	    .then((res) => {
+	    	this.activityLogList = res.data
 	    })
 	    .catch(() => this.fetched = false);
 	}

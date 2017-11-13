@@ -3,6 +3,7 @@ export default class MatchEntryHelper {
 	static index(data) {
 		return axios({
 	    method: 'get',
+	    headers: Auth.header(),
 	      url: "/match_entries"
 	    })
 	}
@@ -10,6 +11,7 @@ export default class MatchEntryHelper {
 	static show(id) {
 		return axios({
 	    method: 'get',
+	    headers: Auth.header(),
 	      url: "/match_entries/"+id
 	    })
 	}
@@ -17,6 +19,7 @@ export default class MatchEntryHelper {
 	static store(data) {
 		return axios({
 	    method: 'post',
+	    headers: Auth.header(),
 	      url: "/match_entries",
 	      data: data
 	    })
@@ -25,6 +28,7 @@ export default class MatchEntryHelper {
 	static update(id,data) {
 		return axios({
 	      method: 'put',
+	      headers: Auth.header(),
 	      url: "/match_entries/" + id,
 	      data: data
 	    })
@@ -34,6 +38,7 @@ export default class MatchEntryHelper {
 	static delete(id) {
 		return axios({
 	      method: 'delete',
+	      headers: Auth.header(),
 	      url: "/match_entries/"+id
 	    })
 	}

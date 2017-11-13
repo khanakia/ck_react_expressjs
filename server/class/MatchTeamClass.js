@@ -7,6 +7,8 @@ var Constant = require('../Constant')
 var MatchModel = require('../model/MatchModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
+var ActivityLogClass = require('../class/ActivityLogClass')
+
 module.exports = {
 
     async save(item) {
@@ -112,6 +114,8 @@ module.exports = {
         matchTeam.is_declared = true
         await matchTeam.save();
 
+        await ActivityLogClass.create({type: 'Match Team', action: 'Loser', data: matchTeam })
+
 
         //// If there is only single undeclared team left then set that team as winner
         var countUneclaredTeams = await this.countUneclaredTeams(matchTeam.match_id)
@@ -132,6 +136,7 @@ module.exports = {
             var winnerTeam = await this.getWinnerTeam(match._id)
             match.is_declared = true
             match.winner_teamid = winnerTeam.team_id
+            await ActivityLogClass.create({type: 'Match', action: 'Declared', data: match })
         }
 
         // match.declare_method = Constant.MATCH_DECLARE_METHOD.TEAM
@@ -160,6 +165,7 @@ module.exports = {
         matchTeam.is_declared = true
         await matchTeam.save();
 
+        await ActivityLogClass.create({type: 'Match Team', action: 'Winner', data: matchTeam })
 
         await MatchTeamModel.updateMany(
             { 
@@ -176,6 +182,7 @@ module.exports = {
         match.is_declared = true
         match.winner_teamid = matchTeam.team_id
         await match.save()
+        await ActivityLogClass.create({type: 'Match', action: 'Declared', data: match })
 
         await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)
@@ -197,6 +204,8 @@ module.exports = {
         matchTeam.is_declared = false
         await matchTeam.save();
 
+
+        await ActivityLogClass.create({type: 'Match Team', action: 'Undeclared', data: matchTeam })
         
         await MatchTeamModel.updateMany(
             { 
@@ -215,6 +224,7 @@ module.exports = {
         // match.declare_method = countDeclaredTeams == 0 ? null : Constant.MATCH_DECLARE_METHOD.TEAM
         match.is_declared = false
         await match.save()
+        await ActivityLogClass.create({type: 'Match', action: 'UnDeclared', data: match })
 
         await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)

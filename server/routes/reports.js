@@ -4,8 +4,9 @@ var async = require("async");
 var _ = require('lodash');
 
 var ReportClass = require('../class/ReportClass')
-var JournalEntryModel = require('../model/JournalEntryModel')
+var ActivityLogClass = require('../class/ActivityLogClass')
 var JournalEntryClass = require('../class/JournalEntryClass')
+var JournalEntryModel = require('../model/JournalEntryModel')
 
 router.get('/connect_list_matches', function(req, res, next) {
     ReportClass.connectListMatches().then(function(data){
@@ -41,6 +42,14 @@ router.get('/pl_matchwise', function(req, res, next) {
 
 router.get('/pl_match_accountwise', function(req, res, next) {
     ReportClass.plMatchAccountWise().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+});
+
+router.get('/activity_log', function(req, res, next) {
+    ActivityLogClass.list().then(function(data){
         res.send(data)    
     }).catch((err)=>{
         res.send(err)

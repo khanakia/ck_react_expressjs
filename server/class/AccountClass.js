@@ -14,7 +14,7 @@ module.exports = {
     async canBid(accountId) {
         if(!accountId) return false;
         var account = await AccountModel.findOne({_id : parseInt(accountId)})
-        console.log(account)
+        // console.log(account)
         return true;
     },
 
@@ -101,7 +101,7 @@ module.exports = {
         if(id) {
              try {
                 await AccountModel.findOneAndUpdate({_id: id}, item);
-                emitter.emit('accountUpdate', id);
+                EVENTEMITTER.emit('accountUpdate', id);
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
             }

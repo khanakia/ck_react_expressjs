@@ -5,8 +5,8 @@ var mongoose = require('mongoose');
 var Constant = require('../Constant')
 var SessionModel = require('../model/SessionModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
-var ResponseHelper = require('../class/ResponseHelper')
-
+// var ResponseHelper = require('../class/ResponseHelper')
+var ActivityLogClass = require('../class/ActivityLogClass')
 module.exports = {
 
     async declare(id, runs) {
@@ -21,6 +21,7 @@ module.exports = {
             await session.save() 
             await MatchSummaryClass.session_updateFinalWinLossAmt_bySession(id)
             await MatchSummaryClass.session_buildJournal(id)
+            await ActivityLogClass.create({type: 'Session', action: 'Declared', data: session })
             return ResponseHelper.ok(200, 'Successfully declared')
         } catch(err) {
             console.log(err)
@@ -37,6 +38,7 @@ module.exports = {
             await MatchSummaryClass.session_deleteJournal(id)
             session.declared_runs = null
             session.is_declared = false
+            await ActivityLogClass.create({type: 'Session', action: 'UnDeclared', data: session })
             await session.save()
         } catch(err) {
             throw(ResponseHelper.error(400, 'Cannot undeclare.'))

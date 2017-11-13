@@ -87,6 +87,7 @@ class MatchEntry extends React.Component {
         if (r == true) {
            axios({
                 method: 'post',
+                headers: Auth.header(),
                 url: "/matches/undeclare/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
@@ -103,6 +104,7 @@ class MatchEntry extends React.Component {
         if (r == true) {
            axios({
                 method: 'post',
+                headers: Auth.header(),
                 url: "/matches/abandon/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
@@ -119,6 +121,7 @@ class MatchEntry extends React.Component {
         if (r == true) {
            axios({
                 method: 'post',
+                headers: Auth.header(),
                 url: "/matches/unabandon/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)

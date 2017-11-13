@@ -92,6 +92,7 @@ class SessionEntry extends Component {
         if(declared_runs>=0) {
 			axios({
 				method: 'post',
+                headers: Auth.header(),
 				url: "/sessions/declare/"+rowdata._id,
 				data: {
 					declared_runs: declared_runs
@@ -112,6 +113,7 @@ class SessionEntry extends Component {
         if (r == true) {
            axios({
 				method: 'post',
+                headers: Auth.header(),
 				url: "/sessions/undeclare/"+rowdata._id
 			}).then((res) => {
 				// this.refs.sessionGrid.refresh()

@@ -6,7 +6,7 @@ import {
   Switch
 } from 'react-router-dom'
 import { render } from 'react-dom'
-import createBrowserHistory from 'history/createHashHistory';
+import createHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
 
 import {APP_URL_REPORT_CONNECT, APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
@@ -25,10 +25,8 @@ import { AccountStoreClass } from './stores/AccountStoreClass';
 import { ReportStoreClass } from './stores/ReportStoreClass';
 import { BackupStoreClass } from './stores/BackupStoreClass';
 import { ServerStatusStoreClass } from './stores/ServerStatusStoreClass';
+import { UserStoreClass } from './stores/UserStoreClass';
 
-
-
-const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
 const globalStore = new GlobalStoreClass();
 const matchStore = new MatchStoreClass();
@@ -42,6 +40,7 @@ const accountStore = new AccountStoreClass()
 const reportStore = new ReportStoreClass()
 const backupStore = new BackupStoreClass()
 const serverStatusStore = new ServerStatusStoreClass()
+const userStore = new UserStoreClass()
 
 const stores = {
   // Key can be whatever you want
@@ -57,14 +56,18 @@ const stores = {
   accountStore: accountStore,
   reportStore: reportStore,
   backupStore: backupStore,
-  serverStatusStore: serverStatusStore
+  serverStatusStore: serverStatusStore,
+  userStore: userStore
   // ...other stores
 };
 
-const history = syncHistoryWithStore(browserHistory, routingStore);
-
+window.hashHistory = createHistory()
+const history = syncHistoryWithStore(hashHistory, routingStore);
 
 import Layout from './components/Layout.jsx'
+import UserLogin from './components/UserLogin.jsx'
+import UserChangePassword from './components/UserChangePassword.jsx'
+
 import Home from './components/Home.jsx'
 // import State from './components/State.jsx'
 import Team from './components/Team.jsx'
@@ -83,15 +86,14 @@ import ReportPlMatchWise from './components/ReportPlMatchWise.jsx'
 import ReportConnect from './components/ReportConnect.jsx'
 import BackupDb from './components/BackupDb.jsx'
 import ServerStatus from './components/ServerStatus.jsx'
+import User from './components/User.jsx'
+import ActivityLog from './components/ActivityLog.jsx'
 
 
-// import observableTodoStore from './components/Todo.jsx'
 
-// const Home = () => (
-//   <div>
-//     Home
-//   </div>
-// )
+
+import Auth from './helpers/auth'
+window.Auth = Auth;
 
 window.sessionId = localStorage.getItem('sessionId', null);
 
@@ -100,8 +102,10 @@ const Root = () => (
   <Router history={history}>
     <div>
       <Switch>
+        <Route exact path="/" component={UserLogin}/>
         <Layout>
-    		    <Route exact path="/" component={Home}/>
+    		    <Route exact path="/dashboard" component={Home}/>
+            <Route exact path="/changepassword" component={UserChangePassword}/>
             <Route path="/demo" component={Demo}/>
             {/*<Route path="/states" component={State}/>*/}
             <Route path="/teams" component={Team}/>
@@ -121,6 +125,9 @@ const Root = () => (
             <Route path={APP_URL_REPORT_PL_MATCH_WISE} component={ReportPlMatchWise}/>
             <Route path={APP_URL_REPORT_PL_MATCH_ACCOUNTWISE} component={ReportPlMatchAccountWise}/>
 
+            <Route exact path="/activity_log" component={ActivityLog}/>
+            <Route exact path="/users" component={User}/>
+            <Route path="/users/:id" component={User}/>
             <Route path="/backupdb" component={BackupDb}/>
             <Route path="/server_status" component={ServerStatus}/>
 	    </Layout>

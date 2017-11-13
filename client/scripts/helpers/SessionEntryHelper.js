@@ -3,6 +3,7 @@ export default class SessionEntryHelper {
 	static index(data) {
 		return axios({
 	    method: 'get',
+	    headers: Auth.header(),
 	      url: "/session_entries"
 	    })
 	}
@@ -10,6 +11,7 @@ export default class SessionEntryHelper {
 	static show(id) {
 		return axios({
 	    method: 'get',
+	    headers: Auth.header(),
 	      url: "/session_entries/"+id
 	    })
 	}
@@ -17,14 +19,16 @@ export default class SessionEntryHelper {
 	static store(data) {
 		return axios({
 	    method: 'post',
-	      url: "/session_entries",
-	      data: data
+	    headers: Auth.header(),
+	    url: "/session_entries",
+	    data: data
 	    })
 	}
 
 	static update(id,data) {
 		return axios({
 	      method: 'put',
+	      headers: Auth.header(),
 	      url: "/session_entries/" + id,
 	      data: data
 	    })
@@ -34,6 +38,7 @@ export default class SessionEntryHelper {
 	static delete(id) {
 		return axios({
 	      method: 'delete',
+	      headers: Auth.header(),
 	      url: "/session_entries/"+id
 	    })
 	}
@@ -51,8 +56,9 @@ export default class SessionEntryHelper {
 	static count_book(match_id=null) {
 		return axios({
 	    method: 'get',
-	      url: "/session_entries/count_book",
-	      params: {
+	    headers: Auth.header(),
+	    url: "/session_entries/count_book",
+    	params: {
 	      	match_id : match_id
 	      }
 	    })

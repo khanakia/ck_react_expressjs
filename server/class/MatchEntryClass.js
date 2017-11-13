@@ -9,7 +9,8 @@ var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var AccountClass = require('./AccountClass')
 var MatchTeamClass = require('./MatchTeamClass')
-var ResponseHelper = require('../class/ResponseHelper')
+var ActivityLogClass = require('../class/ActivityLogClass')
+// var ResponseHelper = require('../class/ResponseHelper')
 
 module.exports = {
 
@@ -34,6 +35,7 @@ module.exports = {
              try {
                 let matchEntry = await MatchEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Updated', data: matchEntry })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -43,6 +45,7 @@ module.exports = {
                 let matchEntry = new MatchEntryModel(item)
                 await matchEntry.save();
                 await this.updateEntryAfterInsert(matchEntry._id)
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Created', data: matchEntry })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -58,7 +61,7 @@ module.exports = {
     async updateEntriesByAccount(accountId) {
         var matchEntries = await MatchEntryModel.find({account_id: accountId, is_summarized: {$in: [null, false]}})
         matchEntries.map( async (matchEntry, i) => {
-            console.log(matchEntry._id)
+            // console.log(matchEntry._id)
             await this.updateEntryAfterInsert(matchEntry.id)
         })
     },
@@ -328,7 +331,7 @@ module.exports = {
 
        // console.log(aggregate);
         var entries = await MatchEntryModel.aggregate(aggregate);
-        console.log(entries)
+        // console.log(entries)
 
         var teamArray = []
         matchTeams.map((item, i) => {
@@ -370,6 +373,7 @@ module.exports = {
         if(matchEntry && matchEntry.is_summarized==false) {
             try {
                 matchEntry.remove(cb)
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Removed', data: matchEntry })
             }
             catch (e) {
                throw(ResponseHelper.error(400, 'Cannot remove.'))

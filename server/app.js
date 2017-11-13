@@ -1,20 +1,25 @@
 var express = require('express');
 var router = express.Router()
-
 var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var jwt = require('jsonwebtoken');
 
+// EVENT EMITTER WITH HOOK
 var EventEmitter = require('events').EventEmitter;
-global.emitter = new EventEmitter();
+global.EVENTEMITTER = new EventEmitter();
 var EventHookClass = require('./class/EventHookClass')
 
+global.USERID = null
+global.USER = null
+
+// APP ROUTES
 var index = require('./routes/index');
 var demo = require('./routes/demo');
-// var users = require('./routes/users');
+var users = require('./routes/users');
 var teams = require('./routes/teams');
 var accounts = require('./routes/accounts');
 var match_types = require('./routes/match_types');
@@ -62,10 +67,49 @@ var routerMiddleware = router.use(function (req, res, next) {
 
 app.use(routerMiddleware)
 
+// route middleware to verify a token
+var authMiddleware = router.use(function(req, res, next) {
+
+  // https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+
+  // if(req.path.indexOf("users/login") !== -1) {
+  //   return next()
+  // }
+
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+  // decode token
+  if (token) {
+    // verifies secret and checks exp
+    jwt.verify(token, APP_SECRET, function(err, decoded) {      
+      if (err) {
+        // return res.json({ success: false, message: 'Failed to authenticate token.' });    
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        USERID = parseInt(decoded._id)
+        USER = decoded
+        // next();
+      }
+    });
+
+  } else {
+    // if there is no token
+    // return an error
+    // return res.status(403).send({ 
+    //     success: false, 
+    //     message: 'No token provided.' 
+    // });
+  }
+
+  next();
+});
+app.use(authMiddleware)
 
 app.use('/', index);
 app.use('/demo', demo);
-// app.use('/users', users);
+app.use('/users', users);
 app.use('/teams', teams);
 app.use('/accounts', accounts);
 app.use('/match_types', match_types);
@@ -87,6 +131,8 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
+
 
 // error handler
 app.use(function(err, req, res, next) {

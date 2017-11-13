@@ -5,7 +5,7 @@ var ResponseHelper = require('../class/ResponseHelper')
 var MatchModel = require('../model/MatchModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
-
+var ActivityLogClass = require('../class/ActivityLogClass')
 module.exports = {
     async undeclare(id) {
         id = parseInt(id)
@@ -16,6 +16,7 @@ module.exports = {
             match.is_declared = false
             match.winner_teamid = null
             await match.save()
+            await ActivityLogClass.create({type: 'Match', action: 'UnDeclared', data: match })
         } catch(err) {
             console.log(err)
             throw(ResponseHelper.error(400, 'Cannot undeclare.'))

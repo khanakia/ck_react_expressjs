@@ -1,6 +1,7 @@
 
 export const APP_TITLE = 'London Betexchange v1.0';
 
+export const APP_URL_USERS = '/users';
 export const APP_URL_ACCOUNTS = '/accounts';
 export const APP_URL_TEAMS = '/teams';
 export const APP_URL_MATCHES = '/matches';
@@ -17,6 +18,8 @@ export const APP_URL_REPORT_CONNECT = '/reports/connect'
 export const APP_LOCATION_HREF_MDI_MATCH = '/#' + APP_URL_MDI_MATCH + '/'
 
 
+export const API_URL_USER = '/users';
+export const API_URL_CHANGE_PWD = '/users/changepassword';
 
 
 export const URL_MATCHES = '/matches';
