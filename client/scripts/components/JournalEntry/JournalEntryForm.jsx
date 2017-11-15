@@ -108,13 +108,13 @@ class JournalEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto">
-                            <label>Pay (Dr.) <TooltipQuestion content="Dena (Naam)" /> </label>
+                            <label>Pay (Dr.) <TooltipQuestion content={Messages.JENTRY_FORM_PAY} /> </label>
                             <div>
                                 <InputDecimal className="form-control form-control-sm error-hide required number" name="dr_amt" value={item.dr_amt} />
                             </div>
                         </div>
                         <div className="col-auto">
-                            <label>Receive (Cr.) <TooltipQuestion content="Lena (Jama)" /></label>
+                            <label>Receive (Cr.) <TooltipQuestion content={Messages.JENTRY_FORM_RECEIVE} /></label>
                             <div>
                                 <InputDecimal className="form-control form-control-sm error-hide required number" name="cr_amt" value={item.cr_amt} />
                             </div>

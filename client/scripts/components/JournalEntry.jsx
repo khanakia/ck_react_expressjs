@@ -8,8 +8,6 @@ import JournalEntryGrid from './JournalEntry/JournalEntryGrid.jsx'
 import JournalEntryHelper from "helpers/JournalEntryHelper"
 import TooltipQuestion from './controls/TooltipQuestion';
 
-import { MESSAGE_JENTRY_GT_PROFIT, MESSAGE_JENTRY_GT_LOSS } from "../Constant"
-
 
 @inject('journalEntryStore')
 @observer
@@ -102,6 +100,10 @@ class JournalEntry extends Component {
         const account_id = this.props.match.params.account_id
         const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal, selectedAccCurrentBal} = this.props.journalEntryStore
 
+        console.log(Messages.JENTRY_GT_PROFIT)
+        var message = selectedAccBal > 0 ? Messages.JENTRY_GT_PROFIT : Messages.JENTRY_GT_LOSS
+        message = selectedAccBal==0 ? null : message
+        // console.log(message)
         return (
             <div className="page mx-2">
                 <div className="row info-heading-block">
@@ -116,15 +118,7 @@ class JournalEntry extends Component {
                     <div className="col-auto">
                         <label>Grand Total: </label>
                         <span className="d-inline-block">{selectedAccBal}</span>
-
-                        {
-                            selectedAccBal >0 
-                            ?
-                                <TooltipQuestion content={Messages/JENTRY_GT_PROFIT} />    
-                            :
-                                <TooltipQuestion content={Messages.JENTRY_GT_LOSS} />
-                        }
-                        
+                        <span className="ml-3 d-inline-block">{message}</span>
                     </div>
                 </div>
                 <h6><i className="fa fa-book"></i> Journal Entry</h6>

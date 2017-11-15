@@ -1,4 +1,7 @@
 {
-	"JENTRY_GT_PROFIT1" : "Profit: Book ko lena hai yeh amount.",
-	"JENTRY_GT_LOSS" : "LOSS: Book ko dena hai yeh amount."
+	"JENTRY_GT_PROFIT" : "Book ko profit hua. Book ko amount lena hai",
+	"JENTRY_GT_LOSS" : "Book ko nuksaan hua. Book ko amount dena hai.",
+
+	"JENTRY_FORM_PAY" : "Agar kisi ke naam maadne hai to isme amount daale. Naam ka matlab hum usko amount de rahe hai.",
+	"JENTRY_FORM_RECEIVE" : "Agar kisi ke jama karne hai to isme amount daale. Jama ka matlab humko amount mila hai."
 }
