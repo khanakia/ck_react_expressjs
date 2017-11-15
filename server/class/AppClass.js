@@ -8,6 +8,7 @@ var  autoIncrement = require('mongoose-auto-increment');
 
 module.exports = {
     async init() {
+        HelperClass.createDirIfNotExists(DIR_DIST)
         HelperClass.createDirIfNotExists(DIR_TEMP)
         HelperClass.createDirIfNotExists(DIR_LOG)
         HelperClass.createDirIfNotExists(DIR_BACKUP)

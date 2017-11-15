@@ -90,9 +90,9 @@ class JournalEntryGrid extends Component {
             { text: 'By Account', datafield: 'by_account_name', width: 150 },
             // { text: 'Account', datafield: 'account_name', width: 150 },
             { text: 'Narration', datafield: 'narration', width: 500 },
-            { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2' },
-            { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2' },
-            { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2' },
+            { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Is Monday Final', datafield: 'is_monday_final', width: 100, columntype: 'checkbox', filterable: false },
         ];
 
@@ -106,8 +106,10 @@ class JournalEntryGrid extends Component {
             <div>
                 <JqxGrid key={Math.random()} ref="jqxgrid"  source={this.dataAdapter} columns={this.columns} 
                         width={ "100%"} height={400}
-                        pageable={true} sortable={true} altrows={false} enabletooltips={false} 
+                        pageable={true} pagesize={200}  pagesizeoptions={['50', '100', '200']}
+                        sortable={true} altrows={false} enabletooltips={false} 
                         editable={false} filterable={true} showfilterrow={true} 
+                        showstatusbar={true} showaggregates={true} statusbarheight={25}
                         columnsresize={true} />
             </div>
         );

@@ -110,6 +110,8 @@ import RemoveAllRecord from './components/RemoveAllRecord.jsx'
 
 
 import Auth from './helpers/auth'
+import Messages from './Messages.json'
+window.Messages = Messages
 window.Auth = Auth;
 window.ReactDOM = ReactDOM
 window.React = React

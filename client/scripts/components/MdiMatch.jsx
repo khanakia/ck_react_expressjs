@@ -98,14 +98,13 @@ class MdiMatch extends Component {
 			    </ul>
 			    <div className="tab-content" id="pills-tabContent">
 			        <div className="tab-pane fade show active" id="pills-match" role="tabpanel" aria-labelledby="pills-match-tab">
-			        	<MeterEntry matchId={matchId} />
-			        	{/*<MatchEntry matchId={matchId} />*/}
+			        	<MatchEntry matchId={matchId} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
-			        	{/*<SessionEntry matchId={matchId} />*/}
+			        	<SessionEntry matchId={matchId} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-meter" role="tabpanel" aria-labelledby="pills-meter-tab">
-			        	Meter
+			        	<MeterEntry matchId={matchId} />
 			        </div>		    
 			    </div>
 	        </div>

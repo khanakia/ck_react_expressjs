@@ -72,7 +72,8 @@ class JournalEntryListGrid extends Component {
                         pageable={true} sortable={true} altrows={false} enabletooltips={false} 
                         editable={false} columns={columns} filterable={true} showfilterrow={true} 
                         columnsresize={true} 
-                        showstatusbar={true} showaggregates={true} statusbarheight={25} pagesize={500} />
+                        showstatusbar={true} showaggregates={true} statusbarheight={25} 
+                        pagesize={500} pagesizeoptions={['50', '100', '500']} />
             </div>
         );
     }

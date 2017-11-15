@@ -13,8 +13,8 @@ var JournalEntryModel = require('../model/JournalEntryModel')
 module.exports = {
 
     async connectListMatches() {
-        var matchList = await MatchClass.list()
-        var sessionList = await SessionClass.list()
+        var matchList = await MatchClass.list({is_declared: true})
+        var sessionList = await SessionClass.list({is_declared: true})
 
         var matches = [];
         matchList.map((item, i) => {
@@ -57,8 +57,9 @@ module.exports = {
         //     )
         // }
 
-        aggregate.push({
-            $lookup: {
+        aggregate.push(
+            {
+                $lookup: {
                     from: "journals",
                     localField: "journal_id",
                     foreignField: "_id",
@@ -66,8 +67,12 @@ module.exports = {
                 }
             },
 
-            {
-                $unwind: "$journal"
+            
+            {                
+                $unwind: {
+                    path: "$journal",
+                    preserveNullAndEmptyArrays: true
+                }
             },
 
             {
@@ -99,30 +104,37 @@ module.exports = {
                     "account_id": { $first: "$account_id" },
                     "account_name": { $first: "$account.account_name" },
                     "bal": { $sum: "$bal" },
+                    "is_company": { $first: "$is_company" },
 
                 }
             },
 
-            {
-                $project: {
-                    _id: 1,
-                    journal_id: 1,
-                    match_id: "$journal.match_id",
-                    ref_type: "$journal.ref_type",
-                    ref_id: "$journal.ref_id",
-                    account_id: 1,
-                    dr_amt: 1,
-                    cr_amt: 1,
-                    bal: 1,
-                    created_at: 1,
-                    narration: 1,
-                    "account_name": 1,
-                }
-            }
+            // {
+            //     $project: {
+            //         _id: 1,
+            //         journal_id: 1,
+            //         match_id: "$journal.match_id",
+            //         ref_type: "$journal.ref_type",
+            //         ref_id: "$journal.ref_id",
+            //         account_id: 1,
+            //         dr_amt: 1,
+            //         cr_amt: 1,
+            //         bal: 1,
+            //         created_at: 1,
+            //         narration: 1,
+            //         "account_name": 1,
+            //     }
+            // }
         );
 
         var items = await JournalEntryModel.aggregate(aggregate)
      
+       return items;
+
+    },
+
+    async balanceSheetGrid(items) {
+        var items = await this.balanceSheet()
         var items_pos = _.filter(items, function(o) { return o.bal > 0; });
         var items_neg = _.filter(items, function(o) { return o.bal < 0; });
 
@@ -152,7 +164,6 @@ module.exports = {
         })
 
         return newItems
-
     },
 
     async plMatchWise() {

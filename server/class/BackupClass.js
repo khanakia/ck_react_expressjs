@@ -34,6 +34,7 @@ module.exports = {
             // console.log(filePath)
             var fileStat = await fs.statSync(filePath)
             // console.log(fileStat)
+            if(!fileStat.isDirectory()) return false;
             filesArray.push({
                 name: filename,
                 created_at: fileStat.birthtime,
@@ -65,8 +66,14 @@ module.exports = {
 
         HelperClass.createDirIfNotExists(dirPath)
 
+        var platform = process.platform
+
         // var command = `cd backup && ..\\mongodb\\mongodump --db ckdb --gzip --out ${dirName}`
         var command = `cd ${DIR_BACKUP} && ..\\mongodb\\mongodump --db ckdb --gzip --out ${dirName}`
+
+        if(platform=="darwin") {
+            command = `cd ${DIR_BACKUP} && ../mongodb/mongodump --db ckdb --gzip --out ${dirName}`
+        }
         
         // var filename = "ckdb_"+ Date.now()+".archive"
         // var command = `cd backup && ..\\mongodb\\mongodump -d ckdb --archive=${filename}`
@@ -85,7 +92,15 @@ module.exports = {
 
     async restoreDb(dirName) {
         if(!dirName) return false
+
+        var platform = process.platform
+
         var command = `cd ${DIR_BACKUP} && ..\\mongodb\\mongorestore --db ckdb --drop --gzip --dir ${dirName}/ckdb`
+
+        if(platform=="darwin") {
+            command = `cd ${DIR_BACKUP} && ../mongodb/mongorestore --db ckdb --drop --gzip --dir ${dirName}/ckdb`
+        }
+
         // var command = `cd backup && ..\\mongodb\\mongorestore --archive=${filename}`
         var commandExec = exec(command, { silent: true })
         commandExec.stderr.on('data', (data) => {

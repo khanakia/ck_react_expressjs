@@ -4,6 +4,7 @@ import React from 'react'
 import JqxDateTimeInput from '../jqwidgets-react/react_jqxdatetimeinput.js';
 import ComboBoxMember from '../controls/ComboBoxMember.jsx'
 import InputDecimal from '../controls/InputDecimal.jsx'
+import TooltipQuestion from '../controls/TooltipQuestion';
 
 import JournalEntryHelper from '../../helpers/JournalEntryHelper'
 
@@ -107,13 +108,13 @@ class JournalEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto">
-                            <label>Pay (Dr.)</label>
+                            <label>Pay (Dr.) <TooltipQuestion content="Dena (Naam)" /> </label>
                             <div>
                                 <InputDecimal className="form-control form-control-sm error-hide required number" name="dr_amt" value={item.dr_amt} />
                             </div>
                         </div>
                         <div className="col-auto">
-                            <label>Receive (Cr.)</label>
+                            <label>Receive (Cr.) <TooltipQuestion content="Lena (Jama)" /></label>
                             <div>
                                 <InputDecimal className="form-control form-control-sm error-hide required number" name="cr_amt" value={item.cr_amt} />
                             </div>

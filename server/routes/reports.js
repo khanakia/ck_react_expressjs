@@ -25,7 +25,7 @@ router.post('/connect_report', function(req, res, next) {
 })
 
 router.get('/balance_sheet', function(req, res, next) {
-    ReportClass.balanceSheet().then(function(data){
+    ReportClass.balanceSheetGrid().then(function(data){
         res.send(data)    
     }).catch((err)=>{
         res.send(err)

@@ -24,6 +24,8 @@ global.DIR_MONGODB = `${DIR_DIST}/mongodb`
 global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
 global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/app.exe`
 
+console.log(DIR_DIST)
+
 global.MONGO_DB_URI = 'mongodb://localhost:27017/ckdb';;
 
 // Iniit Empty Mongoose Connection so we can create shcemas

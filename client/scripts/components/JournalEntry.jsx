@@ -6,6 +6,9 @@ import ComboBoxMember from './controls/ComboBoxMember.jsx'
 import JournalEntryForm from './JournalEntry/JournalEntryForm.jsx'
 import JournalEntryGrid from './JournalEntry/JournalEntryGrid.jsx'
 import JournalEntryHelper from "helpers/JournalEntryHelper"
+import TooltipQuestion from './controls/TooltipQuestion';
+
+import { MESSAGE_JENTRY_GT_PROFIT, MESSAGE_JENTRY_GT_LOSS } from "../Constant"
 
 
 @inject('journalEntryStore')
@@ -97,19 +100,39 @@ class JournalEntry extends Component {
 
     render() {  
         const account_id = this.props.match.params.account_id
-        const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal} = this.props.journalEntryStore
+        const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal, selectedAccCurrentBal} = this.props.journalEntryStore
 
         return (
             <div className="page mx-2">
+                <div className="row info-heading-block">
+                    <div className="col-auto">
+                        <label>Opening Balance: </label>
+                        {selectedAccMonFinalBal}
+                    </div>
+                    <div className="col-auto">
+                        <label>Current Balance: </label>
+                        {selectedAccCurrentBal}
+                    </div>
+                    <div className="col-auto">
+                        <label>Grand Total: </label>
+                        <span className="d-inline-block">{selectedAccBal}</span>
+
+                        {
+                            selectedAccBal >0 
+                            ?
+                                <TooltipQuestion content={Messages/JENTRY_GT_PROFIT} />    
+                            :
+                                <TooltipQuestion content={Messages.JENTRY_GT_LOSS} />
+                        }
+                        
+                    </div>
+                </div>
                 <h6><i className="fa fa-book"></i> Journal Entry</h6>
                 <div className="mb-2">
                     <div className="row">
                         <div className="col-md-6">
                                 Select Account: <ComboBoxMember 
-                                    field_id="from_account_id" ref="comboMember" onClose={this.onCloseComboMember}  />
-
-                                    <label>Opening Bal: <strong>{selectedAccMonFinalBal}</strong></label>
-                                    <label className="ml-2">Bal: <strong>{selectedAccBal}</strong></label>
+                                    field_id="from_account_id" ref="comboMember" onClose={this.onCloseComboMember} />
                         </div>
                         <div className="col-md-6 text-right">
                             { account_id ?

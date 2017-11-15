@@ -190,6 +190,23 @@ legend
 }
 
 
+.questionTooltip {
+	display: inline-block;
+	margin-left: 5px;
+	vertical-align: middle;
+	.tooltipIcon {
+		display: inline-block;
+	    font-size: 10px;
+	    width: 14px;
+	    height: 14px;
+	    background-image: url('../images/icon-question.svg');
+	    background-size: contain;
+	    background-repeat: no-repeat;
+	    background-position: left center;
+	}
+}
+
+
 
 .jqxMenu-topmenu {
 	width: 100%;
@@ -197,11 +214,11 @@ legend
 
 
 	.logo {
-		background-image: url('../images/icon-betfair.png');
-	    background-size: 20px;
 	    width: 23px;
 	    height: 18px;
 	    display: inline-block;
+		background-image: url('../images/icon-betfair.png');
+	    background-size: 20px;
 	    background-repeat: no-repeat;
 	    background-position: left center;
 	}

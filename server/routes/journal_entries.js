@@ -162,6 +162,26 @@ router.get('/account/:id/balance', function(req, res, next) {
                 }
             ]).exec(cb)
         },
+
+        currentBal: function(cb) {
+            JournalEntryModel.aggregate([{
+                    $match: {
+                        'account_id': parseInt(req.params.id),
+                        'is_monday_final': false
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            "account_id": "$account_id",
+                        },
+                        "account_id": { $first: "$account_id" },
+                        "bal": { $sum: "$bal" },
+                    }
+                }
+            ]).exec(cb)
+        },
+
         totalBal: function(cb) {
             JournalEntryModel.aggregate([{
                     $match: {
@@ -179,8 +199,10 @@ router.get('/account/:id/balance', function(req, res, next) {
                 }
             ]).exec(cb)
         }
+
     }, function(err, result) {
         if (err) return res.status(500).send(err)
+        result.currentBal = result.currentBal[0] ? result.currentBal[0]['bal'] : 0;
         result.monFinalBal = result.monFinalBal[0] ? result.monFinalBal[0]['bal'] : 0;
         result.totalBal = result.totalBal[0] ? result.totalBal[0]['bal'] : 0;
         res.send(result)

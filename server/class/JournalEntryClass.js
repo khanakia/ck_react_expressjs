@@ -12,6 +12,35 @@ var MatchModel = require('../model/MatchModel')
 
 module.exports = {
 
+    async createJournalEntryItem1(args = {
+                                     journal_id: null,
+                                     by_account_id: null,
+                                     account_id: null,
+                                     amount: 0,
+                                     type: 'Manual',
+                                     is_company: false,
+                                     narration: null,
+                                     dr_amt: 0,
+                                     cr_amt: 0,
+                                     bal: 0,
+                                     locked: true,
+                                     patti_amt: 0
+                                 }) {
+        var jentryItem = new JournalEntryModel(args)
+
+        if(args.amount > 0) {
+            jentryItem.cr_amt = Math.abs(args.amount);
+        } else {
+            jentryItem.dr_amt = Math.abs(args.amount);
+        }
+        jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+        jentryItem.narration = args.narration
+        if(jentryItem.bal!==0) {
+            return await jentryItem.save()
+        }
+        return false;
+    },
+
     async save(args = {}, cb) {
 
         try {
@@ -75,7 +104,11 @@ module.exports = {
         //     match['is_monday_final'] = false
         // }
 
-        match['is_monday_final'] = HelperClass.stringToBoolean(args.is_monday_final)
+        // if monday final is true then show all entries either it is false or true
+        var is_monday_final = HelperClass.stringToBoolean(args.is_monday_final)
+        if(is_monday_final==false) {
+            match['is_monday_final'] = is_monday_final
+        }
         
 
         console.log(match)

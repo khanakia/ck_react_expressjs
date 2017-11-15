@@ -9,6 +9,7 @@ export class JournalEntryStoreClass {
 	@observable journalEntriesList = [];
 	// @observable accountBalanceList = [];
 	@observable selectedAccMonFinalBal = 0;
+	@observable selectedAccCurrentBal = 0;
 	@observable selectedAccBal = 0;
 
 
@@ -18,6 +19,7 @@ export class JournalEntryStoreClass {
 	    .then((res) => {
 	    	this.selectedAccMonFinalBal = res.data.monFinalBal
 	    	this.selectedAccBal = res.data.totalBal
+	    	this.selectedAccCurrentBal = res.data.currentBal
 	    })
 	    .catch(() => this.fetched = false);
 	}

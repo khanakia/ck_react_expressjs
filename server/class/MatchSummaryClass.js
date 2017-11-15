@@ -45,34 +45,7 @@ module.exports = {
     //     return false;
     // },
 
-    async createJournalEntryItem1(args = {
-                                     journal_id: null,
-                                     by_account_id: null,
-                                     account_id: null,
-                                     amount: 0,
-                                     type: 'Manual',
-                                     is_company: false,
-                                     narration: null,
-                                     dr_amt: 0,
-                                     cr_amt: 0,
-                                     bal: 0,
-                                     locked: true,
-                                     patti_amt: 0
-                                 }) {
-        var jentryItem = new JournalEntryModel(args)
-
-        if(args.amount > 0) {
-            jentryItem.cr_amt = Math.abs(args.amount);
-        } else {
-            jentryItem.dr_amt = Math.abs(args.amount);
-        }
-        jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-        jentryItem.narration = args.narration
-        if(jentryItem.bal!==0) {
-            return await jentryItem.save()
-        }
-        return false;
-    },
+    
 
     //  SESSION DECLARE FUNCTIONS ======================================================
     async session_deleteJournal(sessionId) {
@@ -222,7 +195,7 @@ module.exports = {
                 com_amt_total += comm_amt
                 var n = `Comm (${item.sess_comm}%) - ${narration}`
                 // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, comm_amt, "Commission", false, n)
-                var jeitem2 = await this.createJournalEntryItem1({
+                var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
@@ -243,7 +216,7 @@ module.exports = {
                 // patti_amt = -1 * patti_amt
                 var n = `Patti (${item.session}%) - ${narration}`
                 // var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
-                var jeitem = await this.createJournalEntryItem1({
+                var jeitem = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
@@ -254,7 +227,7 @@ module.exports = {
                 // return await jeitem.save()
             }))
 
-            var jeitem1 = await this.createJournalEntryItem1({
+            var jeitem1 = await JournalEntryClass.createJournalEntryItem1({
                 journal_id: journalItem._id, 
                 by_account_id: companyAccountId, 
                 account_id: sessionEntry.account_id, 
@@ -270,7 +243,7 @@ module.exports = {
         console.log(pl_bal)
         if(pl_bal!==0) {
             // var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
-            var jeitemBook = await this.createJournalEntryItem1({
+            var jeitemBook = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: companyAccountId, 
@@ -415,7 +388,7 @@ module.exports = {
                 var comm_amt = Math.abs(meterEntry.rate) * item.meter_comm/100
                 com_amt_total += comm_amt
                 var n = `Comm (${item.meter_comm}%) - ${narration_party}`
-                var jeitem2 = await this.createJournalEntryItem1({
+                var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
@@ -436,7 +409,7 @@ module.exports = {
 
                 var n = `Patti (${item.meter}%) - ${narration_party}`
                 
-                var jeitem = await this.createJournalEntryItem1({
+                var jeitem = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
@@ -447,7 +420,7 @@ module.exports = {
                 // return await jeitem.save()
             }))
 
-            var jeitem1 = await this.createJournalEntryItem1({
+            var jeitem1 = await JournalEntryClass.createJournalEntryItem1({
                 journal_id: journalItem._id, 
                 by_account_id: companyAccountId, 
                 account_id: meterEntry.account_id, 
@@ -462,7 +435,7 @@ module.exports = {
         var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
         console.log(pl_bal)
         if(pl_bal!==0) {
-            var jeitemBook = await this.createJournalEntryItem1({
+            var jeitemBook = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: companyAccountId, 
@@ -687,7 +660,7 @@ module.exports = {
 
             var comm_amt = Math.abs(amountForComm * account.match_comm/100);
             // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.match_comm_to, comm_amt, "Commission", false, narration1)
-            var jeitem2 = await this.createJournalEntryItem1({
+            var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
                 journal_id: journalItem._id, 
                 by_account_id: companyAccountId, 
                 account_id: account.match_comm_to, 
@@ -706,7 +679,7 @@ module.exports = {
                 // patti_amt = -1 * patti_amt
                 var n = `Patti (${item.match}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
                 // var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
-                var jeitem = await this.createJournalEntryItem1({
+                var jeitem = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
@@ -719,7 +692,7 @@ module.exports = {
 
             // Distribute Profit
             // var jeitem1 = await this.createJournalEntryItem(journalItem._id, companyAccountId, matchEntry.account_id, amount, 'PL', false, "PL -" + narration)
-            var jeitem1 = await this.createJournalEntryItem1({
+            var jeitem1 = await JournalEntryClass.createJournalEntryItem1({
                 journal_id: journalItem._id, 
                 by_account_id: companyAccountId, 
                 account_id: matchEntry.account_id, 
@@ -736,7 +709,7 @@ module.exports = {
         console.log(pl_bal)
         if(pl_bal!==0) {
             // var jeitemBook = await this.createJournalEntryItem(journalItem._id, companyAccountId, companyAccountId, pl_bal, "PL", true, "PL -" + narration)
-            var jeitemBook = await this.createJournalEntryItem1({
+            var jeitemBook = await JournalEntryClass.createJournalEntryItem1({
                 journal_id: journalItem._id, 
                 by_account_id: companyAccountId, 
                 account_id: companyAccountId, 
