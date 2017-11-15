@@ -75,7 +75,6 @@ module.exports = {
     async save(item, id=null) {
         var user = await UserModel.findOne({username: item.username})
        
-
         if(id) {
             if(user && user.id!==id) {
                 throw(ResponseHelper.error(400, 'Username already exists.'))
@@ -129,6 +128,13 @@ module.exports = {
         //     filters.is_company = args.is_company
         // }
         return UserModel.find(filters)
+    },
+
+
+    checkIsAdminElseThrowError() {
+        if(typeof USER=="undefined" || !USER || USER.is_admin==false ) {
+            throw(ResponseHelper.error(401, 'Permission Denied.'))  
+        } 
     }
 
 };

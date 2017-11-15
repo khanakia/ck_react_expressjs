@@ -9,12 +9,11 @@ var path = require('path');
 var exec = require('child_process').exec;
 
 var AccountClass = require('../class/AccountClass')
-
+var OtherClass = require('../class/OtherClass')
 
 router.get('/', function(req, res, next) {
-	res.send(aman)
-});
-
+	res.send('ok')
+})
 
 router.get('/create_book_account', function(req, res, next) {
 	var companyAccountId = AccountClass.getCompanyAccounId()
@@ -43,7 +42,6 @@ router.get('/server_db_status', function(req, res, next) {
     res.send({status: mongoose.connection.readyState})
 })
 
-
 router.get('/server_startdb', function(req, res, next) {
 	aman = "NEW AMAN"
 	if(mongoose.connection.readyState!==1) {
@@ -51,6 +49,32 @@ router.get('/server_startdb', function(req, res, next) {
 	}
     res.send({message: 'Db Server Starting'})
 })
+
+
+router.get('/remove_all_records', function(req, res, next) {
+	OtherClass.removeAllRecords().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.status(401).send(err)
+    })
+});
+
+router.get('/remove_ledger_records', function(req, res, next) {
+	OtherClass.removeLedgerRecordsAndMerge().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.status(401).send(err)
+    })
+});
+
+router.get('/clear_wholedb', function(req, res, next) {
+	OtherClass.clearWholeDb().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.status(401).send(err)
+    })
+});
+
 
 
 // router.get('/db_backup', function(req, res, next) {
@@ -89,24 +113,6 @@ router.get('/server_startdb', function(req, res, next) {
 // 	res.send('restored')
 // });
 
-
-
-router.get('/db_remove_all_records', function(req, res, next) {
-	db.dropCollection('accounts', function(err, result) {});
-	db.dropCollection('journals', function(err, result) {});
-	db.dropCollection('journalentries', function(err, result) {});
-	db.dropCollection('matches', function(err, result) {});
-	db.dropCollection('matchentries', function(err, result) {});
-	db.dropCollection('matchsummaries', function(err, result) {});
-	db.dropCollection('matchteams', function(err, result) {});
-	db.dropCollection('sessionentries', function(err, result) {});
-	db.dropCollection('sessions', function(err, result) {});
-	db.dropCollection('teams', function(err, result) {});
-
-	res.send("ds")
-	// res.redirect('/');
-
-});
 
 
 module.exports = router;

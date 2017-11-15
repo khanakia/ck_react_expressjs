@@ -56,7 +56,11 @@ module.exports = {
             db = mongoose.connect(MONGO_DB_URI, {
                 useMongoClient : true
             }, function(err) {
-                console.log(`ConnectDB ERR  ${err}`)
+                if(err) {
+                    console.log(`ConnectDB ERR  ${err}`)
+                } else {
+                    EVENTEMITTER.emit('DbConnected');
+                }
             });
         }
     },

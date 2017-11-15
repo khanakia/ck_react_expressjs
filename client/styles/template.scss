@@ -46,6 +46,11 @@ main {
 .w-50p {
 	width: 50px;
 }
+
+.w-70p {
+	width: 70px;
+}
+
 .w-100p {
 	width: 100px;
 }
@@ -562,3 +567,34 @@ legend
 
 
 
+.liveCommentaryBox {
+	width: 300px;
+
+	.heading {
+		display: block;
+	    background: #312f2f;
+	    margin: 0;
+	    padding: 5px;
+	    color: #fff;
+	    text-align: center;
+	}
+
+	table {
+		tr {
+			&.color-dark {
+				color: #000;
+			}
+		}
+		td {
+			padding: 6px;
+
+			&.skyblue {
+				background-color: #a6d8ff;
+			}
+
+			&.pink {
+				background-color: #f694aa;
+			}
+		}
+	}
+}

@@ -35,6 +35,16 @@
     </div>
     <div id="footerContainer">
     </div>
+
+    <script>
+        module = {}
+        if((typeof process !== 'undefined') && (process.release.name === 'node')) {
+            console.log("require")
+            window.electron = require('electron')
+        }
+        // window.$ = window.jQuery = require('jquery');
+    </script>
+
     <script src="bower/jquery/dist/jquery.min.js"></script>
     <script src="javascripts/popper.js"></script>
     <script src="bower/bootstrap/dist/js/bootstrap.js"></script>
@@ -52,6 +62,8 @@
     <script src="bower/jquery-confirm2/dist/jquery-confirm.min.js"></script>
     <script src="bower/jQuery.tabbable/jquery.tabbable.js"></script>
     <script src="bower/jwt-decode/build/jwt-decode.js"></script>
+
+    <script src="javascripts/firebase.js"></script>
 
     <script type="text/javascript">
 

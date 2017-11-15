@@ -1,21 +1,13 @@
 import React, { Component } from "react";
-import Auth from '../helpers/auth.js'
-
-import Header from './Header'
-
-
-class Layout extends Component {
+class LayoutPlain extends Component {
     componentWillMount() {
         if (!Auth.check()) {
             hashHistory.push('/')
         }
     }
     render() {  
-        return (
-                
-            <div className="layout">
-                <Header />
-  
+        return (            
+            <div className="layout plain">
                 <main>
                 {this.props.children}
                 </main>
@@ -25,4 +17,4 @@ class Layout extends Component {
     }
 }
 
-export default Layout;
+export default LayoutPlain;

@@ -41,11 +41,11 @@ module.exports = {
         return response
     },
 
-    ok(code, success, message, append={}) {
+    ok(code, message, append={}) {
         var response = {
             code: code,
             message: message,
-            success: success,
+            success: true,
         }
         response = Object.assign({}, response, append)
         return response

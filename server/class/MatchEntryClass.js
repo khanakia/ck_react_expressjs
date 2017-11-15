@@ -35,7 +35,7 @@ module.exports = {
              try {
                 let matchEntry = await MatchEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Updated', data: matchEntry })
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Updated', id: matchEntry._id })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -45,7 +45,7 @@ module.exports = {
                 let matchEntry = new MatchEntryModel(item)
                 await matchEntry.save();
                 await this.updateEntryAfterInsert(matchEntry._id)
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Created', data: matchEntry })
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Created', id: matchEntry._id })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -372,8 +372,8 @@ module.exports = {
 
         if(matchEntry && matchEntry.is_summarized==false) {
             try {
+                await ActivityLogClass.create({type: 'Match Entry', action: 'Removed', id: matchEntry._id })
                 matchEntry.remove(cb)
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Removed', data: matchEntry })
             }
             catch (e) {
                throw(ResponseHelper.error(400, 'Cannot remove.'))

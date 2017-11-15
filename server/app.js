@@ -9,8 +9,8 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 
 // EVENT EMITTER WITH HOOK
-var EventEmitter = require('events').EventEmitter;
-global.EVENTEMITTER = new EventEmitter();
+// var EventEmitter = require('events').EventEmitter;
+// global.EVENTEMITTER = new EventEmitter();
 var EventHookClass = require('./class/EventHookClass')
 
 global.USERID = null
@@ -34,6 +34,7 @@ var others = require('./routes/others');
 var reports = require('./routes/reports');
 var backups = require('./routes/backups');
 var exportreports = require('./routes/exportreports');
+var liveapis = require('./routes/liveapis');
 
 var app = express();
 
@@ -124,6 +125,7 @@ app.use('/others', others);
 app.use('/reports', reports);
 app.use('/backups', backups);
 app.use('/exportreports', exportreports);
+app.use('/liveapis', liveapis);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

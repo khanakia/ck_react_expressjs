@@ -26,6 +26,7 @@ import { ReportStoreClass } from './stores/ReportStoreClass';
 import { BackupStoreClass } from './stores/BackupStoreClass';
 import { ServerStatusStoreClass } from './stores/ServerStatusStoreClass';
 import { UserStoreClass } from './stores/UserStoreClass';
+import { LiveApiStoreClass } from './stores/LiveApiStoreClass';
 
 const routingStore = new RouterStore();
 const globalStore = new GlobalStoreClass();
@@ -41,6 +42,7 @@ const reportStore = new ReportStoreClass()
 const backupStore = new BackupStoreClass()
 const serverStatusStore = new ServerStatusStoreClass()
 const userStore = new UserStoreClass()
+const liveApiStore = new LiveApiStoreClass()
 
 const stores = {
   // Key can be whatever you want
@@ -57,7 +59,9 @@ const stores = {
   reportStore: reportStore,
   backupStore: backupStore,
   serverStatusStore: serverStatusStore,
-  userStore: userStore
+  userStore: userStore,
+  liveApiStore: liveApiStore
+
   // ...other stores
 };
 
@@ -65,6 +69,7 @@ window.hashHistory = createHistory()
 const history = syncHistoryWithStore(hashHistory, routingStore);
 
 import Layout from './components/Layout.jsx'
+import LayoutPlain from './components/LayoutPlain.jsx'
 import UserLogin from './components/UserLogin.jsx'
 import UserChangePassword from './components/UserChangePassword.jsx'
 
@@ -88,6 +93,9 @@ import BackupDb from './components/BackupDb.jsx'
 import ServerStatus from './components/ServerStatus.jsx'
 import User from './components/User.jsx'
 import ActivityLog from './components/ActivityLog.jsx'
+import LiveMatchSchedule from './components/LiveMatchSchedule.jsx'
+import LiveCommentary from './components/LiveCommentary.jsx'
+import RemoveAllRecord from './components/RemoveAllRecord.jsx'
 
 
 
@@ -103,6 +111,7 @@ const Root = () => (
     <div>
       <Switch>
         <Route exact path="/" component={UserLogin}/>
+        <Route path="/live/commentary" component={LiveCommentary}/>
         <Layout>
     		    <Route exact path="/dashboard" component={Home}/>
             <Route exact path="/changepassword" component={UserChangePassword}/>
@@ -129,9 +138,15 @@ const Root = () => (
             <Route exact path="/users" component={User}/>
             <Route path="/users/:id" component={User}/>
             <Route path="/backupdb" component={BackupDb}/>
+            <Route path="/remove_all_record" component={RemoveAllRecord}/>
             <Route path="/server_status" component={ServerStatus}/>
-	    </Layout>
+
+            <Route path="/live/match_schedule" component={LiveMatchSchedule}/>
+      </Layout>
+          
+      
       </Switch>
+
       
     </div>
   </Router>

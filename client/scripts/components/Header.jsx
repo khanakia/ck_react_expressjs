@@ -58,6 +58,37 @@ class Header extends React.Component {
         hashHistory.push('/')
     }
 
+    openLiveCommentaryWindow(e) {
+        e.preventDefault();
+        // window.win = window.open('http://localhost:3000/#/live/commentary', 'Session Odds', "width=310,height=400,resizable=0,channelmode=0,fullscreen=0,toolbar=0")
+        // win.onresize = function() 
+        // {
+        //     console.log("Sdfsd")
+        //     win.resizeTo(500,500);
+        // }
+        // win.onclick = function() 
+        // {
+        //     console.log("Sdfsd")
+        //     win.resizeTo(500,500);
+        // }
+        if (typeof electron !== 'undefined') {
+            var win = new electron.remote.BrowserWindow({
+              webPreferences: {
+                nodeIntegration: false
+              },
+              'minHeight': 320,
+              'minWidth': 320,
+              'maxWidth': 320,
+               width: 320, 
+               height: 400,
+               // type: "toolbar"
+            })
+            win.loadURL("http://localhost:3000/#/live/commentary")
+        } else {
+             hashHistory.push('/live/commentary')
+        }
+        
+    }
     render() {        
         const currentUser = Auth.getTokenDecoded()
         return (
@@ -106,12 +137,20 @@ class Header extends React.Component {
                                     <li><Link to={'/server_status'}>Server Status</Link></li>
                                     {/*<li><a href={'/others/db_backup'}>Backup DB</a></li>*/}
                                     <li><Link to={'/backupdb'}>Backup DB</Link></li>
-                                    <li><Link to={'/others/db_remove_all_records'}>Remove All Records</Link></li>
+                                    <li><Link to={'/remove_all_record'}>Remove All Records</Link></li>
 
                                     <li><a href="#" onClick={this.openAnydesk}>Anydesk Online Support</a></li>
                                     <li><a href="#" onClick={this.openAmmy}>Ammy Online Support</a></li>
                                 </ul>
                             </li>
+                            <li><i className="fa fa-globe"></i> Live
+                                <ul>
+                                    <li><Link to={"/live/match_schedule"}>Match Schedule</Link></li>
+                                    {/*<li><Link to={"/live/commentary"}>Session Odds</Link></li>*/}
+                                    <li><a href="#" onClick={this.openLiveCommentaryWindow}>Session Odds</a></li>
+                                </ul>
+                            </li>
+
                             <li><a href="#" onClick={this.logout}><i className="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </div>

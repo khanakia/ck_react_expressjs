@@ -46,14 +46,145 @@ class RenderTable extends Component {
         )
     }
 
-    render() {
-        const {data} = this.props.record
-
+    render_sessionEntry(data) {
         return (
-            <div className="itemPopover">
-                {this.render_matchEntry(data)}
-            </div>
-        );
+            <table className="table table-striped table-sm">
+                <tbody>
+                    <tr>
+                        <th>Match ID</th>
+                        <td>{data.match_id}</td>
+                    </tr>
+                    <tr>
+                        <th>Match Name</th>
+                        <td>{data.match_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Session</th>
+                        <td>{data.session_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Party</th>
+                        <td>{data.account_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Rate</th>
+                        <td>{data.rate}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>{data.amount}</td>
+                    </tr>
+                    <tr>
+                        <th>Runs</th>
+                        <td>{data.runs}</td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+
+    render_match(data) {
+        return (
+            <table className="table table-striped table-sm">
+                <tbody>
+                    <tr>
+                        <th>Match ID</th>
+                        <td>{data._id}</td>
+                    </tr>
+                    <tr>
+                        <th>Match Name</th>
+                        <td>{data.match_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Winner Team</th>
+                        <td>{data.team_name}</td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+
+    render_session(data) {
+        return (
+            <table className="table table-striped table-sm">
+                <tbody>
+                    <tr>
+                        <th>SessionId</th>
+                        <td>{data._id}</td>
+                    </tr>
+                    <tr>
+                        <th>Session</th>
+                        <td>{data.session_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Match ID</th>
+                        <td>{data.match_id}</td>
+                    </tr>
+                    <tr>
+                        <th>Match Name</th>
+                        <td>{data.match_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Winner Team</th>
+                        <td>{data.team_name}</td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+
+    render_matchTeam(data) {
+        return (
+            <table className="table table-striped table-sm">
+                <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{data._id}</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>{data.status}</td>
+                    </tr>
+                    <tr>
+                        <th>Match ID</th>
+                        <td>{data.match_id}</td>
+                    </tr>
+                    <tr>
+                        <th>Match Name</th>
+                        <td>{data.match_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Team</th>
+                        <td>{data.team_name}</td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+
+    render() {
+        const {data, type} = this.props.record
+
+        if(type=="Match Entry") {
+            return this.render_matchEntry(data)
+        }
+
+        if(type=="Session Entry") {
+            return this.render_sessionEntry(data)
+        }
+
+        if(type=="Match") {
+            return this.render_match(data)
+        }
+
+        if(type=="Session") {
+            return this.render_session(data)
+        }
+
+        if(type=="Match Team") {
+            return this.render_matchTeam(data)
+        }
+        
     }
 }
 

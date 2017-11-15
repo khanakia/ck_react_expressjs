@@ -43,6 +43,8 @@ export default class Auth {
 	}
 
 	static getTokenDecoded() {
+		var token = Auth.getToken()
+		if(!token) return {}
 		return jwt_decode(Auth.getToken());
 	}
 
