@@ -9,40 +9,41 @@ var Account = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchSummaryModel = require('../model/MatchSummaryModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
-var JournalModel = require('../model/JournalModel')
-var JournalEntryModel = require('../model/JournalEntryModel')
-
 var SessionModel = require('../model/SessionModel')
 var SessionEntryModel = require('../model/SessionEntryModel')
+var MeterModel = require('../model/MeterModel')
+var MeterEntryModel = require('../model/MeterEntryModel')
+var JournalModel = require('../model/JournalModel')
+var JournalEntryModel = require('../model/JournalEntryModel')
 var AccountClass = require('./AccountClass')
 var JournalEntryClass = require('./JournalEntryClass')
 
 module.exports = {
-    async createJournalEntryItem(journal_id, by_account_id, account_id, amount, type, is_company, narration) {
-        var jentryItem = new JournalEntryModel({
-            journal_id : journal_id,
-            by_account_id: by_account_id,
-            account_id: account_id,
-            dr_amt: 0,
-            cr_amt: 0,
-            bal: 0,
-            type: type,
-            locked: true,
-            is_company: is_company,
-        })
+    // async createJournalEntryItem(journal_id, by_account_id, account_id, amount, type, is_company, narration) {
+    //     var jentryItem = new JournalEntryModel({
+    //         journal_id : journal_id,
+    //         by_account_id: by_account_id,
+    //         account_id: account_id,
+    //         dr_amt: 0,
+    //         cr_amt: 0,
+    //         bal: 0,
+    //         type: type,
+    //         locked: true,
+    //         is_company: is_company,
+    //     })
 
-        if(amount > 0) {
-            jentryItem.cr_amt = Math.abs(amount);
-        } else {
-            jentryItem.dr_amt = Math.abs(amount);
-        }
-        jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-        jentryItem.narration = narration
-        if(jentryItem.bal!==0) {
-            return await jentryItem.save()
-        }
-        return false;
-    },
+    //     if(amount > 0) {
+    //         jentryItem.cr_amt = Math.abs(amount);
+    //     } else {
+    //         jentryItem.dr_amt = Math.abs(amount);
+    //     }
+    //     jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
+    //     jentryItem.narration = narration
+    //     if(jentryItem.bal!==0) {
+    //         return await jentryItem.save()
+    //     }
+    //     return false;
+    // },
 
     async createJournalEntryItem1(args = {
                                      journal_id: null,
@@ -93,12 +94,12 @@ module.exports = {
     // },
 
     // This will fire if session updates in Member Account while session is not declared if session declared then it will not affect that entry
-    async session_updateFinalWinLossAmt_onAccountUpdate(accountId) {
-        var sessionEntries = await SessionEntryModel.find({account_id:accountId, is_declared: {$in: [null, false]}})
-        sessionEntries.map( async (item,i) => {
-            await this.session_updateFinalWinLossAmt_byEntry(item._id)
-        })
-    },
+    // async session_updateFinalWinLossAmt_onAccountUpdate(accountId) {
+    //     var sessionEntries = await SessionEntryModel.find({account_id:accountId, is_declared: {$in: [null, false]}})
+    //     sessionEntries.map( async (item,i) => {
+    //         await this.session_updateFinalWinLossAmt_byEntry(item._id)
+    //     })
+    // },
 
 
     async session_updateFinalWinLossAmt_bySession(sessionId) {
@@ -136,8 +137,6 @@ module.exports = {
         // }
 
     },
-
-
 
     async session_buildJournal(sessionId, cb) {      
         var session = await SessionModel.findOne({_id: parseInt(sessionId)})
@@ -286,9 +285,201 @@ module.exports = {
     },
 
 
-    //  MATCH DECLARE FUNCTIONS ======================================================
 
-   
+    //  METER DECLARE FUNCTIONS ======================================================   
+    async meter_deleteJournal(meterId) {
+        var journalItems = await JournalModel.find({
+            ref_id : parseInt(meterId),
+            ref_type: "Meter"
+        })
+        journalItems.map( async (item, i) => {
+            await JournalEntryModel.remove({"journal_id": item._id});
+            await item.remove()
+        })
+
+        await MeterEntryModel.updateMany({meter_id: parseInt(meterId)}, {final_amount:null, is_declared:false, is_summarized:false}) 
+    },
+
+     async meter_updateFinalWinLossAmt_byMeter(meterId) {
+        var meterEntries = await MeterEntryModel.find({meter_id:meterId})
+        await Promise.all(
+        meterEntries.map( async (item,i) => {
+           return  await this.meter_updateFinalWinLossAmt_byEntry(item._id)
+        }))
+    },
+
+    /* this will get session result and then update the win or loss amt in the final column which we will sum and group by account later 
+        and create journal from that final amount column 
+        I did this step becuase each session entry can have different run so i cannot group session entries based on result
+    */
+    async meter_updateFinalWinLossAmt_byEntry(meterEntryId) {
+
+        var meterEntry = await MeterEntryModel.findOne({_id: parseInt(meterEntryId)})
+        var meter = await MeterModel.findOne({_id: parseInt(meterEntry.meter_id)})
+            
+        if(meter.is_declared && meter.declared_runs!==null) {
+
+            var declared_runs = parseInt(meter.declared_runs);
+
+            // return meter;
+            var diff = meterEntry.runs - declared_runs
+            diff = meterEntry.yn=="Y" ? -1 * diff : diff
+            // console.log(diff)
+            var final_amount = parseFloat(diff * meterEntry.rate)
+
+            meterEntry.final_amount = final_amount
+            meterEntry.is_declared = true
+            return await meterEntry.save()
+        }
+
+    },
+
+    async meter_buildJournal(meterId, cb) {      
+        var meter = await MeterModel.findOne({_id: parseInt(meterId)})
+        
+        var project = {
+            "match_id" : 1,
+            "account_id" : 1,
+            "rate" : 1,
+            "final_amount" : 1,
+            "match_name": 1,
+        }
+  
+        var meterEntries = await MeterEntryModel.aggregate([
+            {
+                $match: {
+                    "meter_id": parseInt(meterId),
+                }
+            },
+            {
+                $lookup: {
+                    from: "matches",
+                    localField: "match_id",
+                    foreignField: "_id",
+                    as: "match"
+                }
+            },
+            {
+                $unwind: "$match"
+            },
+            {
+                $group: {
+                    _id: {
+                        "account_id": "$account_id",
+                    },
+                    "match_name": { $first: "$match.match_name" },
+                    "match_id": { $first: "$match_id" },
+                    "account_id": { $first: "$account_id" },
+                    "final_amount": { $sum: "$final_amount" },
+                    "rate": { $sum: "$rate" },
+
+
+                }
+            },
+            {
+                $project: project
+            }
+        ])
+
+        if(meterEntries.length == 0) {
+            return false;
+        }
+
+        // console.log(meterEntries)
+
+        var journalItem = new JournalModel({
+            match_id : meter.match_id,
+            ref_id : meter._id,
+            ref_type: "Meter"
+        })
+
+        await journalItem.save()
+
+        var companyAccountId = await AccountClass.getCompanyAccounId()
+        var narration = null
+        
+        await Promise.all(meterEntries.map( async (meterEntry, i) => {
+            
+            var account = await Account.findOne({_id: parseInt(meterEntry.account_id)})
+            // narration = ` (Party: ${account._id} - ${account.account_name}) (Match: ${meterEntry.match_id} - ${meterEntry.match_name}) (Meter: ${meter._id} - ${meter.meter_name})`
+            narration = ` (Match: ${meterEntry.match_id} - ${meterEntry.match_name}) (Meter: ${meter._id} - ${meter.meter_name})`
+            var narration_party = ` (Party: ${account._id} - ${account.account_name}) ${narration}`
+
+            // Distribute Profit
+            var final_amount = meterEntry.final_amount
+            
+            // Distribute Commission
+            var com_amt_total = 0
+            await Promise.all(account.meter_comm_accounts.map(async (item) => {
+                if(!item.account_id) return null
+                var comm_amt = Math.abs(meterEntry.rate) * item.meter_comm/100
+                com_amt_total += comm_amt
+                var n = `Comm (${item.meter_comm}%) - ${narration_party}`
+                var jeitem2 = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: comm_amt, 
+                    type: 'Commission', 
+                    narration: n
+                })
+                // return await jeitem.save()
+            }))
+
+
+            // Distribute Patti
+            var final_amount_with_comm = final_amount + com_amt_total
+            var patti_distributed_total = 0 
+            await Promise.all(account.patti.map(async (item) => {
+                var patti_amt = -1 * final_amount_with_comm * item.meter/100
+                patti_distributed_total += patti_amt
+
+                var n = `Patti (${item.meter}%) - ${narration_party}`
+                
+                var jeitem = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: patti_amt, 
+                    type: 'Patti', 
+                    narration: n
+                })
+                // return await jeitem.save()
+            }))
+
+            var jeitem1 = await this.createJournalEntryItem1({
+                journal_id: journalItem._id, 
+                by_account_id: companyAccountId, 
+                account_id: meterEntry.account_id, 
+                amount: final_amount, 
+                type: 'PL', 
+                narration: "PL -" + narration_party,
+                patti_amt: patti_distributed_total
+            })
+        }))
+
+        // Distribute PL to Book Account
+        var pl_bal = await JournalEntryClass.getBalanceTotal_byJournalId(journalItem._id)
+        console.log(pl_bal)
+        if(pl_bal!==0) {
+            var jeitemBook = await this.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: companyAccountId, 
+                    amount: pl_bal, 
+                    type: 'PL', 
+                    narration: "PL -" + narration,
+                    is_company: true
+                })
+        }
+
+        await MeterEntryModel.updateMany({meter_id: parseInt(meterId)}, {is_summarized:true})  
+    },
+
+
+
+
+    //  MATCH DECLARE FUNCTIONS ======================================================   
     async cleanUndeclaredData(matchId) {
         var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: false})
         matchTeams.map( async (matchTeam,i) => {
@@ -562,297 +753,4 @@ module.exports = {
 
        return cb(null, 'done')
     },
-
-    // async buildMatchSummary(matchId) {
-    //     var self = this;
-    //     await this.cleanSummaryTypeTeam(matchId)
-    //     var matchTeams = await MatchTeamModel.find({match_id: matchId, is_declared: true})
-    //     matchTeams.forEach( async (matchTeam,i) => {
-
-    //       async.waterfall([
-    //           function(next) {
-    //                 self.buildByMatchTeam(matchTeam._id, matchTeam.status)
-    //                 next(null)
-    //           },
-    //           // function(modelAResult, next) {
-    //           //    // self.buildMatchEntryJournal(matchId, matchTeam.team_id)
-    //           // }
-    //       ]);
-
-          
-            
-    //     })
-    // },
-
-
-    // async buildByMatchTeam(matchTeamId, matchTeamStatus) {
-    //     var matchEntries = await MatchEntryModel.find({match_team_id: matchTeamId, is_declared: false})
-    //     matchEntries.map( async (matchEntry, i) => {
-    //         await this.buildSummaryByMatchEntry(matchEntry.id, matchTeamStatus)
-    //     })
-    // },
-
-    // buildNet(matchTeamId) {
-
-
-    // },
-
-    // buildSummaryByMatchEntry(matchEntryId, MatchTeamStatus, cb) {
-    //     async.waterfall([
-    //         function(next) {
-    //             MatchSummaryModel.remove({"entry_id": matchEntryId, "ref_type": Constant.MATCH_SUMMARY_REFTYPE.MATCH_TEAM}).exec(next)
-    //              // next(null)
-    //         },
-    //         function(matchSummary, next) {
-    //             try {
-    //                 MatchEntryModel.aggregate([
-    //                      {
-    //                          $match: {
-    //                              "_id" : parseInt(matchEntryId)
-    //                          }
-    //                      },
-    //                      {
-    //                          $lookup: {
-    //                              from: "teams",
-    //                              localField: "team_id",
-    //                              foreignField: "_id",
-    //                              as: "team"
-    //                          }
-    //                      },
-    //                      {
-    //                          $unwind: "$team"
-    //                      },
-    //                      {
-    //                          $lookup: {
-    //                              from: "matches",
-    //                              localField: "match_id",
-    //                              foreignField: "_id",
-    //                              as: "match"
-    //                          }
-    //                      },
-    //                      {
-    //                          $unwind: "$match"
-    //                      },
-    //                      {
-    //                          $project: {
-    //                             "_id" : "$_id",
-    //                             "match_id" : "$match_id",
-    //                             "match_team_id" : "$match_team_id",
-    //                             "account_id" : "$account_id",
-    //                             "team_id" : "$team_id",
-    //                             "match_name": "$match.match_name",
-    //                             "team_name": "$team.team_name",
-    //                             "calcs" : "$calcs",
-    //                          }
-    //                      }
-    //                 ]).exec(next)
-
-    //             } catch(err) {
-    //                 next({error: err.message})
-    //             }
-
-    //         },
-    //         function(matchEntry, next) {
-    //             var matchEntry = matchEntry[0]
-    //             try {
-    //                 var msItem_Default = {
-    //                     match_id: matchEntry.match_id,
-    //                     ref_type: "Match Team",
-    //                     ref_id: matchEntry.match_team_id,
-    //                     // entry_type: "Team",
-    //                     entry_id: matchEntry._id,
-    //                     entry_account_id: matchEntry.account_id,
-    //                     team_id: matchEntry.team_id,
-    //                     account_id: null,
-    //                     dr_amt: 0,
-    //                     cr_amt: 0,
-    //                     bal: 0,
-
-    //                     narration: ` (Match: ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
-    //                 }
-    //                 next(null, matchEntry, msItem_Default);
-
-    //             } catch(err) {
-    //                 next({error: err.message})
-    //             }
-    //         }, 
-    //         function(matchEntry, msItem_Default, next) {
-    //                 try {
-
-    //                     // Distribute Profit
-    //                     let {calcs} = matchEntry
-    //                     // next(msItem_Default)
-    //                     var msItem1 = new MatchSummaryModel(msItem_Default);
-    //                     msItem1.account_id = matchEntry.account_id
-    //                     msItem1.cr_amt = MatchTeamStatus == Constant.MATCH_TEAM_STATUS.WINNER ? calcs.win_amt : 0;
-    //                     msItem1.dr_amt = MatchTeamStatus == Constant.MATCH_TEAM_STATUS.LOSER ? calcs.loose_amt : 0
-    //                     msItem1.bal = msItem1.dr_amt - msItem1.cr_amt
-    //                     msItem1.summary_type = "Match"
-    //                     msItem1.narration = "PL -" + msItem1.narration
-                        
-    //                     msItem1.save(function (err, result) {
-    //                         next(err, matchEntry, msItem_Default, msItem1);
-    //                     });
-    //                 } catch(err) {
-    //                     next({error: err.message})
-    //                 }
-    //         },
-
-    //         function(matchEntry, msItem_Default, msItem1, next) {
-    //             try {
-
-    //                 // Distribute Commission
-    //                 let {calcs} = matchEntry
-    //                 var msItem2 = new MatchSummaryModel(msItem_Default);
-    //                 msItem2.account_id = calcs.match_comm_to ? calcs.match_comm_to : matchEntry.account_id
-
-    //                 //  If >0 and Funter is loosing the book will give comm
-    //                 msItem2.cr_amt = (calcs.match_comm > 0 && MatchTeamStatus == Constant.MATCH_TEAM_STATUS.LOSER)  ? calcs.loose_comm_amt : 0
-
-    //                 //  If <0 and Funter is Winning the book will get comm
-    //                 msItem2.dr_amt = (calcs.match_comm < 0 && MatchTeamStatus == Constant.MATCH_TEAM_STATUS.WINNER) ? calcs.win_comm_amt : 0
-                    
-    //                 msItem2.bal = msItem2.dr_amt - msItem2.cr_amt
-    //                 msItem2.summary_type = "Commission"
-    //                 msItem2.narration = msItem2.summary_type + msItem2.narration
-    //                 // console.log(msItem2)
-    //                 msItem2.save(function (err, result) {
-    //                     next(err, matchEntry, msItem_Default, msItem1, msItem2);
-    //                 });
-    //             } catch(err) {
-    //                 next({error: err.message})
-    //             }
-                           
-
-    //         },
-
-    //         function(matchEntry, msItem_Default, msItem1, msItem2, next) {
-    //             let {calcs} = matchEntry
-    //             let amount = msItem1.bal + msItem2.bal
-    //             Promise.all(matchEntry.calcs.patti.map(async (item) => {
-
-    //                 var msItem3 = new MatchSummaryModel(msItem_Default);
-    //                 msItem3.account_id = item.account_id
-
-    //                 var match_patti = item.match
-    //                 var patti_amt = amount * match_patti/100
-    //                 msItem3.dr_amt = patti_amt < 0 ? patti_amt : 0;
-    //                 msItem3.cr_amt = patti_amt > 0 ? patti_amt : 0;
-    //                 msItem3.bal = msItem3.dr_amt - msItem3.cr_amt
-    //                 msItem3.summary_type = "Patti"
-    //                 msItem3.narration = msItem3.summary_type + msItem3.narration
-    //                 return await msItem3.save();
-    //             }))
-    //             .then( (result) => {
-    //                 next(null, matchEntry);
-    //             })
-    //             .catch( (err) => {
-    //                  next({error: err.message})
-    //             });
-    //         },
-
-    //         function(matchEntry, next) {
-    //             try {
-    //                 MatchEntryModel.update({_id: parseInt(1)}, {is_summarized:false}).exec(next)
-                    
-    //             } catch(err) {
-    //                 next({error: err.message})
-    //             }
-    //         }
-    //     ], cb);
-    // },
-
-
-    //  async cLeanTeamJournal(match_id, team_id) {
-    //         var journalItems = await JournalModel.find({
-    //             match_id : ObjectId1(match_id),
-    //             ref_id : ObjectId1(team_id),
-    //             ref_type: "Team"
-    //         })
-
-    //         console.log(match_id, team_id)
-    //         journalItems.forEach( async (item, i) => {
-
-    //                 await JournalEntryModel.remove({"journal_id": item._id});
-    //                 await item.remove()
-    //         })
-    // },
-
-    // async buildMatchEntryJournal(match_id, team_id) {
-    //     // var matchTeam = await MatchTeamModel.findOne({_id: matchTeamId})
-    //     var project = {
-    //         "match_id" : 1,
-    //         "team_id" : 1,
-    //         "account_id" : 1,
-    //         "summary_type" : 1,
-    //         "narration" : 1,
-    //         "dr_amt" : 1,
-    //         "cr_amt" : 1,
-    //         "bal" : 1,
-    //     }
-    //     var aggregate = [
-    //         {
-    //            $match: {
-    //                 match_id : ObjectId1(match_id),
-    //                 team_id : ObjectId1(team_id)
-    //            }
-    //        },
-    //        {
-    //            $group: {
-    //              _id: {
-    //                 "match_id" : "$match_id",
-    //                 "team_id" : "$team_id",
-    //                 "account_id" : "$account_id",
-    //                 "summary_type" : "$summary_type"
-    //             },
-    //             "match_id" : { $first: "$match_id"  },
-    //             "team_id" : { $first: "$team_id"  },
-    //             "account_id" : { $first: "$account_id"  },
-    //             "summary_type" : { $first: "$summary_type"  },
-    //             "narration" : { $first: "$narration"  },
-    //             "dr_amt" : { $sum: "$dr_amt" },
-    //             "cr_amt" : { $sum: "$cr_amt" },
-    //             "bal" : { $sum: "$bal" }
-
-    //            }
-    //        },
-    //         {
-    //             $project: project
-    //         }
-
-    //    ];
-
-    //    // return (aggregate)
-
-    //    var matchSummaries = await MatchSummaryModel.aggregate(aggregate);
-
-    //    await this.cLeanTeamJournal(match_id, team_id)
-
-    //    var journalItem = new JournalModel({
-    //         match_id : match_id,
-    //         ref_id : team_id,
-    //         ref_type: "Team"
-    //    })
-
-    //    await journalItem.save()
-
-    //     matchSummaries.forEach( async (item, i) => {
-    //         var jentryItem = new JournalEntryModel({
-    //             journal_id : journalItem._id,
-    //             account_id: item.account_id,
-    //             dr_amt: item.dr_amt,
-    //             cr_amt: item.cr_amt,
-    //             bal: item.bal,
-    //             narration: item.narration
-    //         })
-
-    //         await jentryItem.save()
-    //     })
-
-    //     console.log(matchSummaries)
-
-    //     return matchSummaries
-
-    // },
-
 };

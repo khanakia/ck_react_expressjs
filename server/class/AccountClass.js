@@ -47,10 +47,19 @@ module.exports = {
         return aggregate;
     },
 
-    // async demo() {
-    //     throw(ResponseHelper.errorThrow(400, 'Error', 'Validate Field'))
-    //     return ResponseHelper.ok(200, '1', "Message", {status: 'dd'})
-    // },
+    async getMeterCommAggregate(id, cb) {
+        var _this = this;
+        var account = await AccountModel.findOne({_id: id})
+        var aggregate = account.meter_comm_accounts.reduce(function(totals, v) {
+                    if(v.account_id) {
+                        totals += parseFloat(v.meter_comm);
+                    }
+                    return totals;
+                }, 0);
+
+        // console.log(aggregate)
+        return aggregate;
+    },
 
     async getCompanyAccounId() {
         var accounts = await AccountModel.find({is_company: true})
@@ -95,7 +104,7 @@ module.exports = {
         }
 
         item.match_comm_to = _.isEmpty(item.match_comm_to) ? null : item.match_comm_to;
-        item.sess_comm_to = _.isEmpty(item.sess_comm_to) ? null : item.sess_comm_to;
+        // item.sess_comm_to = _.isEmpty(item.sess_comm_to) ? null : item.sess_comm_to;
 
 
         if(id) {

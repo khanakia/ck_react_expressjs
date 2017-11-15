@@ -16,6 +16,11 @@ var sessCommSchema = mongoose.Schema({
     sess_comm: { type: Number, default: 0, min: 0 , max: 100}, // In Percentage
 });
 
+var meterCommSchema = mongoose.Schema({
+    account_id:  { type: Number, default: null },
+    meter_comm: { type: Number, default: 0, min: 0 , max: 100}, // In Percentage
+});
+
 
 var tableSchema = new mongoose.Schema({
     created_at: { type: Date, default: Date.now },
@@ -29,8 +34,11 @@ var tableSchema = new mongoose.Schema({
     sess_comm_accounts: { type:[sessCommSchema] , validate: [
       // { validator: pattiTotal, msg: 'Email already exists'}
     ]},
-    meter_comm_to: { type: Number, default: null },
-    meter_comm: { type: Number, default: 0 },
+    // meter_comm_to: { type: Number, default: null },
+    // meter_comm: { type: Number, default: 0 },
+    meter_comm_accounts: { type:[meterCommSchema] , validate: [
+      // { validator: pattiTotal, msg: 'Email already exists'}
+    ]},
     hide: { type: Boolean, default: false },
     status: { type: Boolean, default: true },
     is_company: { type: Boolean, default: false },

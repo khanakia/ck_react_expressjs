@@ -2,12 +2,14 @@ var async = require("async");
 var await = require("async").await;
 
 var ActivityLogModel = require('../model/ActivityLogModel')
+var AccountModel = require('../model/AccountModel')
 var TeamModel = require('../model/TeamModel')
 var MatchModel = require('../model/MatchModel')
-var SessionModel = require('../model/SessionModel')
-var AccountModel = require('../model/AccountModel')
-var SessionEntryModel = require('../model/SessionEntryModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
+var SessionModel = require('../model/SessionModel')
+var SessionEntryModel = require('../model/SessionEntryModel')
+var MeterModel = require('../model/MeterModel')
+var MeterEntryModel = require('../model/MeterEntryModel')
 
 module.exports = {
     async list(args = {}) {
@@ -57,7 +59,7 @@ module.exports = {
         var item = {
             type: args.type,
             action: args.action,
-            data: {},
+            data: args.data,
             user_id: USERID,
             description: '.',
             id: null
@@ -80,8 +82,18 @@ module.exports = {
                 item.data = await this.sessionEntry_createData(sessionEntry)
             }
 
+            if(args.type=="Meter Entry") {
+                var meterEntry = await MeterEntryModel.findOne({_id: parseInt(args.id)})
+                item.description = `Meter Entry with id ${args.id} ${args.action}`
+                item.data = await this.meterEntry_createData(meterEntry)
+            }
+
             if(args.type=="Session") {
                 item.description = `Session ${args.action} MatchID: ${args.data.match_id} | Name: ${args.data.session_name} Declared Runs: ${args.data.declared_runs} `
+            }
+
+            if(args.type=="Meter") {
+                item.description = `Meter ${args.action} MatchID: ${args.data.match_id} | Name: ${args.data.meter_name} Declared Runs: ${args.data.declared_runs} `
             }
 
             if(args.type=="Match") {
@@ -142,6 +154,31 @@ module.exports = {
 
         return {}
     },
+
+    async meterEntry_createData(item) {
+        try {
+            var match = await MatchModel.findOne({_id: parseInt(item.match_id)})
+            var account = await AccountModel.findOne({_id: parseInt(item.account_id)})
+            var meter = await MeterModel.findOne({_id: parseInt(item.meter_id)})
+            return {
+                _id: item.id,
+                rate: item.rate,
+                runs: item.runs,
+                comm_yn: item.comm_yn,
+                match_id: match._id,
+                match_name: match.match_name,
+                meter_id: meter._id,
+                meter_name: meter.meter_name,
+                account_id: account._id,
+                account_name: account.account_name
+            }
+        } catch(error) {
+            console.log(error)
+        }
+
+        return {}
+    },
+
 
     async sessionEntry_createData(item) {
         try {

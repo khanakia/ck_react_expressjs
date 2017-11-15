@@ -33,7 +33,8 @@ class MemberForm extends Component {
             status: true,
             hide: false,
             patti: [],
-            sess_comm_accounts:[]
+            sess_comm_accounts:[],
+            meter_comm_accounts:[]
 
         }
     }
@@ -113,16 +114,35 @@ class MemberForm extends Component {
                             </div>
                         </div>
 
-                        <div className="form-row">
-                            <div className="form-group col-md-2">
-                                <label className="col-form-label">Meter Comm. To:</label>
-                                <ComboBoxLocal width={"100%"} field_id="meter_comm_to" valueMember='_id'
-                                            displayMember='account_name' data={this.props.accountsList}  selectedValue={item.meter_comm_to} />
+                        <div className="">
+                            <div className="row">
+                                <div className="col-md-1">
+                                    <label className="col-form-label">S.N.</label>
+                                </div>
+                                <div className="col-md-3">
+                                    <label className="col-form-label">Meter Comm To:</label>
+                                </div>
+                                <div className="col-md-3">
+                                    <label className="col-form-label">Meter Comm.(%):</label>
+                                </div>
                             </div>
-                            <div className="form-group col-md-2">
-                                <label className="col-form-label">Meter Comm.:</label>
-                                <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={item.meter_comm} name="meter_comm" />
-                            </div>
+                            {Array.apply(0, Array(1)).map( (x, i) => { 
+                                var account_id = (item.meter_comm_accounts[i] == undefined) ? '' : item.meter_comm_accounts[i]['account_id']; 
+                                var meter_comm = (item.meter_comm_accounts[i] == undefined) ? 0 : item.meter_comm_accounts[i]['meter_comm']; 
+                                return (
+                                    <div className="row" key={`${item.id}_key_${i}`}>
+                                        <div className="col-md-1">
+                                            <label className="col-form-label">{i+1}</label>
+                                        </div>
+                                        <div className="col-md-3">
+                                                <ComboBoxLocal width={"100%"} field_id={`meter_comm_accounts[${i}][account_id]`} valueMember='_id'
+                                            displayMember='account_name' data={this.props.accountsList}  selectedValue={account_id} width="100%" />
+                                        </div>
+                                        <div className="col-md-2">
+                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={meter_comm} name={`meter_comm_accounts[${i}][meter_comm]`}  />
+                                        </div>
+                                    </div>
+                            ) })}
                         </div>
 
                         <div className="">

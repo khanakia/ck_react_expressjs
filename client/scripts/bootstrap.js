@@ -6,6 +6,8 @@ import {
   Switch
 } from 'react-router-dom'
 import { render } from 'react-dom'
+import ReactDOM from 'react-dom'
+
 import createHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
 
@@ -21,6 +23,9 @@ import { JournalStoreClass } from './stores/JournalStoreClass';
 import { JournalEntryStoreClass } from './stores/JournalEntryStoreClass';
 import { SessionStoreClass } from './stores/SessionStoreClass';
 import { SessionEntryStoreClass } from './stores/SessionEntryStoreClass';
+import { MeterStoreClass } from './stores/MeterStoreClass';
+import { MeterEntryStoreClass } from './stores/MeterEntryStoreClass';
+
 import { AccountStoreClass } from './stores/AccountStoreClass';
 import { ReportStoreClass } from './stores/ReportStoreClass';
 import { BackupStoreClass } from './stores/BackupStoreClass';
@@ -37,6 +42,8 @@ const journalStore = new JournalStoreClass()
 const journalEntryStore = new JournalEntryStoreClass()
 const sessionStore = new SessionStoreClass()
 const sessionEntryStore = new SessionEntryStoreClass()
+const meterStore = new MeterStoreClass()
+const meterEntryStore = new MeterEntryStoreClass()
 const accountStore = new AccountStoreClass()
 const reportStore = new ReportStoreClass()
 const backupStore = new BackupStoreClass()
@@ -55,6 +62,8 @@ const stores = {
   journalEntryStore : journalEntryStore,
   sessionStore : sessionStore,
   sessionEntryStore : sessionEntryStore,
+  meterStore : meterStore,
+  meterEntryStore : meterEntryStore,
   accountStore: accountStore,
   reportStore: reportStore,
   backupStore: backupStore,
@@ -102,7 +111,8 @@ import RemoveAllRecord from './components/RemoveAllRecord.jsx'
 
 import Auth from './helpers/auth'
 window.Auth = Auth;
-
+window.ReactDOM = ReactDOM
+window.React = React
 window.sessionId = localStorage.getItem('sessionId', null);
 
 const Root = () => (

@@ -12,7 +12,12 @@ var MatchSummaryClass = require('../class/MatchSummaryClass')
 
 var SessionClass = require('../class/SessionClass')
 var SessionEntryClass = require('../class/SessionEntryClass')
+
+var MeterClass = require('../class/MeterClass')
+var MeterEntryClass = require('../class/MeterEntryClass')
+
 var JournalEntryClass = require('../class/JournalEntryClass')
+
 
 var fs = require('fs');
 var path = require('path');
@@ -182,15 +187,42 @@ router.get('/', function(req, res, next) {
 // })
 
 
-SessionClass.undeclare(1).then(function(data){
-	SessionClass.declare(1).then(function(data){
-		res.send(data)
-	}).catch((err)=>{
-		res.send(err)
-	})	
+// SessionClass.undeclare(1).then(function(data){
+// 	SessionClass.declare(1).then(function(data){
+// 		res.send(data)
+// 	}).catch((err)=>{
+// 		res.send(err)
+// 	})	
+// }).catch((err)=>{
+// 	res.send(err)
+// })
+
+
+// MeterEntryClass.updateEntryAfterInsert(1).then(function(data){
+// 	res.send(data)
+// }).catch((err)=>{
+// 	res.send(err)
+// })
+
+// MatchSummaryClass.meter_updateFinalWinLossAmt_byEntry(2).then(function(data){
+// 	res.send(data)
+// }).catch((err)=>{
+// 	res.send(err)
+// })
+
+// MatchSummaryClass.meter_updateFinalWinLossAmt_byMeter(4).then(function(data){
+// 	res.send(data)
+// }).catch((err)=>{
+// 	res.send(err)
+// })
+
+
+MeterClass.declare(4, 16).then(function(data){
+	res.send(data)
 }).catch((err)=>{
 	res.send(err)
 })
+
 
 // AccountClass.getSessCommAggregate(2)
 

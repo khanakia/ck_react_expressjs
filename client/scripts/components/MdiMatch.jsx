@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import MatchInfoBlock from "./Match/MatchInfoBlock"
 import MatchEntry from "./MatchEntry"
 import SessionEntry from "./SessionEntry"
+import MeterEntry from "./MeterEntry"
 import GlobalHelper from "../helpers/GlobalHelper"
 
 
@@ -89,14 +90,23 @@ class MdiMatch extends Component {
 			            	Session <span className="badge badge-light">CTRL+2</span>
 			            </a>
 			        </li>
+			        <li className="nav-item">
+			            <a className="nav-link" id="pills-meter-tab" data-toggle="tab" href="#pills-meter" role="tab" aria-controls="pills-meter" aria-expanded="true">
+			            	Meter <span className="badge badge-light">CTRL+3</span>
+			            </a>
+			        </li>
 			    </ul>
 			    <div className="tab-content" id="pills-tabContent">
 			        <div className="tab-pane fade show active" id="pills-match" role="tabpanel" aria-labelledby="pills-match-tab">
-			        	<MatchEntry matchId={matchId} />
+			        	<MeterEntry matchId={matchId} />
+			        	{/*<MatchEntry matchId={matchId} />*/}
 			        </div>
 			        <div className="tab-pane fade" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
-			        	<SessionEntry matchId={matchId} />
-			        </div>			    
+			        	{/*<SessionEntry matchId={matchId} />*/}
+			        </div>
+			        <div className="tab-pane fade" id="pills-meter" role="tabpanel" aria-labelledby="pills-meter-tab">
+			        	Meter
+			        </div>		    
 			    </div>
 	        </div>
         );

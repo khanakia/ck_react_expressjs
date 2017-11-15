@@ -32,10 +32,10 @@ export const URL_MATCH_ENTRIES = '/match_entries';
 export const URL_MATCH_ENTRIES_MATCH = '/match_entries/match';
 export const URL_MATCH_ENTRIES_TEAM_WINLOSSS_LIST = '/match_entries/team_winloss_list';
 export const URL_SESSIONS = '/sessions';
-
 export const URL_SESSION_ENTRIES = '/session_entries';
 export const URL_SESSION_ENTRIES_WINLOSSS_LIST = '/session_entries/winlosslist';
 
+export const URL_METERS = '/meters';
 export const URL_PLAYER_ENTRIES = '/meter_entries';
 export const URL_PLAYER_ENTRIES_WINLOSSS_LIST = '/meter_entries/winlosslist';
 
@@ -58,6 +58,11 @@ export const LIST_MATCH_TYPE = [
 ]
 
 export const LIST_SESSION_YN = [
+    { id: "Y", text: "Y" },
+    { id: "N", text: "N" }
+]
+
+export const LIST_YN = [
     { id: "Y", text: "Y" },
     { id: "N", text: "N" }
 ]
