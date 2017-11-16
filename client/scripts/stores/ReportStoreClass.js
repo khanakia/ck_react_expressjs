@@ -1,5 +1,15 @@
 import { observable } from 'mobx';
 
+import {
+	API_URL_REPORTS_JOURNAL_SUMMARY,
+	API_URL_REPORTS_CONNECT_LIST_MATCHES,
+	API_URL_REPORTS_CONNECT_REPORT,
+	API_URL_REPORTS_BALANCE_SHEET,
+	API_URL_REPORTS_PL_MATCH_ACCOUNTWISE,
+	API_URL_REPORTS_PL_MATCHWISE,
+	API_URL_REPORTS_ACTIVITY_LOG
+} from "../Constant"
+
 export class ReportStoreClass {
 	@observable fetched = false;
 	
@@ -7,12 +17,13 @@ export class ReportStoreClass {
 	@observable accountBalanceList = [];
 	@observable plMatchAccountWiseList = [];
 	@observable plMatchWiseList = [];
+	@observable journalSummaryList = [];
 	@observable connectListMatches = [];
 	@observable connectReportList = [];
 	@observable activityLogList = [];
 	
 	fetchAccountBalanceList() {
-		axios.get('/reports/balance_sheet', {
+		axios.get(API_URL_REPORTS_BALANCE_SHEET, {
   		})
 	    .then((res) => {
 	    	this.accountBalanceList = res.data
@@ -21,7 +32,7 @@ export class ReportStoreClass {
 	}
 
 	fetchConnectListMatches() {
-		axios.get('/reports/connect_list_matches', {
+		axios.get(API_URL_REPORTS_CONNECT_LIST_MATCHES, {
   		})
 	    .then((res) => {
 	    	this.connectListMatches = res.data
@@ -29,19 +40,11 @@ export class ReportStoreClass {
 	    .catch(() => this.fetched = false);
 	}
 
-	fetchConnectListMatches() {
-		axios.get('/reports/connect_list_matches', {
-  		})
-	    .then((res) => {
-	    	this.connectListMatches = res.data
-	    })
-	    .catch(() => this.fetched = false);
-	}
 
 	fetchConnectReportList(filters = []) {
 		axios({
 	    method: 'post',
-	      url: "/reports/connect_report",
+	      url: API_URL_REPORTS_CONNECT_REPORT,
 	      data: filters
 	    })
 	    .then((res) => {
@@ -51,7 +54,7 @@ export class ReportStoreClass {
 	}
 
 	fetchPlMatchAccountWiseList() {
-		axios.get('/reports/pl_match_accountwise', {
+		axios.get(API_URL_REPORTS_PL_MATCH_ACCOUNTWISE, {
   		})
 	    .then((res) => {
 	    	this.plMatchAccountWiseList = res.data
@@ -60,7 +63,7 @@ export class ReportStoreClass {
 	}
 
 	fetchPlMatchWiseList() {
-		axios.get('/reports/pl_matchwise', {
+		axios.get(API_URL_REPORTS_PL_MATCHWISE, {
   		})
 	    .then((res) => {
 	    	this.plMatchWiseList = res.data
@@ -68,8 +71,17 @@ export class ReportStoreClass {
 	    .catch(() => this.fetched = false);
 	}
 
+	fetchJournalSummary() {
+		axios.get(API_URL_REPORTS_JOURNAL_SUMMARY, {
+  		})
+	    .then((res) => {
+	    	this.journalSummaryList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
 	fetchActivityLogList() {
-		axios.get('/reports/activity_log', {
+		axios.get(API_URL_REPORTS_ACTIVITY_LOG, {
   		})
 	    .then((res) => {
 	    	this.activityLogList = res.data

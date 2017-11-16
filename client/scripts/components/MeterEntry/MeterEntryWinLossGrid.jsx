@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
-import { URL_SESSION_ENTRIES_WINLOSSS_LIST } from '../../Constant'
 
 class MeterEntryWinLossGrid extends Component {
     constructor(props) {
@@ -9,27 +8,19 @@ class MeterEntryWinLossGrid extends Component {
     }
 
     static defaultProps = {
-        // sessionId: null,
         entriesList: [],
         onEditButtonClick: function(data) {},
         lastEnteredRun: null
     }
 
     componentDidMount() {
-        // window.abc = this
     }
 
     componentDidUpdate() {
-        // console.log(this.props.lastEnteredRun)
         this.scrollToRow(this.props.lastEnteredRun)
     }
 
     scrollToRow(index) {
-        // var rows = this.refs.jqxgrid.getrows()
-        // console.log(rows.length)
-        // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
-        // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
-        // console.log(index)
         if(index>0) {
             try {
                 this.refs.jqxgrid.ensurerowvisible(index)
@@ -62,7 +53,6 @@ class MeterEntryWinLossGrid extends Component {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            // url: URL_SESSION_ENTRIES_WINLOSSS_LIST + '/' + this.props.sessionId
             localdata: this.props.entriesList.slice(),
         };
 

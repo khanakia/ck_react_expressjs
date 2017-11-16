@@ -10,10 +10,12 @@ var rp = require('request-promise');
 var LiveMatchScheduleSeriesModel = require('../model/LiveMatchScheduleSeriesModel')
 var LiveMatchScheduleModel = require('../model/LiveMatchScheduleModel')
 
+var MetaDataModel = require('../model/MetaDataModel')
+
 module.exports = {
 	async matchScheduleList(args = {}) {
 
-		// await this.matchScheduleInsertToDB()
+		await this.matchScheduleInsertToDB()
 
 		var aggregate = [];
         var match = {}
@@ -56,9 +58,17 @@ module.exports = {
 
 
     async matchScheduleInsertToDB() {
+        var lastFetched = await MetaDataModel.get('liveMatchScheduled_lastFetched', Date.now())
+        var days = moment().diff(lastFetched, 'days')
+        if(!isNaN(days) && days<7) {
+            return false;
+        } 
+        await LiveMatchScheduleSeriesModel.remove({})
+        await LiveMatchScheduleModel.remove({})
+
     	// http://mapps.cricbuzz.com/cbzandroid/2.0/homescreen.php
-        // var url = "http://mapps.cricbuzz.com/cbzandroid/2.0/sch_calendar.json"
-        var url = "http://localhost/schedule.json"
+        var url = "http://mapps.cricbuzz.com/cbzandroid/2.0/sch_calendar.json"
+        // var url = "http://localhost/schedule.json"
         var response = await  rp({
                                 url: url,
                                 json: true
@@ -66,27 +76,27 @@ module.exports = {
         
         var seriesList = response.series
 
-        // await Promise.all(
-	       //  seriesList.map( async (itemSeries,i) => {
-	       //  	try {
-		      //       await LiveMatchScheduleSeriesModel.findOneAndUpdate({_id: itemSeries.id}, {
-		      //      		_id: itemSeries.id,
-		      //      		series_name: itemSeries.name
-		      //       }, {upsert: true})
-	       //  	} catch(error) {
-	       //  		console.log(error)
-	       //  	}
-	       //  })
-        // )
+        await Promise.all(
+	        seriesList.map( async (itemSeries,i) => {
+	        	try {
+		            await LiveMatchScheduleSeriesModel.findOneAndUpdate({_id: itemSeries.id}, {
+		           		_id: itemSeries.id,
+		           		series_name: itemSeries.name
+		            }, {upsert: true})
+	        	} catch(error) {
+	        		console.log(error)
+	        	}
+	        })
+        )
 
 
         var matchList = response.matches
         var count = 0
 
-        await LiveMatchScheduleModel.remove({})
+        
         await Promise.all(
 	        matchList.map( async (itmeMatch,i) => {
-	        	if(count> 20) return null
+	        	// if(count> 20) return null
 	        	try {
 		        	var date = `${itmeMatch.strtdt} ${itmeMatch.mnth_yr} ${itmeMatch.strttm}`
 		        	// var date = `${itmeMatch.strtdt} ${itmeMatch.mnth_yr}`
@@ -94,10 +104,14 @@ module.exports = {
 		        	// var dated = moment()
 		        	var datedYesterday = moment().subtract(2, 'days')
 		        	var isAfter = dated.isAfter(datedYesterday)
+
+                    // Get schedule only upto 7 days
+                    var dateFuture = moment().add(7, 'days')
+                    var isBefore = dated.isBefore(dateFuture)
 		        	// console.log(dated)
 		        	// console.log(isAfter)
-		        	if(!isAfter) return null
-		        		console.log(itmeMatch.matchid)
+		        	if(!isAfter || !isBefore) return null
+		        	// console.log(itmeMatch.matchid)
 		        	// console.log(itmeMatch.dt, moment(date, String).toISOString())
 		        	count +=1
 		          	var livematch = new LiveMatchScheduleModel({
@@ -105,7 +119,7 @@ module.exports = {
 		           		series_id: itmeMatch.seriesid,
 		           		dated: dated.toISOString(),
 		           		match_name: itmeMatch.desc,
-		           		time: itmeMatch.strttm,
+		           		time: itmeMatch.strttm || "00:00",
 		           		location: date,
 		            })
 		            await livematch.save()
@@ -114,6 +128,8 @@ module.exports = {
 	        	}
 	        })
         )
+
+        await MetaDataModel.updateMeta('liveMatchScheduled_lastFetched', moment().format())
 
         return 'done'
     },

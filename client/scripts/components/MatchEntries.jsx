@@ -4,7 +4,7 @@
 import React from 'react'
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
-import { URL_MATCHES, URL_MATCH_ENTRIES_MATCH, APP_URL_MDI_MATCH } from '../Constant';
+import { API_URL_MATCHES, APP_URL_MDI_MATCH } from '../Constant';
 
 class MatchEntries extends React.Component {
     render() {
@@ -21,7 +21,7 @@ class MatchEntries extends React.Component {
             ],
 
             id: '_id',
-            url: URL_MATCHES,
+            url: API_URL_MATCHES,
 
             updaterow: (rowid, rowdata, commit) => {
                 MatchHelper.update(rowdata.uid, {
@@ -33,22 +33,7 @@ class MatchEntries extends React.Component {
 
         let dataAdapter = new $.jqx.dataAdapter(source);
 
-        let columns = [
-            // {
-            //     text: 'Select',
-            //     datafield: 'Select',
-            //     columntype: 'button',
-            //     width: 50,
-            //     filterable: false,
-            //     cellsrenderer: () => {
-            //         return 'Select';
-            //     },
-            //     buttonclick: (row) => {
-            //         let dataRecord = this.refs.jqxgrid.getrowdata(row);
-            //         _this.props.history.push(URL_MATCH_ENTRIES_MATCH + "/" + dataRecord.uid)
-            //     }
-            // },
-            
+        let columns = [          
             {
                 text: '',
                 datafield: 'Select1',

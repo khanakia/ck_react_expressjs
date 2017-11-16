@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+import { MATCH_TEAM_STATUS_WINNER } from "../../Constant"
+
+
 class MatchEntryTeamGrid extends Component {
     constructor(props) {
         super(props);
@@ -10,24 +13,6 @@ class MatchEntryTeamGrid extends Component {
         teamsWinLossList: []
     }
 
-    // renderItems = () => {
-    //     if (this.props.teamsWinLossList.length < 1) return null;
-
-    //     var item = this.props.teamsWinLossList[0]
-        
-    //     return Object.entries(item).map((key, i) => {
-    //         if (key[0] == "_id") return null;
-
-    //         var amount = -1 * key[1];
-    //         var classname = amount > 0 ? "table-success" : "table-danger";
-    //         return (
-    //             <tr key={i} className={classname}>
-    //                 <td>{key[0]}</td>
-    //                 <td>{-1 * key[1]}</td>
-    //             </tr>
-    //         )
-    //     });
-    // }
 
     renderItems = () => {
         if (this.props.teamsWinLossList.length < 1) return null;
@@ -41,7 +26,7 @@ class MatchEntryTeamGrid extends Component {
                 <tr key={i} className={classname}>
                     <td>
                         {item.team_name}
-                        <span className="ml-2" dangerouslySetInnerHTML={{__html: item.status=='Winner' ? '<i class="fa fa-trophy" aria-hidden="true"></i>' : ''}} />                        
+                        <span className="ml-2" dangerouslySetInnerHTML={{__html: item.status==MATCH_TEAM_STATUS_WINNER ? '<i class="fa fa-trophy" aria-hidden="true"></i>' : ''}} />                        
                     </td>
                     <td>{amount}</td>
                     <td>{item.is_declared ? 'Y' : 'N'}</td>

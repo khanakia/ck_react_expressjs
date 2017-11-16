@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 
 import ComboBox from './ComboBox.jsx'
-import {URL_SESSIONS} from '../../Constant'
+import {API_URL_SESSIONS} from '../../Constant'
 
 class ComboBoxSession extends ComboBox {
   constructor(props) {
@@ -18,7 +18,7 @@ class ComboBoxSession extends ComboBox {
     selectedValue: null,
     width: 225,
     name: 'session',
-    url: URL_SESSIONS,
+    url: API_URL_SESSIONS,
     valueMember: '_id',
     displayMember: 'session_name'
   }

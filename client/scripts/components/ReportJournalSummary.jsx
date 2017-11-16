@@ -3,12 +3,12 @@ import { inject, observer } from 'mobx-react';
 
 import JournalEntryListGrid from './Journal/JournalEntryListGrid.jsx'
 
-@inject('journalStore')
+@inject('reportStore')
 @observer
 class ReportJournalSummary extends Component {
 
     componentDidMount() {
-        this.props.journalStore.fetchEntriesList()
+        this.props.reportStore.fetchJournalSummary()
     }
 
 
@@ -20,23 +20,23 @@ class ReportJournalSummary extends Component {
         // }
     }
 
-    exportToPdf = () => {
-        this.refs.entryGrid.refs.jqxgrid.exportdata('pdf', 'journal_summary');
-    }
+    // exportToPdf = () => {
+    //     this.refs.entryGrid.refs.jqxgrid.exportdata('pdf', 'journal_summary');
+    // }
 
     render() {  
-        const {journalEntriesList} = this.props.journalStore
+        const {journalSummaryList} = this.props.reportStore
 
         return (
             <div className="page mx-2">
                 <h6><i className="fa fa-bar-chart"></i> Report - Journal Summary</h6>
-                 <div className="mb-1 text-right">    
+                {/*<div className="mb-1 text-right">    
                     <button ref='pdfExport' onClick={this.exportToPdf} className="btn btn-sm btn-primary mr-1">Print</button>
-                </div>
+                </div>*/}
                 <div className="mb-2">
                     <div className="row">
                         <div className="col-md-12">
-                            <JournalEntryListGrid ref="entryGrid" entriesList={journalEntriesList} />
+                            <JournalEntryListGrid ref="entryGrid" entriesList={journalSummaryList} />
                         </div>
                     </div>
                 </div>

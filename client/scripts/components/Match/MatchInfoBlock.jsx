@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
-import MatchHelper from '../../helpers/MatchHelper'
+import UtilHelper from '../../helpers/UtilHelper'
+
 class SessionInfoBlock extends Component {
     constructor(props) {
         super(props)
@@ -8,13 +9,12 @@ class SessionInfoBlock extends Component {
 
     static defaultProps = {
         item: {
-            is_declared: false
+            // is_declared: false
         }
     }
 
     render() {
         const item = this.props.item
-        // console.log(item.is_declared)
         return (
             <div>
          		<div className="row info-heading-block">
@@ -31,15 +31,15 @@ class SessionInfoBlock extends Component {
                     </div>
                     <div className="col-auto">
                         <label>Is Declared:</label>
-                        {item.is_declared ? 'Yes' : 'No'}
+                        {UtilHelper.showYesNo(item.is_declared)}
                     </div>
                     <div className="col-auto">
                         <label>Is Abandoned:</label>
-                        {item.is_abandoned ? 'Yes' : 'No'}
+                        {UtilHelper.showYesNo(item.is_abandoned)}
                     </div>
                     <div className="col-auto">
                         <label>Is Monday Final:</label>
-                        {item.is_monday_final ? 'Yes' : 'No'}
+                        {UtilHelper.showYesNo(item.is_monday_final)}
                     </div>
                 </div>
             </div>

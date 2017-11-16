@@ -35,7 +35,7 @@ module.exports = {
              try {
                 let matchEntry = await MatchEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Updated', id: matchEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_ENTRY, action: Constant.ACTIVITY_ACTION.UPDATED, id: matchEntry._id })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -45,7 +45,7 @@ module.exports = {
                 let matchEntry = new MatchEntryModel(item)
                 await matchEntry.save();
                 await this.updateEntryAfterInsert(matchEntry._id)
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Created', id: matchEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_ENTRY, action: Constant.ACTIVITY_ACTION.CREATED, id: matchEntry._id })
                 return matchEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -153,61 +153,6 @@ module.exports = {
         item.set("teams", teams)
         item.save(cb)
     },
-
-
-    // async buildNetComm(args = { match_id: null, book_no: null}) {
-    //     var matchTeams = await MatchTeamClass.list({match_id:args.match_id});
-
-    //     var match = {};
-    //     if(args.match_id) {
-    //         match['match_id'] = ObjectId1(args.match_id)
-    //     }
-    //     if(args.book_no) {
-    //         match['book_no'] = args.book_no
-    //     }
-
-    //     var group = {
-    //         _id: {
-    //             "match_id" : "$match_id",
-    //             "account_id" : "$account_id"
-    //         },
-    //         "account_id" : { $first: "$account_id"  }
-    //     }
-
-    //     var project = {
-    //          "match_comm": "$account.match_comm"
-    //     }
-
-    //    var aggregate = [
-    //         {
-    //            $match: match
-    //        },
-    //        {
-    //            $group: group
-    //        },
-    //          {
-    //             $lookup:
-    //             {
-    //                from: "accounts",
-    //                localField: "account_id",
-    //                foreignField: "_id",
-    //                as: "account"
-    //             }
-    //         },
-    //         {
-    //             $unwind:"$account"
-    //         },
-    //         {
-    //             $project: project
-    //         }
-
-    //    ];
-
-    //    console.log(aggregate);
-
-    //     return MatchEntryModel.aggregate(aggregate);
-    // },
-
 
     winAmtByLK(rate, amount, mode) {
         if(mode == "L") {
@@ -372,7 +317,7 @@ module.exports = {
 
         if(matchEntry && matchEntry.is_summarized==false) {
             try {
-                await ActivityLogClass.create({type: 'Match Entry', action: 'Removed', id: matchEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_ENTRY, action: Constant.ACTIVITY_ACTION.REMOVED, id: matchEntry._id })
                 matchEntry.remove(cb)
             }
             catch (e) {
@@ -387,13 +332,13 @@ module.exports = {
     // DbClass.sayHelloInSpanish1().then(function(data){
     //     res.send(data)
     // })
-    async sayHelloInSpanish1() {
-      var obj = await new Promise(function(resolve, reject) {
-        setTimeout(function() {
-          resolve({a:42});
-        },100);
-      });
-      return obj;
-    },
+    // async sayHelloInSpanish1() {
+    //   var obj = await new Promise(function(resolve, reject) {
+    //     setTimeout(function() {
+    //       resolve({a:42});
+    //     },100);
+    //   });
+    //   return obj;
+    // },
 
 };

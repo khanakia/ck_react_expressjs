@@ -1,5 +1,5 @@
-var async = require("async");
-var await = require("async").await;
+// var async = require("async");
+// var await = require("async").await;
 
 var ActivityLogModel = require('../model/ActivityLogModel')
 var AccountModel = require('../model/AccountModel')
@@ -70,38 +70,38 @@ module.exports = {
             //     item.description = `User with username ${args.data.username} ${args.action}`
             // }
 
-            if(args.type=="Match Entry") {
+            if(args.type==Constant.ENTRY_TYPE.MATCH_ENTRY) {
                 var matchEntry = await MatchEntryModel.findOne({_id: parseInt(args.id)})
                 item.description = `Match Entry with id ${args.id} ${args.action}`
                 item.data = await this.matchEntry_createData(matchEntry)
             }
 
-            if(args.type=="Session Entry") {
+            if(args.type==Constant.ENTRY_TYPE.SESSION_ENTRY) {
                 var sessionEntry = await SessionEntryModel.findOne({_id: parseInt(args.id)})
                 item.description = `Session Entry with id ${args.id} ${args.action}`
                 item.data = await this.sessionEntry_createData(sessionEntry)
             }
 
-            if(args.type=="Meter Entry") {
+            if(args.type==Constant.ENTRY_TYPE.METER_ENTRY) {
                 var meterEntry = await MeterEntryModel.findOne({_id: parseInt(args.id)})
                 item.description = `Meter Entry with id ${args.id} ${args.action}`
                 item.data = await this.meterEntry_createData(meterEntry)
             }
 
-            if(args.type=="Session") {
+            if(args.type==Constant.ENTRY_TYPE.SESSION) {
                 item.description = `Session ${args.action} MatchID: ${args.data.match_id} | Name: ${args.data.session_name} Declared Runs: ${args.data.declared_runs} `
             }
 
-            if(args.type=="Meter") {
+            if(args.type==Constant.ENTRY_TYPE.METER) {
                 item.description = `Meter ${args.action} MatchID: ${args.data.match_id} | Name: ${args.data.meter_name} Declared Runs: ${args.data.declared_runs} `
             }
 
-            if(args.type=="Match") {
+            if(args.type==Constant.ENTRY_TYPE.MATCH) {
                 item.description = `Match ${args.action} MatchID: ${args.data._id} | Name: ${args.data.match_name}`
                 item.data = await this.match_createData(args.data)
             }
 
-            if(args.type=="Match Team") {
+            if(args.type==Constant.ENTRY_TYPE.MATCH_TEAM) {
                 var team = await TeamModel.findOne({_id: parseInt(args.data.team_id)})
                 item.description = `Match Team set to ${args.action} MatchID: ${args.data.match_id} | Team: ${team.team_name} `
                 item.data = await this.matchTeam_createData(args.data)

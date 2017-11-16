@@ -7,6 +7,7 @@ import SessionEntry from "./SessionEntry"
 import MeterEntry from "./MeterEntry"
 import GlobalHelper from "../helpers/GlobalHelper"
 
+import { LOCALSTORAGE_MATCHID } from "../Constant"
 
 
 @inject('matchStore')
@@ -21,7 +22,7 @@ class MdiMatch extends Component {
 		window.$mdiTab = $(this.refs.mdiTab)
 
 		const matchId = this.props.match.params.id
-		localStorage.setItem('matchId', matchId)
+		localStorage.setItem(LOCALSTORAGE_MATCHID, matchId)
 	    this.props.matchStore.fetch(matchId)
 
 		this.init()

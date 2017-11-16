@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import UserGrid from './User/UserGrid.jsx'
 import UserForm from './User/UserForm.jsx'
-import {APP_URL_USERS} from '../Constant'
+import {APP_URL_PAGE_USERS} from '../Constant'
 
 import Auth from '../helpers/auth.js'
 
@@ -46,13 +46,13 @@ class User extends Component {
 
     editItem = (id) => {
         // console.log(id)
-        this.props.history.push(APP_URL_USERS + "/" + id)
+        this.props.history.push(APP_URL_PAGE_USERS + "/" + id)
     }
 
     cancelFormClick = () => {
         // this.resetForm()
         this.props.userStore.user = {}
-        this.props.history.push(APP_URL_USERS)
+        this.props.history.push(APP_URL_PAGE_USERS)
     }
 
     userGrid_onDataUpdate = () => {

@@ -4,6 +4,7 @@ var router = express.Router();
 var Account = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchTypeModel = require('../model/MatchTypeModel')
+var MetaDataModel = require('../model/MetaDataModel')
 
 var MatchEntryClass = require('../class/MatchEntryClass')
 var AccountClass = require('../class/AccountClass')
@@ -217,11 +218,11 @@ router.get('/', function(req, res, next) {
 // })
 
 
-MeterClass.declare(4, 16).then(function(data){
-	res.send(data)
-}).catch((err)=>{
-	res.send(err)
-})
+// MeterClass.declare(4, 16).then(function(data){
+// 	res.send(data)
+// }).catch((err)=>{
+// 	res.send(err)
+// })
 
 
 // AccountClass.getSessCommAggregate(2)
@@ -238,7 +239,17 @@ MeterClass.declare(4, 16).then(function(data){
 // AccountClass.getPattiTotalPercentage("59da24d61ae1d43d7373744c", function(err,obj){
 // 	res.send(obj)
 // })
-    // res.send('respond with a resource');
+
+
+// MetaDataModel.updateMeta("aman", "11")
+MetaDataModel.get("aman").then((res)=> {
+	console.log(res)
+})
+
+// MetaDataModel.updateMeta('version', 1)
+res.send('respond with a resource');
+
+
 });
 
 router.get('/migration', function(req, res, next) {

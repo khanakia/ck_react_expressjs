@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import MatchEntryHelper from '../../helpers/MatchEntryHelper'
-import { URL_MATCH_ENTRIES } from "../../Constant"
 
 class MatchEntryGrid extends Component {
     constructor(props) {
@@ -16,14 +15,8 @@ class MatchEntryGrid extends Component {
         onDataUpdate: function() {},
     }
 
-    refresh = () => {
-        // this.refs.jqxgrid.updatebounddata();
+    refresh = () => {        
         this.dataAdapter.dataBind()
-    }
-
-    componentDidUpdate() {
-        // console.log("componnetDidUpdate")
-        // this.refs.jqxgrid.updatebounddata();
     }
 
     render() {
@@ -57,7 +50,6 @@ class MatchEntryGrid extends Component {
             datatype: 'json',
             id: '_id',
             localdata: this.props.entriesList.slice(),
-            // url: URL_MATCH_ENTRIES + '?match_id=' + this.props.matchId
             datafields: datafields,
         };
 
@@ -70,8 +62,7 @@ class MatchEntryGrid extends Component {
                 width: 50,
                 filterable: false,
                 cellclassname: function (row, column, value, data) {
-                     // console.log(row, column , value, data)
-                     if(data.is_summarized) {
+                     if(data.is_declared || data.is_summarized) {
                         return "jqx_cell_disabled"
                      }
                 },
@@ -100,7 +91,7 @@ class MatchEntryGrid extends Component {
                 filterable: false,
                 cellclassname: function (row, column, value, data) {
                      // console.log(row, column , value, data)
-                     if(data.is_summarized) {
+                     if(data.is_declared || data.is_summarized) {
                         return "jqx_cell_disabled"
                      }
                 },

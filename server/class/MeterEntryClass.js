@@ -22,7 +22,7 @@ module.exports = {
                 await this.updateEntryAfterInsert(id)
                 // emitter.emit('accountUpdate', id);
                 console.log(meterEntry)
-                await ActivityLogClass.create({type: 'Meter Entry', action: 'Updated', id: meterEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.METER_ENTRY, action: Constant.ACTIVITY_ACTION.UPDATED, id: meterEntry._id })
                 return meterEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -32,7 +32,7 @@ module.exports = {
                 let meterEntry = new MeterEntryModel(item)
                 await meterEntry.save();
                 await this.updateEntryAfterInsert(meterEntry._id)
-                await ActivityLogClass.create({type: 'Meter Entry', action: 'Created', id: meterEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.METER_ENTRY, action: Constant.ACTIVITY_ACTION.CREATED, id: meterEntry._id })
                 return meterEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -253,7 +253,7 @@ module.exports = {
         try {
             var meterEntry = await MeterEntryModel.findOne({"_id": id});
             if(meterEntry && meterEntry.is_declared==false) {
-                await ActivityLogClass.create({type: 'Meter Entry', action: 'Removed', id: meterEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.METER_ENTRY, action: Constant.ACTIVITY_ACTION.REMOVED, id: meterEntry._id })
                 meterEntry.remove(cb)
             } else {
                 cb(new Error('Cannot remove item.'), null)

@@ -3,5 +3,9 @@
 	"JENTRY_GT_LOSS" : "Book ko nuksaan hua. Book ko amount dena hai.",
 
 	"JENTRY_FORM_PAY" : "Agar kisi ke naam maadne hai to isme amount daale. Naam ka matlab hum usko amount de rahe hai.",
-	"JENTRY_FORM_RECEIVE" : "Agar kisi ke jama karne hai to isme amount daale. Jama ka matlab humko amount mila hai."
+	"JENTRY_FORM_RECEIVE" : "Agar kisi ke jama karne hai to isme amount daale. Jama ka matlab humko amount mila hai.",
+
+	"ABOUT_REPORT_BALANCE_SHEET" : "-ve Right columns Ka matlab book loss mein hai Or + Left columsn ka matlab book ko profit hai",
+	"ABOUT_REPORT_PL_MATCHWISE" : "- ka matlab Book loss mein hai Or + ka matlab Book Profit mein hai",
+	"ABOUT_REPORT_CONNECT" : "- ka matlab Book loss mein hai Or + ka matlab Book Profit mein hai"
 }

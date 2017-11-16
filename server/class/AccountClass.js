@@ -1,9 +1,7 @@
-var async = require("async");
-var _ = require('lodash');
+// var async = require("async");
+// var _ = require('lodash');
 
 var AccountModel = require('../model/AccountModel')
-var ResponseHelper = require('../class/ResponseHelper')
-// var EventHookClass = require('../class/EventHookClass')
 var MatchEntryModel = require('../model/MatchEntryModel')
 
 module.exports = {
@@ -64,7 +62,7 @@ module.exports = {
     async getCompanyAccounId() {
         var accounts = await AccountModel.find({is_company: true})
         var account = new AccountModel({
-            "account_name" : "Book",
+            "account_name" : Constant.ACCOUNT_NAME_BOOK,
             "is_company" : true
         })
         if(accounts.length > 0) {

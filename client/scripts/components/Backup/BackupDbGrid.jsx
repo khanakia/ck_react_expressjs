@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
+import BackupHelper from '../../helpers/BackupHelper'
 
 class BackupDbGrid extends Component {
 	constructor(props) {
@@ -31,6 +32,7 @@ class BackupDbGrid extends Component {
     initDataAdapter() {
          var datafields = [
             { name: 'name', type: 'string' },
+            { name: 'dirPath', type: 'string' },
             { name: 'created_at', type: 'date'},
         ];
 
@@ -54,11 +56,16 @@ class BackupDbGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    axios.get('/backups/restore_db', {
-                        params : {
-                            dirname: dataRecord.name,
-                        }
-                    })
+                    // axios.get('/backups/restore_db', {
+                    //     params : {
+                    //         dirname: dataRecord.name,
+                    //     }
+                    // })
+
+                    var params = {
+                        dirname: dataRecord.name,
+                    }
+                    BackupHelper.restoreDbBackup(params)
                     .then((res) => {
                         // this.sessionList = res.data
                     })
@@ -66,7 +73,28 @@ class BackupDbGrid extends Component {
 
                 }
             },
-            { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
+            
+            {
+                text: 'Open',
+                datafield: 'Open',
+                columntype: 'button',
+                width: 100,
+                filterable: false,
+                cellsrenderer: () => {
+                    return 'Open Folder';
+                },
+                buttonclick: (row) => {
+                    
+                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                    console.log(dataRecord)
+                    axios.get('/backups/opendir', {
+                        params : {
+                            dirpath: dataRecord.dirPath
+                        }
+                    })
+                }
+            },
+            { text: 'Created At', datafield: 'created_at', width: 150, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             { text: 'Name', datafield: 'name', width: 150 }
         ];
     }
@@ -77,7 +105,7 @@ class BackupDbGrid extends Component {
             <div>
          		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns}
-                    width={"450"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
+                    width={"500"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={false} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false} />

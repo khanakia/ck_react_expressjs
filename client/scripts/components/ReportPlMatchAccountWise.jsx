@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
+import ExportHelper from '../helpers/ExportHelper'
 
 @inject('reportStore')
 @observer
@@ -20,8 +21,9 @@ class ReportPlMatchAccountWise extends Component {
 
     exportReport = () => {
         // this.refs.jqxgrid.exportdata('pdf', 'pl_match_wise');
-        axios.get('/exportreports/pl_match_accountwise', {
-        })
+        // axios.get('/exportreports/pl_match_accountwise', {
+        // })
+        ExportHelper.exportPlMatchAccountWise()
         .then((res) => {
             window.location.href = res.data.fileDownloadUrl  
         })

@@ -24,7 +24,7 @@ module.exports = {
                 await this.updateEntryAfterInsert(id)
                 // emitter.emit('accountUpdate', id);
                 console.log(sessionEntry)
-                await ActivityLogClass.create({type: 'Session Entry', action: 'Updated', id: sessionEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.SESSION_ENTRY, action: Constant.ACTIVITY_ACTION.UPDATED, id: sessionEntry._id })
                 return sessionEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -34,7 +34,7 @@ module.exports = {
                 let sessionEntry = new SessionEntryModel(item)
                 await sessionEntry.save();
                 await this.updateEntryAfterInsert(sessionEntry._id)
-                await ActivityLogClass.create({type: 'Session Entry', action: 'Created', id: sessionEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.SESSION_ENTRY, action: Constant.ACTIVITY_ACTION.CREATED, id: sessionEntry._id })
                 return sessionEntry
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
@@ -273,7 +273,7 @@ module.exports = {
         try {
             var sessionEntry = await SessionEntryModel.findOne({"_id": id});
             if(sessionEntry && sessionEntry.is_declared==false) {
-                await ActivityLogClass.create({type: 'Session Entry', action: 'Removed', id: sessionEntry._id })
+                await ActivityLogClass.create({type: Constant.ENTRY_TYPE.SESSION_ENTRY, action: Constant.ACTIVITY_ACTION.REMOVED, id: sessionEntry._id })
                 sessionEntry.remove(cb)
             } else {
                 cb(new Error('Cannot remove item.'), null)

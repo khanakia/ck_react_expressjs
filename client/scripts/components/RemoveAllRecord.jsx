@@ -1,14 +1,13 @@
 import React, { Component } from "react";
+
+import OtherHelper from '../helpers/OtherHelper'
+
 class RemoveAllRecord extends Component {
 
 	removeAllRecords = () => {
 		var r = confirm("Are you sure!");
         if (r == true) {
-			axios({
-		    	method: 'get',
-		    	headers: Auth.header(),
-		    	url: "/others/remove_all_records"
-		    })
+			OtherHelper.removeAllRecords()
 		    .then((res) => {
 		    	toastr.success(res.data.message)
 		    }).catch((err) => {
@@ -20,11 +19,7 @@ class RemoveAllRecord extends Component {
 	removeLedgerRecords = () => {
 		var r = confirm("Are you sure!");
         if (r == true) {
-			axios({
-		    	method: 'get',
-		    	headers: Auth.header(),
-		    	url: "/others/remove_ledger_records"
-		    })
+			OtherHelper.removeLedgerRecords()
 		    .then((res) => {
 		    	toastr.success(res.data.message)
 		    })
@@ -37,11 +32,7 @@ class RemoveAllRecord extends Component {
 	removeEverything = () => {
 		var r = confirm("Are you sure!");
         if (r == true) {
-			axios({
-		    	method: 'get',
-		    	headers: Auth.header(),
-		    	url: "/others/clear_wholedb"
-		    })
+			OtherHelper.clearWholeDb()
 		    .then((res) => {
 		    	toastr.success(res.data.message)
 		    })

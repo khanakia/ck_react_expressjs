@@ -2,9 +2,14 @@
 
 // process.env.NODE_ENV = 'production'
 var mongoose = require('mongoose');
-var  autoIncrement = require('mongoose-auto-increment');
-
+var autoIncrement = require('mongoose-auto-increment');
 require('dotenv').config()
+
+global.async = require("async");
+global.await = require("async").await;
+global._ = require('lodash');
+
+global.Constant = require('../Constant')
 global.AppClass = require('../class/AppClass')
 global.HelperClass = require('../class/HelperClass')
 global.ResponseHelper = require('../class/ResponseHelper')
@@ -22,7 +27,7 @@ global.DIR_LOG = `${DIR_DIST}/log`
 global.LOGFILE_APP = `${DIR_LOG}/app.log`
 global.DIR_MONGODB = `${DIR_DIST}/mongodb`
 global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
-global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/app.exe`
+global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/lbf.exe`
 
 console.log(DIR_DIST)
 
@@ -43,7 +48,6 @@ process.on('uncaughtException', function (err) {
      process.exit(1); // exit with failure
   },1000);
 });
-
 
 
 

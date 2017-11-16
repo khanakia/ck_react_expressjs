@@ -41,15 +41,7 @@ class MatchTeamGrid extends Component {
             ],
 
             id: '_id',
-            // url: URL_MATCHES,
             localdata: this.props.entriesList.slice(),
-
-            // updaterow: (rowid, rowdata, commit) => {
-            //     MatchTeamHelper.update(rowdata.uid, {
-            //         match_name: rowdata.match_name
-            //     })
-            //     commit(true);
-            // },
         };
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);

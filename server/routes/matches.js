@@ -23,9 +23,14 @@ router.get('/:id', function(req, res, next) {
 		match: function (cb){  MatchModel.findOne({_id: req.params.id}).exec(cb) },
 		matchTeams: function (cb){ MatchTeamClass.list({match_id: req.params.id}).exec(cb) }
 	}, function(err, result){
-	   var ret = result.match.toObject();
-	   ret.match_teams = result.matchTeams;
-	   res.send(ret)
+		var ret = {}
+		try {
+	   		var ret = result.match.toObject();
+			ret.match_teams = result.matchTeams;
+			res.send(ret)
+		} catch(e) {
+			return res.status(401).send(ResponseHelper.error(401, "Match not found."));
+		}
 	});
 });
 

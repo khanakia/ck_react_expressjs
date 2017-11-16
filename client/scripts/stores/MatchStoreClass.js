@@ -1,6 +1,8 @@
 import { observable } from 'mobx';
 
 import MatchHelper from '../helpers/MatchHelper'
+import { API_URL_MATCH_TEAMS } from "../Constant"
+
 
 export class MatchStoreClass {
 	@observable fetched = false;
@@ -15,13 +17,15 @@ export class MatchStoreClass {
   	}
 
   	fetch(matchId) {
-		MatchHelper.show(matchId).then((res) => {
+		var axios = MatchHelper.show(matchId)
+		axios.then((res) => {
 		    this.match = res.data
 		})
+		return axios
   	}
 
   	fetchTeams(matchId) {
-		axios.get('/match_teams', {
+		axios.get(API_URL_MATCH_TEAMS, {
   			params : {
   				match_id: matchId
   			}

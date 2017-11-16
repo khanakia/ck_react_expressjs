@@ -20,15 +20,15 @@ class UserChangePassword extends Component {
         var _this = this;
         this.validator = jQuery(this.refs.form).validate({
             rules: {
-                // password: {
-                //     required: true,
-                //     minlength: 8,
-                //     ContainsAtLeastOneCapitalLetter: true,
-                //     ContainsAtLeastOneDigit: true,
-                // },
-                // password_confirmation: {
-                //     equalTo: "#password"
-                // }
+                password: {
+                    required: true,
+                    minlength: 8,
+                    ContainsAtLeastOneCapitalLetter: true,
+                    ContainsAtLeastOneDigit: true,
+                },
+                password_confirmation: {
+                    equalTo: "#password"
+                }
             }
         });
     }
@@ -100,7 +100,7 @@ class UserChangePassword extends Component {
 				                                    </div>
 				                                </div>
 						                        <div className="text-right col-md-12">
-						                            <button type="submit" className="btn btn-primary">Save</button>
+						                            <button type="submit" className="btn btn-red btn--round">Save</button>
 						                        </div>
 				                            </div>
 				                        </div>

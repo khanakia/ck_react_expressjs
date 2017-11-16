@@ -1,10 +1,10 @@
-var async = require("async");
-var await = require("async").await;
-var mongoose = require('mongoose');
-var moment = require('moment');
-var _ = require('lodash');
+// var async = require("async");
+// var await = require("async").await;
+// var mongoose = require('mongoose');
+// const ObjectId1 = mongoose.Types.ObjectId;
+// var _ = require('lodash');
 
-const ObjectId1 = mongoose.Types.ObjectId;
+var moment = require('moment');
 var JournalModel = require('../model/JournalModel')
 var JournalEntryModel = require('../model/JournalEntryModel')
 var MatchModel = require('../model/MatchModel')
@@ -196,6 +196,17 @@ module.exports = {
         if(item && item.locked) {
             throw(ResponseHelper.error(400, 'Entry is locked.'))
         }
+
+        if(item && item.is_monday_final) {
+            throw(ResponseHelper.error(400, 'Entry is Monday finaled.'))
+        }
+
+        var journal = await JournalModel.findOne({"_id": item.journal_id});
+
+        if(journal && journal.match_id) {
+            throw(ResponseHelper.error(400, 'Entry was created using Declare Method.'))
+        }
+
         try {
             if(item.type=='Manual') {
                 await JournalEntryModel.remove({journal_id: parseInt(item.journal_id)})

@@ -10,7 +10,7 @@ import SessionEntryHelper from '../../helpers/SessionEntryHelper'
 
 import CSelect from '../controls/CSelect'
 
-import {LIST_SESSION_YN, URL_SESSIONS} from '../../Constant'
+import {LIST_SESSION_YN} from '../../Constant'
 
 import GlobalHelper from "../../helpers/GlobalHelper"
 
@@ -105,10 +105,6 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Session</label>
                             <div>
-                                {/*<ComboBoxSession ref="comboSession" width={150} field_id="session_id" 
-                                    selectedValue={this.props.sessionId} onClose={this.props.comboSessionOnClose} 
-                                    url={URL_SESSIONS + "?match_id=" + this.props.matchId}/>*/}
-
                                 <ComboBoxLocal ref="comboSession" width={150} field_id="session_id" 
                                     data={this.props.sessionList} displayMember='session_name'
                                     selectedValue={this.props.sessionId} onClose={this.props.comboSessionOnClose} />    

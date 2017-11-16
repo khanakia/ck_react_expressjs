@@ -38,4 +38,13 @@ router.get('/restore_db', function(req, res, next) {
 	})
 })
 
+router.get('/opendir', function(req, res, next) {
+	BackupClass.openDirctory(req.query.dirpath).then(function(data){
+		res.send(data)
+		// res.send(data);
+	}).catch((err)=>{
+		res.send(err)
+	})
+})
+
 module.exports = router;

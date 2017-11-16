@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import ComboBoxMatchType from '../controls/ComboBoxMatchType.jsx'
 import MatchHelper from '../../helpers/MatchHelper'
 import ComboBoxLocal from '../controls/ComboBoxLocal.jsx'
-import {LIST_MATCH_TYPE} from '../../Constant'
+import {LIST_MATCH_TYPE, MATCH_TYPE_ONEDAY} from '../../Constant'
 class MatchForm extends Component {
 	constructor(props) {
         super(props);
@@ -11,7 +11,7 @@ class MatchForm extends Component {
         this.defaultItem = {
             _id: null,
             match_name: null,
-            match_type: "One Day"
+            match_type: MATCH_TYPE_ONEDAY
         }
     }
     static defaultProps = {
@@ -57,8 +57,7 @@ class MatchForm extends Component {
                         </div>
                   
                         <div className="form-group col-auto">
-                            <label className="col-form-label">Match Type</label>
-                            {/*<ComboBoxMatchType ref="combo" field_id="match_type" selectedValue={item.match_type} />*/}
+                            <label className="col-form-label">Match Type</label>                            
                             <ComboBoxLocal ref="combo" width={"100"} field_id="match_type" valueMember='id'
                                         displayMember='text' data={LIST_MATCH_TYPE}  selectedValue={item.match_type} />
                         </div>

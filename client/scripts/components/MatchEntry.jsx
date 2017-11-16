@@ -13,6 +13,9 @@ import MatchDeclare from './MatchEntry/MatchDeclare.jsx'
 import SessionEntryForm from './SessionEntry/SessionEntryForm'
 import SessionEntryWinLossGrid from './SessionEntry/SessionEntryWinLossGrid'
 
+import { API_URL_MATCH_ABANDON, API_URL_MATCH_UNABANDON , API_URL_MATCH_UNDECLARE, MATCH_TYPE_CUP } from '../Constant'
+
+
 @inject('globalStore')
 @inject('matchStore')
 @inject('matchEntryStore')
@@ -88,7 +91,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: "/matches/undeclare/" + this.props.matchId
+                url: API_URL_MATCH_UNDECLARE + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()
@@ -105,7 +108,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: "/matches/abandon/" + this.props.matchId
+                url: API_URL_MATCH_ABANDON + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()
@@ -122,7 +125,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: "/matches/unabandon/" + this.props.matchId
+                url: API_URL_MATCH_UNABANDON + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()
@@ -197,7 +200,7 @@ class MatchEntry extends React.Component {
         const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
         
 
-        const cssClassHidden = match.match_type=="Cup" ? ' hidden' : ''
+        const cssClassHidden = match.match_type==MATCH_TYPE_CUP ? ' hidden' : ''
         return ( 
             <div>
                 <div className="row">

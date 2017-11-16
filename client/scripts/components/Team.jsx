@@ -34,7 +34,7 @@ class Team extends Component {
             ],
 
             id: '_id',
-            url: APP_URL_TEAMS,
+            url: APP_URL_TEAMS + "/",
 
             updaterow: (rowid, rowdata, commit) => {
                 TeamHelper.update({

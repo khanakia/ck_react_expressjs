@@ -47,9 +47,7 @@ class JournalEntryGrid extends Component {
             datafields: datafields,
             id: '_id',
             localdata: this.props.entriesList.slice(),
-            // url: '/journal_entries?account_id='+this.props.accountId
         };
-
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
@@ -62,7 +60,7 @@ class JournalEntryGrid extends Component {
                 exportable: false,
                 cellclassname: function (row, column, value, data) {
                      // console.log(row, column , value, data)
-                     if(data.locked) {
+                     if(data.locked || data.is_monday_final) {
                         return "jqx_cell_disabled"
                      }
                 },
@@ -99,9 +97,6 @@ class JournalEntryGrid extends Component {
     }
 
     render() {
-        // console.log(this.props.entriesList.slice())
-
-        
         return (
             <div>
                 <JqxGrid key={Math.random()} ref="jqxgrid"  source={this.dataAdapter} columns={this.columns} 

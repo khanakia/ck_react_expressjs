@@ -21,7 +21,7 @@ module.exports = {
             await session.save() 
             await MatchSummaryClass.session_updateFinalWinLossAmt_bySession(id)
             await MatchSummaryClass.session_buildJournal(id)
-            await ActivityLogClass.create({type: 'Session', action: 'Declared', data: session })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.SESSION, action: Constant.ACTIVITY_ACTION.DECLARED, data: session })
             return ResponseHelper.ok(200, 'Successfully declared')
         } catch(err) {
             console.log(err)
@@ -38,7 +38,7 @@ module.exports = {
             await MatchSummaryClass.session_deleteJournal(id)
             session.declared_runs = null
             session.is_declared = false
-            await ActivityLogClass.create({type: 'Session', action: 'UnDeclared', data: session })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.SESSION, action: Constant.ACTIVITY_ACTION.UNDECLARED, data: session })
             await session.save()
         } catch(err) {
             throw(ResponseHelper.error(400, 'Cannot undeclare.'))

@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom'
 import { inject, observer } from 'mobx-react';
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
 
-
-import LiveCommentary from './LiveCommentary'
 @inject('liveApiStore')
 @observer
 class LiveMatchSchedule extends Component {
@@ -60,11 +58,7 @@ class LiveMatchSchedule extends Component {
 
         return (
             <div className="page d-inline-block mx-2">
-                <h6><i className="fa fa-bar-chart"></i> Report - User Activity Log</h6>
-                {/*<div className="mb-1 text-right">
-                    <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
-                </div>*/}
-                <LiveCommentary />
+                <h6><i className="fa fa-bar-chart"></i> Match Schedule</h6>
                 <JqxGrid key={Math.random()} ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
                     width={"1100"} height={500} pagesize={100}
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 

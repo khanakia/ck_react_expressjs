@@ -13,7 +13,6 @@ class JournalEntryListGrid extends Component {
     }
 
     componentDidUpdate() {
-        // console.log("DID Update")
         this.dataAdapter.dataBind()
     }
 
@@ -22,8 +21,6 @@ class JournalEntryListGrid extends Component {
     }
 
     render() {
-        // console.log(this.props.entriesList.slice())
-
         var datafields = [
             { name: '_id', type: 'string' },
             { name: 'account_name', type: 'string' },
@@ -38,6 +35,7 @@ class JournalEntryListGrid extends Component {
             { name: 'is_monday_final', type: 'boolean' },
             { name: 'ref_type', type: 'string`' },
             { name: 'ref_id', type: 'string' },
+            { name: 'type', type: 'string' },
         ];
 
         let source = {
@@ -45,7 +43,6 @@ class JournalEntryListGrid extends Component {
             datafields: datafields,
             id: '_id',
             localdata: this.props.entriesList.slice(),
-            // url: '/journal_entries?account_id='+this.props.accountId
         };
 
 
@@ -58,6 +55,7 @@ class JournalEntryListGrid extends Component {
             { text: 'Ref. Id', datafield: 'ref_id', width: 100 },
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             { text: 'Account', datafield: 'account_name', width: 150 },
+            { text: 'Type', datafield: 'type', width: 100 },
             { text: 'Narration', datafield: 'narration', width: 500 },
             { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
@@ -68,7 +66,7 @@ class JournalEntryListGrid extends Component {
         return (
             <div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "100%"} height={400} source={this.dataAdapter} 
+                        width={ "100%"} height={500} source={this.dataAdapter} 
                         pageable={true} sortable={true} altrows={false} enabletooltips={false} 
                         editable={false} columns={columns} filterable={true} showfilterrow={true} 
                         columnsresize={true} 

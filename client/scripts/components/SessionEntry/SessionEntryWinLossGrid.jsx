@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
-import { URL_SESSION_ENTRIES_WINLOSSS_LIST } from '../../Constant'
-
 class SessionEntryWinLossGrid extends Component {
     constructor(props) {
         super(props);
@@ -62,7 +60,6 @@ class SessionEntryWinLossGrid extends Component {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            // url: URL_SESSION_ENTRIES_WINLOSSS_LIST + '/' + this.props.sessionId
             localdata: this.props.entriesList.slice(),
         };
 

@@ -51,9 +51,9 @@ class MemberForm extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        // if(! $(this.refs.memberForm.refs.form).valid()) {
-        //   return false;
-        // }
+        if(! $(this.refs.form).valid()) {
+          return false;
+        }
         let data = jQuery(this.refs.form).serialize()
         AccountHelper.save(data, this.props.item._id).then( (response) => {
             this.props.onSubmit()
@@ -87,12 +87,12 @@ class MemberForm extends Component {
                                 <CSelect className="form-control form-control-sm" name="status" value={item.status} items={LIST_STATUS_BOOLEAN}> </CSelect>
                             </div>
                         </div>
-                        <div className="form-group col-md-1">
+                        {/*<div className="form-group col-md-1">
                             <label className="col-form-label">Hide:</label>
                             <div className="uk-form-controls">
                                 <CSelect className="form-control form-control-sm" name="hide" value={item.hide} items={LIST_STATUS_BOOLEAN}> </CSelect>
                             </div>
-                        </div>
+                        </div>*/}
                     </div>
 
                     <fieldset>
@@ -234,7 +234,7 @@ class MemberForm extends Component {
                             ) })}
                         </div>
                     </fieldset>    
-                    <div className="mt-3 text-right col-md-10">
+                    <div className="mt-3 text-right col-md-101">
                         <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                         <button className="btn btn-danger btn-sm ml-1" type="button" onClick={this.props.cancelFormClick}><i className="fa fa-undo"></i> Cancel</button>
                     </div>

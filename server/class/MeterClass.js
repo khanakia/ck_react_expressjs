@@ -21,7 +21,7 @@ module.exports = {
             await meter.save() 
             await MatchSummaryClass.meter_updateFinalWinLossAmt_byMeter(id)
             await MatchSummaryClass.meter_buildJournal(id)
-            await ActivityLogClass.create({type: 'Meter', action: 'Declared', data: meter })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.METER, action: Constant.ACTIVITY_ACTION.DECLARED, data: meter })
             return ResponseHelper.ok(200, 'Successfully declared')
         } catch(err) {
             console.log(err)
@@ -38,7 +38,7 @@ module.exports = {
             await MatchSummaryClass.meter_deleteJournal(id)
             meter.declared_runs = null
             meter.is_declared = false
-            await ActivityLogClass.create({type: 'Meter', action: 'UnDeclared', data: meter })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.METER, action: Constant.ACTIVITY_ACTION.UDECLARED, data: meter })
             await meter.save()
         } catch(err) {
             throw(ResponseHelper.error(400, 'Cannot undeclare.'))

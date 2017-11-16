@@ -4,6 +4,9 @@ import MatchHelper from '../helpers/MatchHelper'
 import SessionHelper from '../helpers/SessionHelper'
 import SessionEntryHelper from '../helpers/SessionEntryHelper'
 
+import { API_URL_SESSION_ENTRIES, API_URL_SESSION_ENTRIES_PLINFO, API_URL_SESSION_ENTRIES_WINLOSSLIST } from "../Constant"
+
+
 export class SessionEntryStoreClass {
     @observable fetched = false;
     @observable sessionEntriesList = [];
@@ -42,7 +45,7 @@ export class SessionEntryStoreClass {
 
     @action
     fetchList(sessionId) {
-        return axios.get('/session_entries', {
+        return axios.get(API_URL_SESSION_ENTRIES, {
             params: {
                 session_id: sessionId
             }
@@ -51,7 +54,7 @@ export class SessionEntryStoreClass {
 
     @action
     fetchPlInfo(sessionId) {
-        return axios.get('/session_entries/session_plinfo', {
+        return axios.get(API_URL_SESSION_ENTRIES_PLINFO, {
             params: {
                 session_id: sessionId
             }
@@ -59,7 +62,7 @@ export class SessionEntryStoreClass {
     }
 
     fetchWinLossList(sessionId) {
-        return axios.get('/session_entries/winlosslist/' + sessionId, {
+        return axios.get(API_URL_SESSION_ENTRIES_WINLOSSLIST + "/" + sessionId, {
             params: {
                 session_id: sessionId
             }

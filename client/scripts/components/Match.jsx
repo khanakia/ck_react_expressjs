@@ -17,11 +17,13 @@ class Match extends Component {
     }
 
     componentDidMount() {
-        this.props.matchStore.fetchList()
-         if(this.props.match.params.id) {
-              this.props.matchStore.fetch(this.props.match.params.id)
-          }
-    }
+       this.props.matchStore.fetchList()
+       if (this.props.match.params.id) {
+           this.props.matchStore.fetch(this.props.match.params.id).catch((err) => {
+               hashHistory.push(APP_URL_MATCHES)
+           })
+       }
+   }
 
     componentWillReceiveProps(nextProps) {
         // console.log(nextProps.match.params.id, this.props.match.params.id)

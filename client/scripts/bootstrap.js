@@ -87,7 +87,7 @@ import Home from './components/Home.jsx'
 import Team from './components/Team.jsx'
 import Account from './components/Account.jsx'
 import JournalEntry from './components/JournalEntry.jsx'
-import MatchType from './components/MatchType.jsx'
+// import MatchType from './components/MatchType.jsx'
 import Match from './components/Match.jsx'
 import MatchEntries from './components/MatchEntries.jsx'
 import MatchEntry from './components/MatchEntry.jsx'
@@ -132,7 +132,7 @@ const Root = () => (
             <Route path="/teams" component={Team}/>
             <Route exact path="/accounts" component={Account}/>
             <Route path="/accounts/:id" component={Account}/>
-            <Route exact path="/match_types" component={MatchType}/>
+            {/*<Route exact path="/match_types" component={MatchType}/>*/}
             <Route exact path="/matches" component={Match}/>
             <Route path="/matches/:id" component={Match}/>
             <Route exact path="/journal_entries" component={JournalEntry}/>

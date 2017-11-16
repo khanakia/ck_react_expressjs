@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { render } from 'react-dom'
 import { inject, observer } from 'mobx-react';
 
+import OtherHelper from '../helpers/OtherHelper'
+
 
 @inject('serverStatusStore')
 @observer
@@ -17,7 +19,8 @@ class ServerStatus extends Component {
 
 	startDbServer = () => {
 		// console.log('startDbServer')
-		axios.get('/others/server_startdb')
+		// axios.get('/others/server_startdb')
+		OtherHelper.startDbServer()
 	    .then((res) => {
 	    	setTimeout(() => {
 	    		this.props.serverStatusStore.fetchDbServerStatus()

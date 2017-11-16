@@ -10,7 +10,7 @@ import InputDecimal from '../controls/InputDecimal.jsx'
 import MatchEntryHelper from '../../helpers/MatchEntryHelper'
 import CSelect from '../controls/CSelect'
 
-import { LIST_MATCH_LK } from '../../Constant'
+import { LIST_MATCH_LK, MATCH_TYPE_CUP} from '../../Constant'
 
 import GlobalHelper from "../../helpers/GlobalHelper"
 
@@ -95,7 +95,7 @@ class MatchEntryForm extends React.Component {
     render() {
 
         const { item } = this.state
-        const comm_yn = this.props.match.match_type=="Cup" ? false : true
+        const comm_yn = this.props.match.match_type==MATCH_TYPE_CUP ? false : true
         return (
             <div>
                 <form ref="form">

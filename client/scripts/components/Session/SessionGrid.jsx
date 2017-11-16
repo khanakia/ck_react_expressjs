@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import SessionHelper from '../../helpers/SessionHelper'
-import { URL_SESSIONS } from "../../Constant"
+
 
 class SessionGrid extends Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     matchId: this.props.matchId,
-        //     // sessionId: this.props.sessionId
-        // }
     }
 
     static defaultProps = {
@@ -29,7 +25,6 @@ class SessionGrid extends Component {
         this.refs.jqxgrid.on('bindingcomplete', () => {
             this.selectRowBySessonId(this.props.sessionId)
             this.onRowSelect()
-            // console.log("bindingcomplete")
         })
         window.grid = this.refs.jqxgrid
         window.grid_data = this.props.entriesList.slice()
@@ -42,15 +37,8 @@ class SessionGrid extends Component {
     }
 
     componentDidUpdate() {
-        // console.log("componentDidUpdate")
-        // this.selectRowBySessonId()
-        // this.onRowSelect()
-
         this.source.localdata = this.props.entriesList.slice()
         this.dataAdapter.dataBind()
-        // console.log(this.dataAdapter)
-     
-       
     }
 
     refresh = () => {
@@ -108,7 +96,6 @@ class SessionGrid extends Component {
             datafields: datafields,
             id: '_id',
             localdata: this.props.entriesList.slice(),
-            // url: URL_SESSIONS + '?match_id=' + this.props.matchId
         };
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
@@ -170,8 +157,6 @@ class SessionGrid extends Component {
 
     render() {
         // console.log(this.dataAdapter)
-
-
         return (
             <div>
                 <JqxGrid ref="jqxgrid"

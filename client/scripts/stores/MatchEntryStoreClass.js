@@ -3,6 +3,8 @@ import { observable } from 'mobx';
 import MatchHelper from '../helpers/MatchHelper'
 import MatchTeamHelper from '../helpers/MatchTeamHelper'
 
+import { API_URL_MATCH_ENTRIES, API_URL_MATCH_ENTRIES_PLINFO } from "../Constant"
+
 export class MatchEntryStoreClass {
 	@observable fetched = false;
 	@observable match = {};
@@ -11,17 +13,9 @@ export class MatchEntryStoreClass {
 		teamsWinLossList : []
 	};
 	@observable entriesList = [];
-	// @observable teamsList = [];
-
- 
-	// fetch(matchId) {
-	//   axios.get('http://localhost:3000/matches/1')
-	//     .then(() => this.fetched = true)
-	//     .catch(() => this.fetched = false);
-	// }
 
   	fetchList(matchId, bookNo=null) {
-		axios.get('/match_entries', {
+		axios.get(API_URL_MATCH_ENTRIES, {
   			params : {
   				match_id: matchId,
   				book_no: bookNo
@@ -34,20 +28,8 @@ export class MatchEntryStoreClass {
 	    .catch(() => this.fetched = false);
   	}
 
-  // 	fetchTeams(matchId) {
-		// axios.get('/match_teams', {
-  // 			params : {
-  // 				match_id: matchId
-  // 			}
-  // 		})
-	 //    .then((res) => {
-	 //    	this.teamsList = res.data
-	 //    })
-	 //    .catch(() => this.fetched = false);
-  // 	}
-
   	fetchPlInfo(matchId, bookNo=null) {
-  		axios.get('/match_entries/match_plinfo', {
+  		axios.get(API_URL_MATCH_ENTRIES_PLINFO, {
   			params : {
   				match_id: matchId,
   				book_no: bookNo

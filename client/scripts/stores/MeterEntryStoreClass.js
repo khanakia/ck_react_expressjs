@@ -4,6 +4,9 @@ import MatchHelper from '../helpers/MatchHelper'
 import MeterHelper from '../helpers/MeterHelper'
 import MeterEntryHelper from '../helpers/MeterEntryHelper'
 
+import { API_URL_METER_ENTRIES, API_URL_METER_ENTRIES_PLINFO, API_URL_METER_ENTRIES_WINLOSSLIST } from "../Constant"
+
+
 export class MeterEntryStoreClass {
     @observable fetched = false;
     @observable meterEntriesList = [];
@@ -42,7 +45,7 @@ export class MeterEntryStoreClass {
 
     @action
     fetchList(meterId) {
-        return axios.get('/meter_entries', {
+        return axios.get(API_URL_METER_ENTRIES, {
             params: {
                 meter_id: meterId
             }
@@ -51,7 +54,7 @@ export class MeterEntryStoreClass {
 
     @action
     fetchPlInfo(meterId) {
-        return axios.get('/meter_entries/meter_plinfo', {
+        return axios.get(API_URL_METER_ENTRIES_PLINFO, {
             params: {
                 meter_id: meterId
             }
@@ -59,7 +62,7 @@ export class MeterEntryStoreClass {
     }
 
     fetchWinLossList(meterId) {
-        return axios.get('/meter_entries/winlosslist/' + meterId, {
+        return axios.get(API_URL_METER_ENTRIES_WINLOSSLIST + "/" + meterId, {
             params: {
                 meter_id: meterId
             }

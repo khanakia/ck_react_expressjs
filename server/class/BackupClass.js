@@ -1,6 +1,6 @@
-var async = require("async");
-var await = require("async").await;
-var _ = require('lodash');
+// var async = require("async");
+// var await = require("async").await;
+// var _ = require('lodash');
 
 var fs = require('fs');
 var path = require('path');
@@ -12,6 +12,16 @@ var exec = require('child_process').exec;
 // var backupDir = rootPath + "/backup"
 module.exports = {
     
+    async openDirctory(dirPath) {
+        // return dirPath
+        var platform = process.platform        
+        var command = `start ${dirPath}`
+        if(platform=="darwin") {
+            command = `open ${dirPath}`
+        }
+        exec(command, { silent: true })
+    },
+
     async listDbBackupFiles() {
         
         // if (!fs.existsSync(backupDir)){
@@ -38,7 +48,8 @@ module.exports = {
             filesArray.push({
                 name: filename,
                 created_at: fileStat.birthtime,
-                size: HelperClass.niceBytes(fileStat.size)
+                size: HelperClass.niceBytes(fileStat.size),
+                dirPath: filePath
             })            
         }))
 

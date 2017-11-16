@@ -1,7 +1,7 @@
-var async = require("async");
-var _ = require('lodash');
+// var async = require("async");
+// var _ = require('lodash');
 
-var ResponseHelper = require('../class/ResponseHelper')
+// var ResponseHelper = require('../class/ResponseHelper')
 var MatchModel = require('../model/MatchModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
@@ -16,7 +16,7 @@ module.exports = {
             match.is_declared = false
             match.winner_teamid = null
             await match.save()
-            await ActivityLogClass.create({type: 'Match', action: 'UnDeclared', data: match })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH, action: Constant.ACTIVITY_ACTION.UDECLARED, data: match })
         } catch(err) {
             console.log(err)
             throw(ResponseHelper.error(400, 'Cannot undeclare.'))

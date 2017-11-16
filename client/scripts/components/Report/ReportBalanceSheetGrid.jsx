@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
+import ExportHelper from '../../helpers/ExportHelper'
 
 class ReportBalanceSheetGrid extends Component {
     constructor(props) {
@@ -22,8 +23,9 @@ class ReportBalanceSheetGrid extends Component {
     exportReport = () => {
         // this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
         
-        axios.get('/exportreports/balance_sheet', {
-        })
+        // axios.get('/exportreports/balance_sheet', {
+        // })
+        ExportHelper.exportBalanceSheet()
         .then((res) => {
             window.location.href = res.data.fileDownloadUrl  
         })
@@ -31,7 +33,7 @@ class ReportBalanceSheetGrid extends Component {
     }
 
     render() {
-        console.log(this.props.entriesList.slice())
+        // console.log(this.props.entriesList.slice())
 
         var datafields = [
             { name: 'account_id', type: 'string' },

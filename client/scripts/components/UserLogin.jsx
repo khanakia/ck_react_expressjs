@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 
 import Auth from '../helpers/auth.js'
+import HeaderPublic from './Shared/HeaderPublic'
+
+import { APP_URL_DASHBOARD } from "../Constant"
 
 class UserLogin extends Component {
 	componentDidMount() {
         if(Auth.check()) {
-            hashHistory.push('/dashboard')
+            hashHistory.push(APP_URL_DASHBOARD)
             return false;
         }
     }
@@ -19,7 +22,7 @@ class UserLogin extends Component {
     	
     	Auth.attempt({username: this.refs.username.value, password: this.refs.password.value}).then((response) => {
             if (response.data.token != null) {
-                hashHistory.push('/dashboard')
+                hashHistory.push(APP_URL_DASHBOARD)
             } else {                
                 toastr.error(trans.invalid_credentials);
             }
@@ -32,6 +35,7 @@ class UserLogin extends Component {
 
         return (
             <div className="mx-2">
+                <HeaderPublic />
          		<div className="loginform">
                     <div id="errordiv"></div>
                     <div className="container">
@@ -52,11 +56,11 @@ class UserLogin extends Component {
                                             </div>
                                         </label>
                                         <div className="col-sm-12 col-xs-12">
-                                            <input type="password" className="form-control required minlength" name="password" id="password"  placeholder="••••••••••" ref='password'/>
+                                            <input type="password" className="form-control required minlength" name="password" id="password"  placeholder="•••••••" ref='password'/>
                                         </div>
                                     </div>
                                     <div className="text-center">
-                                        <button type="submit" className="btn btn-primary">Login</button>
+                                        <button type="submit" className="btn btn-red btn--round">Login</button>
                                     </div>
                                 </form>
                             </div>

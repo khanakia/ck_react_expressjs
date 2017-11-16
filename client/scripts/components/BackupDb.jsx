@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import BackupDbGrid from './Backup/BackupDbGrid.jsx'
 
+import BackupHelper from '../helpers/BackupHelper'
+
 @inject('backupStore')
 @observer
 class BackupDb extends Component {
@@ -12,7 +14,8 @@ class BackupDb extends Component {
     }
 
     backupDb = () => {
-        axios.get('/backups/backup_db')
+        // axios.get('/backups/backup_db')
+        BackupHelper.createDbBackup()
         .then((res) => {
             this.props.backupStore.fetchDbBackupList()
         })

@@ -1,22 +1,15 @@
-var async = require("async");
-var await = require("async").await;
-var mongoose = require('mongoose');
+// var async = require("async");
+// var await = require("async").await;
+// var mongoose = require('mongoose');
+// const ObjectId1 = mongoose.Types.ObjectId;
+// var Constant = require('../Constant')
 
-const ObjectId1 = mongoose.Types.ObjectId;
-var Constant = require('../Constant')
 var MatchModel = require('../model/MatchModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
 var ActivityLogClass = require('../class/ActivityLogClass')
 
 module.exports = {
-
-    async save(item) {
-        // var matchTeams = await MatchTeamModel.find({match_id: item.match_id, team_id: item.team_id})
-        // return matchTeams.length
-        
-    },
-
     list(args = { match_id: null}) {
         var aggregate = [];
 
@@ -74,10 +67,7 @@ module.exports = {
             }
         );
 
-
-
         return MatchTeamModel.aggregate(aggregate);
-
     },
 
 
@@ -114,7 +104,7 @@ module.exports = {
         matchTeam.is_declared = true
         await matchTeam.save();
 
-        await ActivityLogClass.create({type: 'Match Team', action: 'Loser', data: matchTeam })
+        await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_TEAM, action: Constant.ACTIVITY_ACTION.LOSER, data: matchTeam })
 
 
         //// If there is only single undeclared team left then set that team as winner
@@ -136,7 +126,7 @@ module.exports = {
             var winnerTeam = await this.getWinnerTeam(match._id)
             match.is_declared = true
             match.winner_teamid = winnerTeam.team_id
-            await ActivityLogClass.create({type: 'Match', action: 'Declared', data: match })
+            await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH, action: Constant.ACTIVITY_ACTION.DECLARED, data: match })
         }
 
         // match.declare_method = Constant.MATCH_DECLARE_METHOD.TEAM
@@ -165,7 +155,7 @@ module.exports = {
         matchTeam.is_declared = true
         await matchTeam.save();
 
-        await ActivityLogClass.create({type: 'Match Team', action: 'Winner', data: matchTeam })
+        await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_TEAM, action: Constant.ACTIVITY_ACTION.WINNER, data: matchTeam })
 
         await MatchTeamModel.updateMany(
             { 
@@ -182,7 +172,7 @@ module.exports = {
         match.is_declared = true
         match.winner_teamid = matchTeam.team_id
         await match.save()
-        await ActivityLogClass.create({type: 'Match', action: 'Declared', data: match })
+        await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH, action: Constant.ACTIVITY_ACTION.DECLARED, data: match })
 
         await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)
@@ -205,7 +195,7 @@ module.exports = {
         await matchTeam.save();
 
 
-        await ActivityLogClass.create({type: 'Match Team', action: 'Undeclared', data: matchTeam })
+        await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_TEAM, action: Constant.ACTIVITY_ACTION.UDECLARED, data: matchTeam })
         
         await MatchTeamModel.updateMany(
             { 
@@ -224,7 +214,7 @@ module.exports = {
         // match.declare_method = countDeclaredTeams == 0 ? null : Constant.MATCH_DECLARE_METHOD.TEAM
         match.is_declared = false
         await match.save()
-        await ActivityLogClass.create({type: 'Match', action: 'UnDeclared', data: match })
+        await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH, action: Constant.ACTIVITY_ACTION.UDECLARED, data: match })
 
         await MatchSummaryClass.buildMatchJournal(matchTeam.match_id).catch((err)=>{
             console.log(err)

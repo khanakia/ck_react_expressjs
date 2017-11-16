@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 
 import JqxWindow from '../jqwidgets-react/react_jqxwindow.js';
-import { URL_MATCH_TEAMS, URL_MATCH_TEAMS_SET_LOSER, URL_MATCH_TEAMS_SET_WINNER , URL_MATCH_TEAMS_SET_UNSET_LOSER} from '../../Constant'
+import { 
+    API_URL_MATCH_TEAM_SET_LOSER, API_URL_MATCH_TEAM_SET_WINNER , API_URL_MATCH_TEAM_SET_UNSET_LOSER,
+    MATCH_TEAM_STATUS_WINNER, MATCH_TEAM_STATUS_LOSER
+} from '../../Constant'
 class MatchDeclare extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +31,7 @@ class MatchDeclare extends Component {
     	axios({
             method: 'post',
             headers: Auth.header(),
-            url: URL_MATCH_TEAMS_SET_WINNER,
+            url: API_URL_MATCH_TEAM_SET_WINNER,
             data: {
                 match_team_id: matchTeamId
             }
@@ -43,7 +46,7 @@ class MatchDeclare extends Component {
     	axios({
             method: 'post',
             headers: Auth.header(),
-            url: URL_MATCH_TEAMS_SET_LOSER,
+            url: API_URL_MATCH_TEAM_SET_LOSER,
             data: {
                 match_team_id: matchTeamId
             }
@@ -58,7 +61,7 @@ class MatchDeclare extends Component {
     	axios({
             method: 'post',
             headers: Auth.header(),
-            url: URL_MATCH_TEAMS_SET_UNSET_LOSER,
+            url: API_URL_MATCH_TEAM_SET_UNSET_LOSER,
             data: {
                 match_team_id: matchTeamId
             }
@@ -73,8 +76,8 @@ class MatchDeclare extends Component {
     	const items = this.props.teamList
         if (items.length == 0) return null;
         return items.map((item, i) => {
-            var classname_winner = item.status == "Winner" ? " table-success" : "";
-            var classname_loser = item.status == "Loser" ? " table-danger" : "";
+            var classname_winner = item.status == MATCH_TEAM_STATUS_WINNER ? " table-success" : "";
+            var classname_loser = item.status == MATCH_TEAM_STATUS_LOSER ? " table-danger" : "";
             return (
                 <tr key={i} className={classname_loser + classname_winner}>
                     <td>{item.team_name}</td>
@@ -93,7 +96,7 @@ class MatchDeclare extends Component {
                     			: ""
                     	}
                     	{
-                    		item.status !== null && item.status !== "Winner" ?
+                    		item.status !== null && item.status !== MATCH_TEAM_STATUS_WINNER ?
                     			<button onClick={() => this.unsetLoser(item._id)}>Undeclare</button>
                     			: ""
                     	}

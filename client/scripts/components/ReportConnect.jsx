@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import AllMatchGrid from './ReportConnect/AllMatchGrid'
 import ReportConnectGrid from './ReportConnect/ReportConnectGrid'
+import TooltipQuestion from './controls/TooltipQuestion';
+import ExportHelper from '../helpers/ExportHelper'
 
 @inject('reportStore')
 @inject('sessionStore')
@@ -30,11 +32,12 @@ class ReportConnect extends Component {
 
         var filters = this.refs.allMatchGrid.getSelectedRowsData()
 
-        axios({
-        method: 'post',
-          url: "/exportreports/connect_report",
-          data: filters
-        })
+        // axios({
+        // method: 'post',
+        //   url: "/exportreports/connect_report",
+        //   data: filters
+        // })
+        ExportHelper.exportConnectReport(filters)
         .then((res) => {
             window.location.href = res.data.fileDownloadUrl  
         })
@@ -48,7 +51,7 @@ class ReportConnect extends Component {
 
         return (
             <div className="page mx-2">
-                <h6><i className="fa fa-bar-chart"></i> Report - Connect</h6>
+                <h6><i className="fa fa-bar-chart"></i> Report - Connect <TooltipQuestion content={Messages.ABOUT_REPORT_CONNECT} /></h6>
                 <div className="">
                     <div className="">
                         <button className="btn btn-sm btn-primary" onClick={this.connectReport}>Connect</button>

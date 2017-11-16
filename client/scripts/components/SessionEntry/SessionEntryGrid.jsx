@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import SessionEntryHelper from '../../helpers/SessionEntryHelper'
-import { URL_SESSION_ENTRIES } from "../../Constant"
+
 
 class SessionEntryGrid extends Component {
     constructor(props) {
@@ -55,7 +55,6 @@ class SessionEntryGrid extends Component {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            // url: URL_SESSION_ENTRIES + '?session_id=' + this.props.sessionId,
             localdata: this.props.entriesList.slice(),
         };
 

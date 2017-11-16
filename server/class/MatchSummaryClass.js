@@ -1,9 +1,8 @@
-var async = require("async");
-var await = require("async").await;
-var mongoose = require('mongoose');
-
-var Constant = require('../Constant')
-const ObjectId1 = mongoose.Types.ObjectId;
+// var async = require("async");
+// var await = require("async").await;
+// var mongoose = require('mongoose');
+// const ObjectId1 = mongoose.Types.ObjectId;
+// var Constant = require('../Constant')
 
 var Account = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
@@ -19,39 +18,11 @@ var AccountClass = require('./AccountClass')
 var JournalEntryClass = require('./JournalEntryClass')
 
 module.exports = {
-    // async createJournalEntryItem(journal_id, by_account_id, account_id, amount, type, is_company, narration) {
-    //     var jentryItem = new JournalEntryModel({
-    //         journal_id : journal_id,
-    //         by_account_id: by_account_id,
-    //         account_id: account_id,
-    //         dr_amt: 0,
-    //         cr_amt: 0,
-    //         bal: 0,
-    //         type: type,
-    //         locked: true,
-    //         is_company: is_company,
-    //     })
-
-    //     if(amount > 0) {
-    //         jentryItem.cr_amt = Math.abs(amount);
-    //     } else {
-    //         jentryItem.dr_amt = Math.abs(amount);
-    //     }
-    //     jentryItem.bal = jentryItem.dr_amt - jentryItem.cr_amt
-    //     jentryItem.narration = narration
-    //     if(jentryItem.bal!==0) {
-    //         return await jentryItem.save()
-    //     }
-    //     return false;
-    // },
-
-    
-
     //  SESSION DECLARE FUNCTIONS ======================================================
     async session_deleteJournal(sessionId) {
         var journalItems = await JournalModel.find({
             ref_id : parseInt(sessionId),
-            ref_type: "Session"
+            ref_type: Constant.MATCH_SUMMARY_REFTYPE.SESSION
         })
         journalItems.map( async (item, i) => {
             await JournalEntryModel.remove({"journal_id": item._id});
@@ -167,7 +138,7 @@ module.exports = {
         var journalItem = new JournalModel({
             match_id : session.match_id,
             ref_id : session._id,
-            ref_type: "Session"
+            ref_type: Constant.MATCH_SUMMARY_REFTYPE.SESSION
         })
 
         await journalItem.save()
@@ -178,7 +149,8 @@ module.exports = {
         await Promise.all(sessionEntries.map( async (sessionEntry, i) => {
             
             var account = await Account.findOne({_id: parseInt(sessionEntry.account_id)})
-            narration = ` (Party: ${account._id} - ${account.account_name}) (Match: ${sessionEntry.match_id} - ${sessionEntry.match_name}) (Session: ${session._id} - ${session.session_name})`
+            narration = ` (Match: ${sessionEntry.match_id} - ${sessionEntry.match_name}) (Session: ${session._id} - ${session.session_name})`
+            var narration_party = ` (Party: ${account._id} - ${account.account_name}) ${narration}`
 
             // Distribute Profit
             var final_amount = sessionEntry.final_amount
@@ -193,14 +165,14 @@ module.exports = {
                 if(!item.account_id) return null
                 var comm_amt = Math.abs(sessionEntry.amount) * item.sess_comm/100
                 com_amt_total += comm_amt
-                var n = `Comm (${item.sess_comm}%) - ${narration}`
+                var n = `Comm (${item.sess_comm}%) - ${narration_party}`
                 // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, comm_amt, "Commission", false, n)
                 var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
                     amount: comm_amt, 
-                    type: 'Commission', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
                     narration: n
                 })
                 // return await jeitem.save()
@@ -214,14 +186,14 @@ module.exports = {
                 var patti_amt = -1 * final_amount_with_comm * item.session/100
                 patti_distributed_total += patti_amt
                 // patti_amt = -1 * patti_amt
-                var n = `Patti (${item.session}%) - ${narration}`
+                var n = `Patti (${item.session}%) - ${narration_party}`
                 // var jeitem = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, patti_amt, "Patti", false, n)
                 var jeitem = await JournalEntryClass.createJournalEntryItem1({
                     journal_id: journalItem._id, 
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
                     amount: patti_amt, 
-                    type: 'Patti', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.PATTI, 
                     narration: n
                 })
                 // return await jeitem.save()
@@ -232,8 +204,8 @@ module.exports = {
                 by_account_id: companyAccountId, 
                 account_id: sessionEntry.account_id, 
                 amount: final_amount, 
-                type: 'PL', 
-                narration: "PL -" + narration,
+                type: Constant.JOURNAL_ENTRY_TYPE.PL, 
+                narration: "PL -" + narration_party,
                 patti_amt: patti_distributed_total
             })
         }))
@@ -248,7 +220,7 @@ module.exports = {
                     by_account_id: companyAccountId, 
                     account_id: companyAccountId, 
                     amount: pl_bal, 
-                    type: 'PL', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.PL, 
                     narration: "PL -" + narration,
                     is_company: true
                 })
@@ -263,7 +235,7 @@ module.exports = {
     async meter_deleteJournal(meterId) {
         var journalItems = await JournalModel.find({
             ref_id : parseInt(meterId),
-            ref_type: "Meter"
+            ref_type: Constant.MATCH_SUMMARY_REFTYPE.METER
         })
         journalItems.map( async (item, i) => {
             await JournalEntryModel.remove({"journal_id": item._id});
@@ -363,7 +335,7 @@ module.exports = {
         var journalItem = new JournalModel({
             match_id : meter.match_id,
             ref_id : meter._id,
-            ref_type: "Meter"
+            ref_type: Constant.MATCH_SUMMARY_REFTYPE.METER
         })
 
         await journalItem.save()
@@ -393,7 +365,7 @@ module.exports = {
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
                     amount: comm_amt, 
-                    type: 'Commission', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
                     narration: n
                 })
                 // return await jeitem.save()
@@ -414,7 +386,7 @@ module.exports = {
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
                     amount: patti_amt, 
-                    type: 'Patti', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.PATTI, 
                     narration: n
                 })
                 // return await jeitem.save()
@@ -425,7 +397,7 @@ module.exports = {
                 by_account_id: companyAccountId, 
                 account_id: meterEntry.account_id, 
                 amount: final_amount, 
-                type: 'PL', 
+                type: Constant.JOURNAL_ENTRY_TYPE.PL, 
                 narration: "PL -" + narration_party,
                 patti_amt: patti_distributed_total
             })
@@ -440,7 +412,7 @@ module.exports = {
                     by_account_id: companyAccountId, 
                     account_id: companyAccountId, 
                     amount: pl_bal, 
-                    type: 'PL', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.PL, 
                     narration: "PL -" + narration,
                     is_company: true
                 })
@@ -462,7 +434,7 @@ module.exports = {
 
             var journalItems = await JournalModel.find({
                 ref_id : parseInt(matchTeam._id),
-                ref_type: "Match Team"
+                ref_type: Constant.MATCH_SUMMARY_REFTYPE.MATCH_TEAM
             })
             journalItems.map( async (item, i) => {
                 await JournalEntryModel.remove({"journal_id": item._id});
@@ -627,7 +599,7 @@ module.exports = {
         var journalItem = new JournalModel({
             match_id : matchTeam.match_id,
             ref_id : matchTeamId,
-            ref_type: "Match Team"
+            ref_type: Constant.MATCH_SUMMARY_REFTYPE.MATCH_TEAM
         })
 
         await journalItem.save()
@@ -638,9 +610,9 @@ module.exports = {
         await Promise.all(matchEntries.map( async (matchEntry, i) => {
             var account = await Account.findOne({_id: parseInt(matchEntry.account_id)})
 
-            var amount = matchTeamStatus=="Winner" ? matchEntry.favteam_subtotal : matchEntry.otherteam_subtotal;
-            var amount_pos = matchTeamStatus=="Winner" ? matchEntry.favteam_pos : matchEntry.otherteam_pos;
-            var amount_neg = matchTeamStatus=="Winner" ? matchEntry.favteam_neg : matchEntry.otherteam_neg;
+            var amount = matchTeamStatus==Constant.MATCH_TEAM_STATUS.WINNER ? matchEntry.favteam_subtotal : matchEntry.otherteam_subtotal;
+            var amount_pos = matchTeamStatus==Constant.MATCH_TEAM_STATUS.WINNER ? matchEntry.favteam_pos : matchEntry.otherteam_pos;
+            var amount_neg = matchTeamStatus==Constant.MATCH_TEAM_STATUS.WINNER ? matchEntry.favteam_neg : matchEntry.otherteam_neg;
 
             narration = ` (Match: ${matchEntry.match_id} - ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
 
@@ -665,7 +637,7 @@ module.exports = {
                 by_account_id: companyAccountId, 
                 account_id: account.match_comm_to, 
                 amount: comm_amt, 
-                type: 'Commission', 
+                type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
                 narration: narration1
             })
 
@@ -684,7 +656,7 @@ module.exports = {
                     by_account_id: companyAccountId, 
                     account_id: item.account_id, 
                     amount: patti_amt, 
-                    type: 'Patti', 
+                    type: Constant.JOURNAL_ENTRY_TYPE.PATTI, 
                     narration: n
                 })
             }))
@@ -697,8 +669,8 @@ module.exports = {
                 by_account_id: companyAccountId, 
                 account_id: matchEntry.account_id, 
                 amount: amount, 
-                type: 'PL', 
-                narration: "PL -" + narration,
+                type: Constant.JOURNAL_ENTRY_TYPE.PL, 
+                narration: "PL - (Party: ${account._id} - ${account.account_name})" + narration,
                 patti_amt: patti_distributed_total
             })
 
@@ -714,7 +686,7 @@ module.exports = {
                 by_account_id: companyAccountId, 
                 account_id: companyAccountId, 
                 amount: pl_bal, 
-                type: 'PL', 
+                type: Constant.JOURNAL_ENTRY_TYPE.PL, 
                 narration: "PL -" + narration,
                 is_company: true
             })

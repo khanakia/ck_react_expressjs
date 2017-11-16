@@ -96,7 +96,8 @@ module.exports = {
             throw(ResponseHelper.error(401, 'Declared Team cannot be removed.'))            
         }
 
-        var declaredTeamsCount = await MatchTeamModel.find({is_declared: true}).count()
+        // If any team is declared under Same Parent Match 
+        var declaredTeamsCount = await MatchTeamModel.find({match_id: parseInt(matchTeam.match_id), is_declared: true}).count()
         if(declaredTeamsCount > 0) {
             throw(ResponseHelper.error(401, 'Some Team is already declared in this match.'))
         }

@@ -26,7 +26,6 @@ class MeterGrid extends Component {
         this.refs.jqxgrid.on('bindingcomplete', () => {
             this.selectRowByMeterId(this.props.meterId)
             this.onRowSelect()
-            // console.log("bindingcomplete")
         })
         window.grid = this.refs.jqxgrid
         window.grid_data = this.props.entriesList.slice()
@@ -39,19 +38,11 @@ class MeterGrid extends Component {
     }
 
     componentDidUpdate() {
-        // console.log("componentDidUpdate")
-        // this.selectRowByMeterId()
-        // this.onRowSelect()
-
         this.source.localdata = this.props.entriesList.slice()
         this.dataAdapter.dataBind()
-        // console.log(this.dataAdapter)
-     
-       
     }
 
     refresh = () => {
-        // this.refs.jqxgrid.updatebounddata();
         this.dataAdapter.dataBind()
         this.onRowSelect()
     }
@@ -165,9 +156,6 @@ class MeterGrid extends Component {
     }
 
     render() {
-        // console.log(this.dataAdapter)
-
-
         return (
             <div>
                 <JqxGrid ref="jqxgrid"

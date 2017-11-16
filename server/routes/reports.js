@@ -48,6 +48,14 @@ router.get('/pl_match_accountwise', function(req, res, next) {
     })
 });
 
+router.get('/journal_summary', function(req, res, next) {
+    ReportClass.journalSummary().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+});
+
 router.get('/activity_log', function(req, res, next) {
     ActivityLogClass.list().then(function(data){
         res.send(data)    

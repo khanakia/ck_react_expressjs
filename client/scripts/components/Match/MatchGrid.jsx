@@ -40,15 +40,7 @@ class MatchGrid extends Component {
             ],
 
             id: '_id',
-            // url: URL_MATCHES,
             localdata: this.props.entriesList.slice(),
-
-            // updaterow: (rowid, rowdata, commit) => {
-            //     MatchHelper.update(rowdata.uid, {
-            //         match_name: rowdata.match_name
-            //     })
-            //     commit(true);
-            // },
         };
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
@@ -95,7 +87,6 @@ class MatchGrid extends Component {
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
                     this.props.editItem(dataRecord.uid)
-                    // console.log(dataRecord.uid)
                 }
             },
             { text: 'Id', datafield: '_id', width: 50 },

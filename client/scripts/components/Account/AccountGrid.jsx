@@ -48,17 +48,7 @@ class AccountGrid extends Component {
             datafields: datafields,
 
             id: '_id',
-            // url: '/accounts',
             localdata: this.props.entriesList.slice(),
-
-            // updaterow: (rowid, rowdata, commit) => {
-            //     AccountHelper.update(rowdata.uid, {
-            //         account_name: rowdata.account_name
-            //     }).then((res) => {
-            //         this.props.onDataUpdate()
-            //     })
-            //     commit(true);
-            // },
         };
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
@@ -102,7 +92,7 @@ class AccountGrid extends Component {
 
                 }
             },
-            { text: 'Id', datafield: '_id', width: 70 },
+            { text: 'Id', datafield: '_id', width: 68 },
             { text: 'Name', datafield: 'account_name', width: 200 },
             // { text: 'Limit', datafield: 'limit', width: 100 },
             // { text: 'Status', datafield: 'status', width: 50, columntype: 'checkbox' },
@@ -115,7 +105,7 @@ class AccountGrid extends Component {
             <div>
          		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns}
-                    width={"100%"} height={600} pageable={false} pagermode={'simple'} pagesize={1000}
+                    width={"100%"} height={540} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={true} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false} />
