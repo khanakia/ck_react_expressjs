@@ -27,6 +27,13 @@ class LiveCommentary extends Component {
     }
 
     componentDidMount() {
+        setTimeout(function(){
+            if(typeof mousetrapGlobal !== "undefined") {
+                console.log("Reset mouse")
+                mousetrapGlobal.reset()
+            }
+        },2000)
+
         var config = {
           apiKey: "apiKey",
           authDomain: "cbmfu-5a56b.firebaseapp.com",

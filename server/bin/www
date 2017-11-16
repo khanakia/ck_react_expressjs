@@ -27,7 +27,7 @@ global.DIR_LOG = `${DIR_DIST}/log`
 global.LOGFILE_APP = `${DIR_LOG}/app.log`
 global.DIR_MONGODB = `${DIR_DIST}/mongodb`
 global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
-global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/lbf.exe`
+global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/London BetExchange.exe`
 
 console.log(DIR_DIST)
 
@@ -141,7 +141,7 @@ function onListening() {
 
   console.log(app.get('env'))
   if ( app.get('env') === 'production' ) {
-    AppClass.startNwJsApp()
+    // AppClass.startMongoDBServer()
   }
 }
 

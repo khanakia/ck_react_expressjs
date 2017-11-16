@@ -2,7 +2,9 @@ var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
 
-var bcrypt = require('bcrypt');
+// var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
+
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 var Constant = require('../Constant')

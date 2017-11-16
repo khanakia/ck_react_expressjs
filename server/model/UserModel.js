@@ -3,7 +3,8 @@ var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 var autoIncrement = require('mongoose-auto-increment');
 
-var bcrypt = require('bcrypt');
+// var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 // var permissionSchema = mongoose.Schema({
 //     account: {},

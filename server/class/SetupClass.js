@@ -1,4 +1,5 @@
-var bcrypt = require('bcrypt');
+// var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 var UserModel = require('../model/UserModel')
 

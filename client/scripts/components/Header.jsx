@@ -83,6 +83,7 @@ class Header extends React.Component {
               'maxWidth': 320,
                width: 320, 
                height: 400,
+               alwaysOnTop: true,
                // type: "toolbar"
             })
             win.loadURL(APP_ROOT_HOST + "/#" + APP_URL_LIVE_COMMENTARY)

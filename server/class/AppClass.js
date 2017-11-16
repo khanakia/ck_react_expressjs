@@ -35,6 +35,7 @@ module.exports = {
     },
 
     startMongoDBServer() {
+        if(mongoose.connection.readyState==1) return false;
         var deleteLockFile = exec(`cd ${DIR_MONGODB_DATA} && rm -f mongod.lock` )
         var start = exec(`cd ${DIR_MONGODB} && mongod --dbpath "data" --storageEngine=mmapv1`)
         start.stderr.on('data', (data) => {
