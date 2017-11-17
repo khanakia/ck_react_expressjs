@@ -170,9 +170,13 @@ class Header extends React.Component {
                                     <li>
                                         <Link to={APP_URL_PAGE_BACKUPDB}>Backup DB</Link>
                                     </li>
+
+                                    {Auth.is_admin() ?
                                     <li>
                                         <Link to={APP_URL_PAGE_REMOVE_ALL_RECORD}>Remove All Records</Link>
                                     </li>
+                                    : '' }
+
                                     <li><a href="#" onClick={this.openAnydesk}>Anydesk Online Support</a></li>
                                     <li><a href="#" onClick={this.openAmmy}>Ammy Online Support</a></li>
                                 </ul>

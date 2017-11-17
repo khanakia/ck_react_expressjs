@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id', function(req, res, next) {
   	UserModel.findOne({_id: req.params.id}).exec((err, item) => {
+  		if(USER && USER.is_sa) return res.send(item || {})
   		if(item.is_hidden) {
   			return res.status(401).send(ResponseHelper.error(401, 'Permission denied.'))
   		}

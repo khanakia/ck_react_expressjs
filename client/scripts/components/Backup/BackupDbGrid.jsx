@@ -51,7 +51,14 @@ class BackupDbGrid extends Component {
                 columntype: 'button',
                 width: 100,
                 filterable: false,
+                cellclassname: function (row, column, value, data) {
+                     // console.log(row, column , value, data)
+                     if(!Auth.is_admin()) {
+                        return "jqx_cell_disabled"
+                     }
+                },
                 cellsrenderer: () => {
+                    return false;
                     return 'Restore';
                 },
                 buttonclick: (row) => {
