@@ -69,7 +69,7 @@ class JournalEntryForm extends React.Component {
 
         const dataJson = URI.parseQuery(data)
         dataJson.created_at = dated;
-        dataJson.from_account_id = this.props.accountId
+        dataJson.account_id = this.props.accountId
         console.log(dataJson)
         JournalEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.props.onFormSubmitted(response);
@@ -98,7 +98,7 @@ class JournalEntryForm extends React.Component {
                         <div className="col-auto ">
                             <label>Account</label>
                             <div>
-                                <ComboBoxMember width="150" field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
+                                <ComboBoxMember width="150" field_id="from_account_id" selectedValue={item.account_id} key={this.state.item._id} />
                             </div>
                         </div>
                         <div className="col-auto">

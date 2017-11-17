@@ -20,14 +20,14 @@ class UserChangePassword extends Component {
         var _this = this;
         this.validator = jQuery(this.refs.form).validate({
             rules: {
-                password: {
-                    required: true,
-                    minlength: 8,
-                    ContainsAtLeastOneCapitalLetter: true,
-                    ContainsAtLeastOneDigit: true,
-                },
+                // password: {
+                //     required: true,
+                //     minlength: 8,
+                //     ContainsAtLeastOneCapitalLetter: true,
+                //     ContainsAtLeastOneDigit: true,
+                // },
                 password_confirmation: {
-                    equalTo: "#password"
+                    equalTo: _this.refs.password
                 }
             }
         });

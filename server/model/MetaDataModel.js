@@ -26,7 +26,7 @@ tableSchema.statics.updateMeta = function(key, value) {
 tableSchema.statics.get = async function(key, defaultValue=null) {
 	try {
  		var meta = await this.findOne({meta_key: key})
- 		// console.log(meta)
+ 		if(!meta) return defaultValue
  		return meta.meta_value
 
 	} catch(e) {

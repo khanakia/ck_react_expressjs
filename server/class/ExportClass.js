@@ -9,7 +9,7 @@ var JournalEntryClass = require('../class/JournalEntryClass')
 
 module.exports = {
     async report_balanceSheet() {
-        var items = await ReportClass.balanceSheet()
+        var items = await ReportClass.balanceSheetGrid()
         var fieldNames = ['Account', 'Bal','Account', 'Bal'];
         var fields = ['account_name', 'bal', 'account_name1', 'bal1'];
         var csv = json2csv({ data: items, fields: fields, fieldNames: fieldNames });
@@ -28,8 +28,8 @@ module.exports = {
 
     async report_plMatchWise() {
         var items = await ReportClass.plMatchWise()
-        var fieldNames = ['MatchId', 'Match Name', 'Match - Comm.','Match - Patti','Match - PL','Session - Comm.','Session - Patti','Session - PL','Bal'];
-        var fields = ['match_id', 'match_name', 'comm_match', 'patti_match', 'pl_match', 'comm_session', 'patti_session', 'pl_session', 'bal'];
+        var fieldNames = ['MatchId', 'Match Name', 'Match - Comm.','Match - Patti','Match - PL','Session - Comm.','Session - Patti','Session - PL','Meter - Comm.','Meter - Patti','Meter - PL','Bal'];
+        var fields = ['match_id', 'match_name', 'comm_match', 'patti_match', 'pl_match', 'comm_session', 'patti_session', 'pl_session', 'comm_meter', 'patti_meter', 'pl_meter', 'bal'];
         var csv = json2csv({ data: items, fields: fields, fieldNames: fieldNames });
 
         var fileName = `pl_match_wise_${Date.now()}.csv`

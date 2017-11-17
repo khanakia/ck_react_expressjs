@@ -7,9 +7,15 @@ export class LiveApiStoreClass {
 	
 	@observable matchScheduleList = [];
 	
-	fetchMatchScheduleList() {
-		axios.get(API_URL_LIVE_MATCHSCHEDULES, {
-  		})
+	fetchMatchScheduleList(params={}) {
+		// axios.get(API_URL_LIVE_MATCHSCHEDULES, {
+  // 		})
+  		axios({
+            method: 'get',
+            headers: Auth.header(),
+            url: API_URL_LIVE_MATCHSCHEDULES,
+            params: params
+        })
 	    .then((res) => {
 	    	this.matchScheduleList = res.data
 	    })

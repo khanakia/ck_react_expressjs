@@ -5,6 +5,7 @@ var ReportClass = require('../class/ReportClass')
 var AccountClass = require('./AccountClass')
 var JournalEntryClass = require('./JournalEntryClass')
 var BackupClass = require('./BackupClass')
+var SetupClass = require('./SetupClass')
 
 
 module.exports = {
@@ -33,6 +34,8 @@ module.exports = {
         await this.dropCollection('matches');
         await this.dropCollection('sessionentries');
         await this.dropCollection('sessions');
+        await this.dropCollection('meterentries');
+        await this.dropCollection('meters');
 
         await db.collection('identitycounters').updateMany({ model: { $nin: [ "Account", "Journal", "JournalEntry", "User" ] } },  { '$set':  {"count": 0} });
 
@@ -42,6 +45,8 @@ module.exports = {
     },
 
     async removeLedgerRecordsAndMerge() {
+        UserClass.checkIsAdminElseThrowError()
+
         await BackupClass.backupDb()
 
         var bsheetList = await ReportClass.balanceSheet()
@@ -92,14 +97,36 @@ module.exports = {
                 })
         }
         
-        return bsheetList;
+        // return bsheetList;
         // UserClass.checkIsAdminElseThrowError()
         return ResponseHelper.ok(200, 'Successfully removed ledger.')
     },
 
     async clearWholeDb() {
-       await db.dropDatabase()
-       return ResponseHelper.ok(200, 'Successfully cleared database.')
+        UserClass.checkIsAdminElseThrowError()
+       // await db.dropDatabase()
+           // db.dropCollection('accounts', function(err, result) {});
+        await db.dropCollection('accounts');
+        await db.dropCollection('teams');
+        await this.dropCollection('livematchschedules');
+        await this.dropCollection('livematchscheduleseries');
+        await this.dropCollection('activitylogs');
+        // await this.dropCollection('identitycounters');
+        await this.dropCollection('journalentries');
+        await this.dropCollection('journals');
+        await this.dropCollection('matchsummaries');
+        await this.dropCollection('matchentries');
+        await this.dropCollection('matchteams');
+        await this.dropCollection('matches');
+        await this.dropCollection('sessionentries');
+        await this.dropCollection('sessions');
+        await this.dropCollection('meterentries');
+        await this.dropCollection('meters');
+        await this.dropCollection('metadatas');
+
+        await db.collection('identitycounters').updateMany({ model: { $nin: [ "User" ] } },  { '$set':  {"count": 0} });
+
+        return ResponseHelper.ok(200, 'Successfully cleared database.')
     },
 
 

@@ -6,8 +6,8 @@ var mongoose = require('mongoose');
 
 var LiveApiClass = require('../class/LiveApiClass')
 
-router.get('/match_schdules', function(req, res, next) {
-	LiveApiClass.matchScheduleList().then(function(data, body){
+router.get('/match_schedules', function(req, res, next) {
+	LiveApiClass.matchScheduleList({refresh: req.query.refresh || false}).then(function(data, body){
 		// console.log(body)
 		// console.log(data)
         res.send(data)

@@ -14,8 +14,8 @@ var MetaDataModel = require('../model/MetaDataModel')
 
 module.exports = {
 	async matchScheduleList(args = {}) {
-
-		await this.matchScheduleInsertToDB()
+    
+		await this.matchScheduleInsertToDB(args)
 
 		var aggregate = [];
         var match = {}
@@ -23,7 +23,7 @@ module.exports = {
         //     match['account_id'] = parseInt(args.account_id)
         // }
         aggregate.push(
-        	{ $sort: { created_at: 1 } },
+        	{ $sort: { created_at: 1, series_id: 1 } },
             {
                 $match: match
             },
@@ -57,12 +57,19 @@ module.exports = {
 	},
 
 
-    async matchScheduleInsertToDB() {
-        var lastFetched = await MetaDataModel.get('liveMatchScheduled_lastFetched', Date.now())
-        var days = moment().diff(lastFetched, 'days')
-        if(!isNaN(days) && days<7) {
-            return false;
-        } 
+    async matchScheduleInsertToDB(args={refresh: false}) {
+        var lastFetched = await MetaDataModel.get('liveMatchScheduled_lastFetched')
+
+
+        // console.log(HelperClass.stringToBoolean(args.refresh))
+        if(HelperClass.stringToBoolean(args.refresh)==false) {
+            var days = moment().diff(lastFetched, 'days')
+            // console.log()
+            if(!isNaN(days) && days<7) {
+                return false;
+            } 
+        }
+
         await LiveMatchScheduleSeriesModel.remove({})
         await LiveMatchScheduleModel.remove({})
 

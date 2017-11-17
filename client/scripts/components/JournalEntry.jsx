@@ -126,7 +126,7 @@ class JournalEntry extends Component {
                     <div className="row">
                         <div className="col-md-6">
                                 Select Account: <ComboBoxMember 
-                                    field_id="from_account_id" ref="comboMember" onClose={this.onCloseComboMember} />
+                                    field_id="account_id" ref="comboMember" onClose={this.onCloseComboMember} />
                         </div>
                         <div className="col-md-6 text-right">
                             { account_id ?
