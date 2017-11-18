@@ -131,12 +131,12 @@ class SessionEntryGrid extends Component {
     render() {
         return (
             <div>
-                <JqxGrid ref="jqxgrid" 
+                <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={false} enabletooltips={true}
                     editable={false} 
-                    filterable={true} showfilterrow={false}
+                    filterable={true} showfilterrow={true}
                 />
             </div>
         );
