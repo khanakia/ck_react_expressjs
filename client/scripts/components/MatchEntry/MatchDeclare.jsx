@@ -39,6 +39,9 @@ class MatchDeclare extends Component {
             // console.log(res)
             this.refs.jqxWindow.close()
             this.props.onChange()
+        }).catch((err)=> {
+            toastr.error(err.response.data.message)
+            this.refs.jqxWindow.close()
         })
     }
 
@@ -54,6 +57,9 @@ class MatchDeclare extends Component {
             // console.log(res)
             this.refs.jqxWindow.close()
             this.props.onChange()
+        }).catch((err)=> {
+            toastr.error(err.response.data.message)
+            this.refs.jqxWindow.close()
         })
     }
 
@@ -69,6 +75,9 @@ class MatchDeclare extends Component {
             // console.log(res)
             this.refs.jqxWindow.close()
             this.props.onChange()
+        }).catch((err)=> {
+            toastr.error(err.response.data.message)
+            this.refs.jqxWindow.close()
         })
     }
 

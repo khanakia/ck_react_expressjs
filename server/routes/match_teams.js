@@ -50,7 +50,7 @@ router.post('/set_winner',function(req, res, next) {
 	MatchTeamClass.setWinner(req.body.match_team_id).then((data)=>{
 		res.send(data)
 	}).catch((err) => {
-		res.status(401).send({cerror: err.message})
+		res.status(401).send(err)
 	})
 });
 

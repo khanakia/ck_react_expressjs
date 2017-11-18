@@ -242,9 +242,12 @@ router.get('/', function(req, res, next) {
 
 
 // MetaDataModel.updateMeta("aman", "11")
-MetaDataModel.get("aman").then((res)=> {
-	console.log(res)
-})
+// MetaDataModel.get("aman").then((res)=> {
+// 	console.log(res)
+// })
+
+
+MeterEntryClass.meter_updateEntries_onAccountUpdate(1)
 
 // MetaDataModel.updateMeta('version', 1)
 res.send('respond with a resource');

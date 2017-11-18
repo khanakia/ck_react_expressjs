@@ -32,7 +32,7 @@ module.exports = {
         return ResponseHelper.ok(200, 'Successfully declared')
     },
 
-    async undeclare(id, runs) {
+    async undeclare(id) {
         var session = await SessionModel.findOne({_id: parseInt(id)})
         try {
             await MatchSummaryClass.session_deleteJournal(id)

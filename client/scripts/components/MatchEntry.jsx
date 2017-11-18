@@ -91,7 +91,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: API_URL_MATCH_UNDECLARE + this.props.matchId
+                url: API_URL_MATCH_UNDECLARE + "/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()
@@ -108,7 +108,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: API_URL_MATCH_ABANDON + this.props.matchId
+                url: API_URL_MATCH_ABANDON + "/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()
@@ -125,7 +125,7 @@ class MatchEntry extends React.Component {
            axios({
                 method: 'post',
                 headers: Auth.header(),
-                url: API_URL_MATCH_UNABANDON + this.props.matchId
+                url: API_URL_MATCH_UNABANDON + "/" + this.props.matchId
             }).then((res) => {
                 this.props.matchStore.fetch(this.props.matchId)
                 this.fetch()

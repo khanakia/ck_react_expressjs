@@ -53,52 +53,22 @@ module.exports = {
     async updateEntryAfterInsert(id, cb) {
         var item = await MeterEntryModel.findOne({"_id": id});
         var account = await AccountModel.findOne({_id: item.account_id})
-        var meter_comm_aggregate = await AccountClass.getMeterCommAggregate(item.account_id)
+        // var meter_comm_aggregate = await AccountClass.getMeterCommAggregate(item.account_id)
 
-        // console.log(item.account_id)
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
-
-        // var win_amt = win_amt_subtotal = item.rate * item.amount
-        // var loose_amt = loose_amt_subtotal = item.amount
         
-        
-        // var comm_amt = loose_comm_amt = 0
-        if(item.comm_yn==true) {            
-            comm_amt = item.rate * meter_comm_aggregate/100;
-            // win_amt_subtotal +=  comm_amt
-            // loose_amt_subtotal -= comm_amt
-        }
-        
-
+        // if(item.comm_yn==true) {            
+        //     comm_amt = item.rate * meter_comm_aggregate/100;
+        // }
+       
         // Patti will be calculated on final amount after commission
         var patti_total_per = patti_aggregate.meter;
-        // var amount_patti = (item.amount *  patti_total_per / 100)
-        // console.log(amount_patti)
-        // var win_patti_amt = (win_amt_subtotal *  patti_total_per / 100)
-        // var loose_patti_amt = (loose_amt_subtotal *  patti_total_per / 100)
-
-        // var win_amt_grandtotal = win_amt_subtotal - win_patti_amt
-        // var loose_amt_grandtotal = loose_amt_subtotal - loose_patti_amt
-
-        // this one i did so i can show amount after patti deduction on frontend
-        // item.set("calcs.amount_patti", amount_patti)
-
-        // item.set("calcs.win_amt", win_amt)
-        // item.set("calcs.loose_amt", loose_amt)
-        item.set("calcs.comm_total_per", meter_comm_aggregate)
-        item.set("calcs.comm_amt", comm_amt)
-        // item.set("calcs.win_amt_subtotal", win_amt_subtotal)
-        // item.set("calcs.loose_amt_subtotal", loose_amt_subtotal)
+        var rate_after_patti = item.rate - (item.rate * patti_total_per/100)
+    
+        // item.set("calcs.comm_total_per", meter_comm_aggregate)
+        // item.set("calcs.comm_amt", comm_amt)
         item.set("calcs.patti_total_per", patti_total_per)
-        // item.set("calcs.win_patti_amt", win_patti_amt)
-        // item.set("calcs.loose_patti_amt", loose_patti_amt)
-        // item.set("calcs.win_amt_grandtotal", win_amt_grandtotal)
-        // item.set("calcs.loose_amt_grandtotal", loose_amt_grandtotal)
-
-        // item.set("calcs.patti", account.patti);
-
-        // return item;
-
+        item.set("calcs.rate_after_patti", rate_after_patti)
         return item.save(cb)
     },
 
@@ -167,7 +137,7 @@ module.exports = {
 
 			            "runs" : {$first: "$runs"},
 			            "yn" : {$first: "$yn"},
-			            rate:  { $sum: "$rate" },
+			            rate:  { $sum: "$calcs.rate_after_patti" },
 				    }
 				}
 			])
@@ -182,12 +152,16 @@ module.exports = {
                     var diff = item.runs - i
                     diff = item.yn=="Y" ? diff : -1*diff
                     // console.log(diff)
-                    return parseFloat(sum + (diff * item.rate))
+                    var amt = (diff * item.rate)
+                    return parseFloat(sum + amt)
                 }, 0)
             } catch(e) {
                 console.log(e)
             }
-		
+            
+            // amount = amount - (amount * item.patti_per/100)
+            // console.log(item)
+
 			wlarray.push({
 				"runs": i,
 				"amount" : amount

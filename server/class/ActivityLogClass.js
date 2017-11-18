@@ -111,8 +111,11 @@ module.exports = {
 
             await activity.save()
 
+            return activity
+
         } catch(error) {
             console.log(error)
+            return null
         }
     },
 

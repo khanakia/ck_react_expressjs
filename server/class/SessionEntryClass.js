@@ -78,7 +78,7 @@ module.exports = {
 
         // Patti will be calculated on final amount after commission
         var patti_total_per = patti_aggregate.session;
-        var amount_patti = (item.amount *  patti_total_per / 100)
+        // var amount_patti = (item.amount *  patti_total_per / 100)
         // console.log(amount_patti)
         var win_patti_amt = (win_amt_subtotal *  patti_total_per / 100)
         var loose_patti_amt = (loose_amt_subtotal *  patti_total_per / 100)
@@ -87,7 +87,7 @@ module.exports = {
         var loose_amt_grandtotal = loose_amt_subtotal - loose_patti_amt
 
         // this one i did so i can show amount after patti deduction on frontend
-        item.set("calcs.amount_patti", amount_patti)
+        // item.set("calcs.amount_patti", amount_patti)
 
         item.set("calcs.win_amt", win_amt)
         item.set("calcs.loose_amt", loose_amt)
@@ -134,8 +134,8 @@ module.exports = {
        return {
             yes: yes.toFixed(2),
             no: no.toFixed(2),
-            yes_after_patti: isNaN(yes_after_patti) ? 'N/A' : yes_after_patti.toFixed(2),
-            no_after_patti: isNaN(no_after_patti) ? 'N/A' : no_after_patti.toFixed(2),
+            yes_after_patti: isNaN(yes_after_patti) ? '0.00' : yes_after_patti.toFixed(2),
+            no_after_patti: isNaN(no_after_patti) ? '0.00' : no_after_patti.toFixed(2),
             comm_rec: (-1 * commRec).toFixed(2),
             comm_pay: (-1 * commPay).toFixed(2)
        }
@@ -183,28 +183,28 @@ module.exports = {
 
 			            "runs" : {$first: "$runs"},
 			            "yn" : {$first: "$yn"},
-			            win_amt_subtotal:  { $sum: "$calcs.win_amt_subtotal" },
-			            loose_amt_subtotal: { $sum: "$calcs.loose_amt_subtotal" }
+			            win_total:  { $sum: "$calcs.win_amt_grandtotal" },
+			            loose_total: { $sum: "$calcs.loose_amt_grandtotal" }
 				    }
 				}
 			])
 
         // return (sessionEntriesGrouped)
 		var wlarray = []
-		for (var i = sessionEntry.min; i < sessionEntry.max; i++) {
+		for (var i = 0; i < sessionEntry.max; i++) {
 			var amount = 0;
 			var winners = _.filter(sessionEntriesGrouped, function(o) {
 				// console.log(o.runs)
 												return (o.yn=="Y" && o.runs<=i) || (o.yn=="N" && o.runs > i); 
 											});
 			// console.log(winners)
-			var win_total_amt = _.sumBy(winners, 'win_amt_subtotal');
+			var win_total_amt = _.sumBy(winners, 'win_total');
 
 			var loosers = _.filter(sessionEntriesGrouped, function(o) {
 												return (o.yn=="N" && o.runs <=i) || (o.yn=="Y" && o.runs > i); 
 											});
 			// console.log(loosers)
-			var loose_total_amt = _.sumBy(loosers, 'loose_amt_subtotal');
+			var loose_total_amt = _.sumBy(loosers, 'loose_total');
 
 			amount = loose_total_amt - win_total_amt;
             // console.log(loose_total_amt)

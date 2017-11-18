@@ -17,7 +17,18 @@ var JournalEntryModel = require('../model/JournalEntryModel')
 var AccountClass = require('./AccountClass')
 var JournalEntryClass = require('./JournalEntryClass')
 
+// var MatchEntryClass = require('./MatchEntryClass')
+// var SessionEntryClass = require('./SessionEntryClass')
+// var MeterEntryClass = require('./MeterEntryClass')
+
 module.exports = {
+
+    // async updateAllOnAccountUpdate(accountId) {
+    //     await MatchEntryClass.updateEntriesByAccount(accountId)
+    //     await SessionEntryClass.session_updateEntries_onAccountUpdate(accountId)
+    //     await MeterEntryClass.meter_updateEntries_onAccountUpdate(accountId)
+    // },
+
     //  SESSION DECLARE FUNCTIONS ======================================================
     async session_deleteJournal(sessionId) {
         var journalItems = await JournalModel.find({
@@ -354,29 +365,29 @@ module.exports = {
             var final_amount = meterEntry.final_amount
             
             // Distribute Commission
-            var com_amt_total = 0
-            await Promise.all(account.meter_comm_accounts.map(async (item) => {
-                if(!item.account_id) return null
-                var comm_amt = Math.abs(meterEntry.rate) * item.meter_comm/100
-                com_amt_total += comm_amt
-                var n = `Comm (${item.meter_comm}%) - ${narration_party}`
-                var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
-                    journal_id: journalItem._id, 
-                    by_account_id: companyAccountId, 
-                    account_id: item.account_id, 
-                    amount: comm_amt, 
-                    type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
-                    narration: n
-                })
-                // return await jeitem.save()
-            }))
+            // var com_amt_total = 0
+            // await Promise.all(account.meter_comm_accounts.map(async (item) => {
+            //     if(!item.account_id) return null
+            //     var comm_amt = Math.abs(meterEntry.rate) * item.meter_comm/100
+            //     com_amt_total += comm_amt
+            //     var n = `Comm (${item.meter_comm}%) - ${narration_party}`
+            //     var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
+            //         journal_id: journalItem._id, 
+            //         by_account_id: companyAccountId, 
+            //         account_id: item.account_id, 
+            //         amount: comm_amt, 
+            //         type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
+            //         narration: n
+            //     })
+            //     // return await jeitem.save()
+            // }))
 
 
             // Distribute Patti
-            var final_amount_with_comm = final_amount + com_amt_total
+            // var final_amount_with_comm = final_amount + com_amt_total
             var patti_distributed_total = 0 
             await Promise.all(account.patti.map(async (item) => {
-                var patti_amt = -1 * final_amount_with_comm * item.meter/100
+                var patti_amt = -1 * final_amount * item.meter/100
                 patti_distributed_total += patti_amt
 
                 var n = `Patti (${item.meter}%) - ${narration_party}`
@@ -670,7 +681,7 @@ module.exports = {
                 account_id: matchEntry.account_id, 
                 amount: amount, 
                 type: Constant.JOURNAL_ENTRY_TYPE.PL, 
-                narration: "PL - (Party: ${account._id} - ${account.account_name})" + narration,
+                narration: `PL - (Party: ${account._id} - ${account.account_name})` + narration,
                 patti_amt: patti_distributed_total
             })
 

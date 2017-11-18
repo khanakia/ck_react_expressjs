@@ -14,7 +14,7 @@ class SessionEntryWinLossGrid extends Component {
     }
 
     componentDidMount() {
-        // window.abc = this
+        window.abc = this
     }
 
     componentDidUpdate() {
@@ -25,11 +25,13 @@ class SessionEntryWinLossGrid extends Component {
     scrollToRow(index) {
         // var rows = this.refs.jqxgrid.getrows()
         // console.log(rows.length)
-        // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
+        // this.refs.jqxgrid.selectrow(rows.length-1)
         // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
         // console.log(index)
         if(index>0) {
             try {
+                console.log(index)
+                this.refs.jqxgrid.selectrow(index)
                 this.refs.jqxgrid.ensurerowvisible(index)
             } catch(err) {
                 

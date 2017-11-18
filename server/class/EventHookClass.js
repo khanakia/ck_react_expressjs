@@ -6,16 +6,24 @@ var MeterEntryClass = require('./MeterEntryClass')
 var SetupClass = require('./SetupClass')
 
 
+
+async function updateAllOnAccountUpdate(accountId) {
+    await MatchEntryClass.updateEntriesByAccount(accountId)
+    await SessionEntryClass.session_updateEntries_onAccountUpdate(accountId)
+    await MeterEntryClass.meter_updateEntries_onAccountUpdate(accountId)
+}
+
+
 EVENTEMITTER.on('beep', function() {  
   console.log('beep');
 });
 
 EVENTEMITTER.on('accountUpdate', function(accountId) {  
   	console.log('accountUpdate hook called');
-	// MatchSummaryClass.session_updateFinalWinLossAmt_onAccountUpdate(accountId)
-	MatchEntryClass.updateEntriesByAccount(accountId)
-	SessionEntryClass.session_updateEntries_onAccountUpdate(accountId)
-	MeterEntryClass.meter_updateEntries_onAccountUpdate(accountId)
+	// MatchEntryClass.updateEntriesByAccount(accountId)
+	// SessionEntryClass.session_updateEntries_onAccountUpdate(accountId)
+	// MeterEntryClass.meter_updateEntries_onAccountUpdate(accountId)
+	updateAllOnAccountUpdate(accountId)
 });
 
 
