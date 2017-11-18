@@ -40,7 +40,7 @@ module.exports = {
 
         await Promise.all(
         files.map( async (filename , i) => {
-            var filePath = DIR_BACKUP + "/" + filename
+            var filePath = DIR_BACKUP + DS + filename
             // console.log(filePath)
             var fileStat = await fs.statSync(filePath)
             // console.log(fileStat)
@@ -97,7 +97,7 @@ module.exports = {
         commandExec.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
-        return 'done'
+        return ResponseHelper.ok(200, "Backup Successfull.")
     },
 
 
@@ -120,7 +120,8 @@ module.exports = {
         commandExec.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
-        return true
+        
+        return ResponseHelper.ok(200, "Backup Restored Successfull.")
     }
 
 };

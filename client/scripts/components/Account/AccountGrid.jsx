@@ -66,7 +66,7 @@ class AccountGrid extends Component {
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
                     // console.log(dataRecord.uid)
-                    var r = confirm("Are you sure!");
+                    var r = confirm("Are you sure!", ' ');
                     if (r == true) {
                         AccountHelper.delete(dataRecord.uid).then( (res) => {
                             this.props.onDataUpdate()

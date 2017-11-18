@@ -5,7 +5,7 @@ import OtherHelper from '../helpers/OtherHelper'
 class RemoveAllRecord extends Component {
 
 	removeAllRecords = () => {
-		var r = confirm("Are you sure!");
+		var r = confirm("Are you sure!", ' ');
         if (r == true) {
 			OtherHelper.removeAllRecords()
 		    .then((res) => {
@@ -17,7 +17,7 @@ class RemoveAllRecord extends Component {
 	}
 
 	removeLedgerRecords = () => {
-		var r = confirm("Are you sure!");
+		var r = confirm("Are you sure!", ' ');
         if (r == true) {
 			OtherHelper.removeLedgerRecords()
 		    .then((res) => {
@@ -30,7 +30,7 @@ class RemoveAllRecord extends Component {
 	}
 
 	removeEverything = () => {
-		var r = confirm("Are you sure!");
+		var r = confirm("Are you sure!", ' ');
         if (r == true) {
 			OtherHelper.clearWholeDb()
 		    .then((res) => {

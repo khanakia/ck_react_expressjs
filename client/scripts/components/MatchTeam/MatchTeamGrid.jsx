@@ -63,7 +63,7 @@ class MatchTeamGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    var r = confirm("Are you sure!");
+                    var r = confirm("Are you sure!", ' ');
                     if (r == true) {
                         MatchTeamHelper.delete(dataRecord.uid).then( (res) => {
                             this.props.onDataUpdate()

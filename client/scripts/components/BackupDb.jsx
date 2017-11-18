@@ -17,6 +17,7 @@ class BackupDb extends Component {
         // axios.get('/backups/backup_db')
         BackupHelper.createDbBackup()
         .then((res) => {
+            toastr.success(res.data.message)
             this.props.backupStore.fetchDbBackupList()
         })
         .catch(() => this.fetched = false);

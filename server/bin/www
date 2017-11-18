@@ -18,18 +18,20 @@ global.ResponseHelper = require('../class/ResponseHelper')
 var EventEmitter = require('events').EventEmitter;
 global.EVENTEMITTER = new EventEmitter();
 
+global.DS = process.platform=="darwin" ? "/" : "\\";
 global.APP_SECRET = process.env.APP_SECRET || "81F44FB42275569BF89A1946CC631"
 global.APP_URL = process.env.APP_URL || "http://localhost:3000"
 global.DIR_DIST = process.env.DIR_DIST || "."
-global.DIR_TEMP = `${DIR_DIST}/temp`
-global.DIR_BACKUP = `${DIR_DIST}/backup`
-global.DIR_LOG = `${DIR_DIST}/log`
-global.LOGFILE_APP = `${DIR_LOG}/app.log`
-global.DIR_MONGODB = `${DIR_DIST}/mongodb`
-global.DIR_MONGODB_DATA = `${DIR_MONGODB}/data`
-global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}/London BetExchange.exe`
+global.DIR_TEMP = `${DIR_DIST}${DS}temp`
+global.DIR_BACKUP = `${DIR_DIST}${DS}backup`
+global.DIR_LOG = `${DIR_DIST}${DS}log`
+global.LOGFILE_APP = `${DIR_LOG}${DS}app.log`
+global.DIR_MONGODB = `${DIR_DIST}${DS}mongodb`
+global.DIR_MONGODB_DATA = `${DIR_MONGODB}${DS}data`
+global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}${DS}London BetExchange.exe`
 
-console.log(DIR_DIST)
+
+// console.log(DIR_DIST)
 
 global.MONGO_DB_URI = 'mongodb://localhost:27017/ckdb';;
 

@@ -58,7 +58,6 @@ class BackupDbGrid extends Component {
                      }
                 },
                 cellsrenderer: () => {
-                    return false;
                     return 'Restore';
                 },
                 buttonclick: (row) => {
@@ -74,6 +73,7 @@ class BackupDbGrid extends Component {
                     }
                     BackupHelper.restoreDbBackup(params)
                     .then((res) => {
+                        toastr.success(res.data.message)
                         // this.sessionList = res.data
                     })
                     .catch(() => this.fetched = false);

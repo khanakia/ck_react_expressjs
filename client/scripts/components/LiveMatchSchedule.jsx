@@ -68,7 +68,7 @@ class LiveMatchSchedule extends Component {
                 <JqxGrid key={Math.random()} ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
                     width={"1100"} height={500} pagesize={100}
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 
-                    editable={false}  filterable={true} showfilterrow={true} />
+                    editable={false}  filterable={false} showfilterrow={false} />
             </div>
         );
     }
