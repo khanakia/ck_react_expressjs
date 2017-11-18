@@ -86,7 +86,7 @@ class MatchTeamGrid extends Component {
 
         return (
             <div>
-         		<JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
+         		<JqxGrid ref="jqxgrid" key={Math.random()} source={this.dataAdapter} columns={this.columns} 
                     width={"100%"} height={350} 
          			pageable={false} sortable={true} altrows={true} enabletooltips={true} 
          			editable={false}  filterable={false} showfilterrow={false} />
