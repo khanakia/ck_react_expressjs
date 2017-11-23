@@ -46,7 +46,7 @@ class MemberForm extends Component {
     }
 
     componentDidUpdate() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
     }
 
     onSubmit = (e) => {

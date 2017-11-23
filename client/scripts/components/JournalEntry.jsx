@@ -30,7 +30,7 @@ class JournalEntry extends Component {
 
         axios.get("/others/create_book_account")
 
-
+        this.initMouseTrap()
     }
 
 
@@ -41,6 +41,19 @@ class JournalEntry extends Component {
             this.props.journalEntryStore.fetchAccountBalanceObject(nextProps.match.params.account_id)
         }
     }
+
+    initMouseTrap() {
+        var mousetrap = new  Mousetrap()
+        mousetrap.stopCallback = function(e, element, combo) {
+            return false;
+        }
+
+        mousetrap.bind('alt+a', (e) => {
+           this.refs.comboMember.refs.Combo.focus()
+        });
+
+    }
+
 
     fetch = () => {
         this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
@@ -125,7 +138,7 @@ class JournalEntry extends Component {
                 <div className="mb-2">
                     <div className="row">
                         <div className="col-md-6">
-                                Select Account: <ComboBoxMember 
+                                Select Account <span className="badge badge-secondary">ALT+A</span>: <ComboBoxMember 
                                     field_id="account_id" ref="comboMember" onClose={this.onCloseComboMember} />
                         </div>
                         <div className="col-md-6 text-right">

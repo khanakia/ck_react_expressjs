@@ -30,7 +30,7 @@ class MdiMatch extends Component {
 	}
 
 	componentDidUpdate() {
-		// GlobalHelper.mounstrapFormInit()
+		// GlobalHelper.mousetrapFormInit()
 	}
 
 

@@ -6,6 +6,7 @@ jQuery(document).ready(function(){
 	mousetrapGlobal.stopCallback = function(e, element, combo) {
 	    return false;
 	}
+	mousetrapGlobal.bind('esc', function() { window.location.href = "/#" });
     mousetrapGlobal.bind('f1', function() { window.location.href = "/#/accounts" });
     mousetrapGlobal.bind('f2', function() { window.location.href = "/#/teams" });
     mousetrapGlobal.bind('f3', function() { window.location.href = "/#/matches" });

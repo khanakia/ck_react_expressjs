@@ -21,7 +21,10 @@ class SessionEntryForm extends React.Component {
             matchId: this.props.matchId,
             scount: 0,
             item: {
-                rate: 1
+                rate: 1,
+                runs: 0,
+                amount: 0,
+                account_id: null
             }
 
         }
@@ -37,7 +40,7 @@ class SessionEntryForm extends React.Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
     }
 
 
@@ -59,7 +62,11 @@ class SessionEntryForm extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault()
+        this.saveForm()
+        return false;
+    }
 
+    saveForm() {
         if(! $(this.refs.form).valid()) {
           return false;
         }
@@ -68,7 +75,6 @@ class SessionEntryForm extends React.Component {
             toastr.error("Please Select Match First.")
             return false;
         }
-
 
         if (!this.props.sessionId) {
             toastr.error("Please Select Session First.")
@@ -79,11 +85,12 @@ class SessionEntryForm extends React.Component {
         const dataJson = URI.parseQuery(data)
         // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
+            this.resetForm()
+            this.refs.comboSession.refs.Combo.focus()
             this.props.onFormSubmitted(response.data);
         }).catch((err) => {
             toastr.error(err.response.data.message)
         })
-        return false;
     }
 
 
@@ -124,16 +131,16 @@ class SessionEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto">
+                            <label>Amount</label>
+                            <div>
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} />
+                            </div>
+                        </div>
+                        <div className="col-auto">
                             <label>Y/N</label>
                             <div>
                                 <CSelect className="uk-select uk-form-small" name="yn" value={item.yn} items={LIST_SESSION_YN}>
                                 </CSelect>
-                            </div>
-                        </div>
-                        <div className="col-auto">
-                            <label>Amount</label>
-                            <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} />
                             </div>
                         </div>
                         <div className="col-auto">

@@ -69,16 +69,22 @@ class InputDecimal extends React.Component {
       return false;
     }
 
+    handleOnFocus = () => {
+      this.refs.input.select()
+    }
+
     render() {
       // console.log(this.state.value )
       // var value = this.state.value ? parseFloat(this.state.value).toFixed(2) : 0;
       return (
           <input 
+            ref="input"
             type={this.props.type} 
             name={this.props.name} 
             className={this.props.className}
             onBlur={this.handleBlur}  
             onChange={this.handleChange} 
+            onFocus={this.handleOnFocus}
             value={this.state.value} 
             tabIndex={this.props.tabIndex} 
             min= {this.props.min}

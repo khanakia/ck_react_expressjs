@@ -41,7 +41,7 @@ class MatchEntryForm extends React.Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
     }
 
     edit(rowdata) {
@@ -63,7 +63,7 @@ class MatchEntryForm extends React.Component {
 
     formSubmit = (e) => {
         e.preventDefault()
-
+        
         var book_no = this.props.getBookNo();
         // console.log("book_no", book_no)
 
@@ -82,6 +82,8 @@ class MatchEntryForm extends React.Component {
             if(this.state.item._id) {
                 this.resetForm()
             }
+
+            this.refs.idinput.focus()
 
             this.props.onFormSubmitted(response);
 
@@ -104,13 +106,13 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
+                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" ref="idinput" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" value={item.rate} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" ref="rate" value={item.rate} />
                             </div>
                         </div>
                         <div className="col-auto">

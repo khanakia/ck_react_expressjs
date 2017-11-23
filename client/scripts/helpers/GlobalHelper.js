@@ -1,6 +1,6 @@
 
 export default class GlobalHelper {
-	 static mounstrapFormInit(el) {
+	 static mousetrapFormInit(el) {
 	    // var moustrapForm = document.querySelector('.moustrapform');
 	    var moustrapFormClass = new  Mousetrap(el)
 	    // console.log(moustrapFormClass)
