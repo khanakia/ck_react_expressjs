@@ -40,12 +40,18 @@ class SessionEntryForm extends React.Component {
         this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
     }
 
+    componentDidUpdate() {
+        jQuery(this.refs.form).find('input').off('focus').focus(function(){
+            jQuery(this).select()
+        })
+    }
 
     edit(rowdata) {
         this.setState({
             scount: this.state.scount + 1,
             item: rowdata
         })
+        this.refs.idinput.focus()
     }
 
     resetForm = () => {
@@ -79,6 +85,8 @@ class SessionEntryForm extends React.Component {
         const dataJson = URI.parseQuery(data)
         // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
+            this.resetForm()
+            this.refs.idinput.focus()
             this.props.onFormSubmitted(response.data);
         }).catch((err) => {
             toastr.error(err.response.data.message)
@@ -89,7 +97,7 @@ class SessionEntryForm extends React.Component {
 
     render() {
 
-        const { item } = this.state
+        const { item, scount } = this.state
         return (
             <div>
                 <form ref="form"  className="moustrapform" >
@@ -99,7 +107,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-50p idinput-session" readOnly={true} defaultValue={item._id} key={item._id}/>
+                                <input className="form-control form-control-sm w-50p idinput-session" readOnly={true} ref="idinput" defaultValue={item._id} key={item._id}/>
                             </div>
                         </div>
                         <div className="col-auto">
@@ -114,13 +122,13 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" name="rate" value={item.rate} />
+                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" name="rate" value={item.rate} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label>Runs</label>
                             <div>
-                                <input type="number" className="form-control form-control-sm w-50p error-hide required number" min="0" name="runs" defaultValue={item.runs} key={item._id} />
+                                <input type="number" className="form-control form-control-sm w-50p error-hide required number" min="0" name="runs" defaultValue={item.runs} key={item._id} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
@@ -133,13 +141,13 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Amount</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label>Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto ">

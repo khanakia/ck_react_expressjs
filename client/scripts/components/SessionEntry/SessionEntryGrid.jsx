@@ -60,7 +60,8 @@ class SessionEntryGrid extends Component {
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
-        this.columns = [{
+            this.columns = [
+            {
                 text: '',
                 datafield: 'Delete',
                 columntype: 'button',

@@ -29,6 +29,7 @@ class MatchEntryForm extends React.Component {
                 amount: 0,
                 lk: "L"
             },
+            scount: 0,
             teamsList: []
 
         }
@@ -44,19 +45,28 @@ class MatchEntryForm extends React.Component {
         this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
     }
 
+    componentDidUpdate() {
+        jQuery(this.refs.form).find('input').off('focus').focus(function(){
+            jQuery(this).select()
+        })
+    }
+
     edit(rowdata) {
         this.setState({
+            scount: this.state.scount + 1,
             isNew: false,
             item: rowdata
         })
+        this.refs.idinput.focus()
     }
 
     resetForm = () => {
         // console.log(this.state)
         this.setState({
             isNew: false,
+            scount: this.state.scount + 1,
             item: {
-
+                match_team_id: this.refs.comboMatchTeam.getSelectedValue()
             }
         })
     }
@@ -79,9 +89,10 @@ class MatchEntryForm extends React.Component {
 
         MatchEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             // If in Edit Mode then clear form after submit
-            if(this.state.item._id) {
-                this.resetForm()
-            }
+            // if(this.state.item._id) {
+            // }
+            this.resetForm()
+            this.refs.idinput.focus()
 
             this.props.onFormSubmitted(response);
 
@@ -94,7 +105,7 @@ class MatchEntryForm extends React.Component {
 
     render() {
 
-        const { item } = this.state
+        const { item, scount } = this.state
         const comm_yn = this.props.match.match_type==MATCH_TYPE_CUP ? false : true
         return (
             <div>
@@ -104,19 +115,19 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
+                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" type="number" readOnly={true} ref="idinput" key={item._id} defaultValue={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" value={item.rate} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" value={item.rate} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Amount</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="amount" value={item.amount} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="amount" value={item.amount} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
@@ -129,13 +140,13 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">Team</label>
                             <div>
-                                <ComboBoxMatchTeam width={150} height={35} selectedValue={item.match_team_id} key={this.state.item._id} data={this.props.teamsList.slice()} />
+                                <ComboBoxMatchTeam width={150} height={35} ref="comboMatchTeam" selectedValue={item.match_team_id} key11={this.state.item._id} data={this.props.teamsList.slice()} />
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={this.state.item._id} />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto ">

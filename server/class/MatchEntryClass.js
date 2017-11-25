@@ -16,9 +16,11 @@ module.exports = {
 
     async save(item, id=null) {
 
-        var canBid = await AccountClass.canBid(item.account_id)
-        if(!canBid) {
-            throw(ResponseHelper.error(400, 'Limit Exceeded.'))
+        var canbidItem = await AccountClass.canBid(item.account_id, item.amount)
+
+        // return canbidItem;
+        if(!canbidItem.canBid) {
+            throw(ResponseHelper.error(400, 'Limit Exceeded.', 'can_bid', canbidItem))
         }
 
         // return item;
@@ -327,6 +329,26 @@ module.exports = {
             throw(ResponseHelper.error(400, 'Match Entry is declared already.'))
         }
     },
+
+
+    async getLossAmountByAccountId(acccountId) {
+         var matchEntry = await MatchEntryModel.aggregate([
+
+            {
+                $match:  {
+                    account_id: parseInt(acccountId),
+                    is_summarized: false
+                }
+            },
+            { 
+                $group: { 
+                    _id: null, 
+                    otherteam_amt_grandtotal: { $sum: "$calcs.otherteam_amt_grandtotal" } 
+                } 
+            }
+        ]);
+       return matchEntry[0] ? matchEntry[0]['otherteam_amt_grandtotal'] : 0
+    }
 
     // HOW TO USE
     // DbClass.sayHelloInSpanish1().then(function(data){

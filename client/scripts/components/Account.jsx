@@ -57,6 +57,11 @@ class Account extends Component {
             this.props.accountStore.fetch(this.props.match.params.id)
         }
     }
+
+    grid_onRowSelect = (rowdata) => {
+        this.props.history.push(APP_URL_ACCOUNTS + "/" + rowdata._id)
+    }
+
     render() {
         const {accountList, account} = this.props.accountStore
         return ( 
@@ -64,7 +69,7 @@ class Account extends Component {
                 <h6><i className="fa fa-user"></i> Account</h6>
                 <div className="row">
                     <div className="col-md-4">
-                        <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate}/>
+                        <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate} onRowSelect={this.grid_onRowSelect}/>
                     </div>
                     <div className="col-md-8">
                         

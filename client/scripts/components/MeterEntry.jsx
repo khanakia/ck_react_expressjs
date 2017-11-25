@@ -85,30 +85,74 @@ class MeterEntry extends Component {
 
 
     openDeclareWindow = () => {
-    	var rowdata = this.refs.meterGrid.getSelectedRowData()
-    	console.log(rowdata)
-        var declared_runs = prompt("Enter Declared Runs");
-        
-        if(declared_runs>=0) {
-			axios({
-				method: 'post',
+    	var _this = this
+        $.confirm({
+            title: '',
+            content: '' +
+            '<form action="" class="formName">' +
+            '<div class="form-group">' +
+            '<label>Enter Declared Runs</label>' +
+            '<input type="text" placeholder="Enter Runs" class="declared_runs form-control" required />' +
+            '</div>' +
+            '</form>',
+            buttons: {
+                formSubmit: {
+                    text: 'Submit',
+                    btnClass: 'btn-blue',
+                    action: function() {
+                        var declared_runs = this.$content.find('.declared_runs').val();
+                        if(!declared_runs){
+                            toastr.error('Please enter runs;')
+                            return false;
+                        }
+
+                        _this.declare(declared_runs)
+                        
+                    }
+                },
+                cancel: function () {
+                    //close
+                },
+            },
+            onContentReady: function () {
+                // bind to events
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    // if the user submits the form by pressing enter in the field.
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click'); // reference the button and click it
+                });
+            }
+        });
+    }
+
+    declare = (runs) => {
+        var rowdata = this.refs.meterGrid.getSelectedRowData()
+        // console.log(rowdata)
+        // var runs = prompt("Enter Declared Runs");
+        if(runs>=0) {
+            axios({
+                method: 'post',
                 headers: Auth.header(),
-				url: "/meters/declare/"+rowdata._id,
-				data: {
-					declared_runs: declared_runs
-				}
-			}).then((res) => {
-				this.props.meterStore.fetchList(this.props.matchId)
-				if(this.props.globalStore.selectedMeterId) {
-		    		this.fetch(this.props.globalStore.selectedMeterId)
-		    	}
-			})
+                url: "/meters/declare/"+rowdata._id,
+                data: {
+                    declared_runs: runs
+                }
+            }).then((res) => {
+                this.props.meterStore.fetchList(this.props.matchId)
+                if(this.props.globalStore.selectedMeterId) {
+                    this.fetch(this.props.globalStore.selectedMeterId)
+                }
+            })
+            .catch((err) => {
+                toastr.error(err.response.data.message)
+            })
         }
     }
 
     meterUndeclare = () => {
     	var rowdata = this.refs.meterGrid.getSelectedRowData()
-    	var r = confirm("Are you sure to Undeclare ?");
+    	var r = confirm("Are you sure to Undeclare ?", ' ');
         if (r == true) {
            axios({
 				method: 'post',

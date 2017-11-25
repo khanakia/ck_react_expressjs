@@ -2,8 +2,15 @@ import React, { Component } from "react";
 
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
 import TeamHelper from '../helpers/TeamHelper'
+import GlobalHelper from "../helpers/GlobalHelper"
+
+
 import {APP_URL_TEAMS} from '../Constant'
 class Team extends Component {
+    componentDidMount() {
+        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.refs.name.focus()
+    }
 
     onSubmit = (e) => {
         e.preventDefault()
@@ -15,7 +22,7 @@ class Team extends Component {
         TeamHelper.store(data).then( (res) => {
             this.refreshComponent()
         }).catch( (error) => {
-            toastr.error("Please fill all the required fields.")
+            toastr.error(error.response.data.message)
         });
         return false;
     }

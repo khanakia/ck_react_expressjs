@@ -123,7 +123,7 @@ class MemberForm extends Component {
                                     <label className="col-form-label">Meter Comm To:</label>
                                 </div>
                                 <div className="col-md-3">
-                                    <label className="col-form-label">Meter Comm.(%):</label>
+                                    <label className="col-form-label">Meter Comm.(Rs.):</label>
                                 </div>
                             </div>
                             {Array.apply(0, Array(1)).map( (x, i) => { 

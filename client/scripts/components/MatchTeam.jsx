@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { render } from 'react-dom'
 import { inject, observer } from 'mobx-react';
 
+import GlobalHelper from "../helpers/GlobalHelper"
+
 import MatchTeamHelper from '../helpers/MatchTeamHelper'
 import ComboBoxTeam from './controls/ComboBoxTeam'
 import MatchTeamGrid from './MatchTeam/MatchTeamGrid'
@@ -20,6 +22,7 @@ class MatchTeam extends Component {
     }
 
     componentDidMount() {
+        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
         this.props.matchTeamStore.fetchList(this.props.matchId)
     }
 
@@ -48,6 +51,7 @@ class MatchTeam extends Component {
             team_id: team_id,
             match_id: this.props.matchId
         }).then((res) => {
+            this.refs.comboTeam.refs.Combo.focus()
             this.props.matchTeamStore.fetchList(this.props.matchId)
         }).catch((err)=> {
             toastr.error(err.response.data.message)

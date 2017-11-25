@@ -14,12 +14,33 @@ class ReportConnectGrid extends Component {
 
     componentDidUpdate() {
         this.dataAdapter.dataBind()
+        this.refs.jqxgrid.on('cellendedit', (event) => {
+            var args = event.args;
+            console.log(args)
+            if(args.datafield=='tally') {
+                this.refs.jqxgrid.selectcell(args.rowindex, 'account_name')
+                this.refs.jqxgrid.selectcell(args.rowindex, 'bal')
+                this.refs.jqxgrid.selectcell(args.rowindex, 'after_patti')
+                
+            }
+
+            if(args.datafield=='tally1') {
+                this.refs.jqxgrid.selectcell(args.rowindex, 'account_name1')
+                this.refs.jqxgrid.selectcell(args.rowindex, 'bal1')
+                this.refs.jqxgrid.selectcell(args.rowindex, 'after_patti1')
+            }
+
+            console.log(args.value)
+        });
     }
 
     refresh = () => {
         this.dataAdapter.dataBind()
     }
 
+
+    componentDidMount() {
+    }
     
 
     render() {
@@ -37,6 +58,8 @@ class ReportConnectGrid extends Component {
             { name: 'bal1', type: 'string' },
             { name: 'after_patti1', type: 'string' },
             { name: 'empty', type: 'string' },
+            { name: 'tally', type: 'boolean' },
+            { name: 'tally1', type: 'boolean' },
         ];
 
         let source = {
@@ -51,15 +74,18 @@ class ReportConnectGrid extends Component {
 
         let columns = [
 
+  
+            { text: 'Tally', datafield: 'tally', width: 50, columntype: 'checkbox', editable: true  },
             // { text: 'AccountId', datafield: 'account_id', width: 100 },
-            { text: 'Account', datafield: 'account_name', width: 150 },
-            { text: 'Amount', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: '', datafield: 'empty', width: 100, filterable: false },
+            { text: 'Account', datafield: 'account_name', width: 150, editable:false },
+            { text: 'Amount', datafield: 'bal', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: '', datafield: 'empty', width: 100, editable:false, filterable: false },
             // { text: 'AccountId', datafield: 'account_id1', width: 100 },
-            { text: 'Account', datafield: 'account_name1', width: 150 },
-            { text: 'Amount', datafield: 'bal1', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti1', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Tally', datafield: 'tally1', width: 50, columntype: 'checkbox', editable: true  },
+            { text: 'Account', datafield: 'account_name1', width: 150, editable:false },
+            { text: 'Amount', datafield: 'bal1', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
         ];
 
         return (
@@ -68,9 +94,9 @@ class ReportConnectGrid extends Component {
                     <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "800"} height={400} source={this.dataAdapter} 
-                        pageable={false} sortable={false} altrows={false} enabletooltips={false}
-                        editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
+                        width={ "900"} height={400} source={this.dataAdapter} 
+                        pageable={false} sortable={false} altrows={false} enabletooltips={false} selectionmode={'multiplecells'}
+                        editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}/>
             </div>
         );

@@ -299,6 +299,7 @@ module.exports = {
             "rate" : 1,
             "final_amount" : 1,
             "match_name": 1,
+            "comm_amt_final" : 1
         }
   
         var meterEntries = await MeterEntryModel.aggregate([
@@ -327,6 +328,7 @@ module.exports = {
                     "match_id": { $first: "$match_id" },
                     "account_id": { $first: "$account_id" },
                     "final_amount": { $sum: "$final_amount" },
+                    "comm_amt_final": { $sum: "$calcs.comm_amt" },
                     "rate": { $sum: "$rate" },
 
 
@@ -365,22 +367,22 @@ module.exports = {
             var final_amount = meterEntry.final_amount
             
             // Distribute Commission
-            // var com_amt_total = 0
-            // await Promise.all(account.meter_comm_accounts.map(async (item) => {
-            //     if(!item.account_id) return null
-            //     var comm_amt = Math.abs(meterEntry.rate) * item.meter_comm/100
-            //     com_amt_total += comm_amt
-            //     var n = `Comm (${item.meter_comm}%) - ${narration_party}`
-            //     var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
-            //         journal_id: journalItem._id, 
-            //         by_account_id: companyAccountId, 
-            //         account_id: item.account_id, 
-            //         amount: comm_amt, 
-            //         type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
-            //         narration: n
-            //     })
-            //     // return await jeitem.save()
-            // }))
+            var com_amt_total = 0
+            await Promise.all(account.meter_comm_accounts.map(async (item) => {
+                if(!item.account_id && !meterEntry.comm_yn) return null
+                var comm_amt = -1 * meterEntry.comm_amt_final
+                com_amt_total += comm_amt
+                var n = `Comm (${comm_amt}) - ${narration_party}`
+                var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: comm_amt, 
+                    type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
+                    narration: n
+                })
+                // return await jeitem.save()
+            }))
 
 
             // Distribute Patti

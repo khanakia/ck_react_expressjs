@@ -53,20 +53,20 @@ module.exports = {
     async updateEntryAfterInsert(id, cb) {
         var item = await MeterEntryModel.findOne({"_id": id});
         var account = await AccountModel.findOne({_id: item.account_id})
-        // var meter_comm_aggregate = await AccountClass.getMeterCommAggregate(item.account_id)
+        var meter_comm_aggregate = await AccountClass.getMeterCommAggregate(item.account_id)
 
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
         
-        // if(item.comm_yn==true) {            
-        //     comm_amt = item.rate * meter_comm_aggregate/100;
-        // }
+        if(item.comm_yn==true) {            
+            comm_amt = meter_comm_aggregate;
+        }
        
         // Patti will be calculated on final amount after commission
         var patti_total_per = patti_aggregate.meter;
         var rate_after_patti = item.rate - (item.rate * patti_total_per/100)
     
         // item.set("calcs.comm_total_per", meter_comm_aggregate)
-        // item.set("calcs.comm_amt", comm_amt)
+        item.set("calcs.comm_amt", comm_amt)
         item.set("calcs.patti_total_per", patti_total_per)
         item.set("calcs.rate_after_patti", rate_after_patti)
         return item.save(cb)
@@ -181,7 +181,6 @@ module.exports = {
             runs: 1, 
             amount: 1,
             // amount_patti: "$calcs.amount_patti",
-            patti_total_per: "$calcs.patti_total_per",
             yn: 1,
             team_id: 1,
             account_id: 1,
@@ -193,9 +192,11 @@ module.exports = {
             updated_at: 1,
             comm_yn: 1,
             "account_name": "$account.account_name",
+            patti_total_per: "$calcs.patti_total_per",
             // sess_comm: "$calcs.sess_comm",
+            rate_after_patti: "$calcs.rate_after_patti",
             comm_amt: "$calcs.comm_amt",
-            comm_total_per: "$calcs.comm_total_per",
+            // comm_total_per: "$calcs.comm_total_per",
         };
 
         MeterEntryModel.aggregate( [ 

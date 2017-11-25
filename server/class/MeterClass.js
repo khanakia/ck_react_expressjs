@@ -10,10 +10,10 @@ module.exports = {
 
     async declare(id, runs) {
         var meter = await MeterModel.findOne({_id: parseInt(id)})
-        // if(meter.is_declared) {
-        //     throw(ResponseHelper.error(400, 'Meter is declared already.'))
-        // }
-        await this.undeclare(4)
+        if(meter.is_declared) {
+            throw(ResponseHelper.error(400, 'Meter is declared already.'))
+        }
+        await this.undeclare(id)
 
         try {
             meter.declared_runs = runs

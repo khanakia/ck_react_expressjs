@@ -86,7 +86,7 @@ class MatchEntry extends React.Component {
     }
 
     undeclare = () => {
-        var r = confirm("Are you sure to Undeclare ?");
+        var r = confirm("Are you sure to Undeclare ?", ' ');
         if (r == true) {
            axios({
                 method: 'post',
@@ -103,7 +103,7 @@ class MatchEntry extends React.Component {
     }
 
     abandon = () => {
-        var r = confirm("Are you sure to Abandon ?");
+        var r = confirm("Are you sure to Abandon ?", ' ');
         if (r == true) {
            axios({
                 method: 'post',
@@ -120,7 +120,7 @@ class MatchEntry extends React.Component {
     }
 
     unAbandon = () => {
-        var r = confirm("Are you sure to UnAbandon ?");
+        var r = confirm("Are you sure to UnAbandon ?", ' ');
         if (r == true) {
            axios({
                 method: 'post',

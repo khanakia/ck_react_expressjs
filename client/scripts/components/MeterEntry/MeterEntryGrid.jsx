@@ -33,7 +33,7 @@ class MeterEntryGrid extends Component {
             { name: 'rate', type: 'string' },
             { name: 'runs', type: 'string' },
             { name: 'amount', type: 'string' },
-            { name: 'amount_patti', type: 'string' },
+            { name: 'rate_after_patti', type: 'string' },
             { name: 'yn', type: 'string' },
             { name: 'account_name', type: 'string' },       
             { name: 'account_id', type: 'string' },
@@ -45,7 +45,7 @@ class MeterEntryGrid extends Component {
             { name: 'is_summarized', type: 'boolean' },
             { name: 'patti_total_per', type: 'string' },
             { name: 'comm_amt', type: 'string' },
-            { name: 'comm_total_per', type: 'string' },
+            
             
         ];
 
@@ -112,11 +112,10 @@ class MeterEntryGrid extends Component {
             { text: 'Rate', datafield: 'rate', width: 60, cellsformat: 'd2' },
             { text: 'Runs', datafield: 'runs', width: 60 },
             { text: 'Y/N', datafield: 'yn', width: 50 },
-            { text: 'Patti Amt.', datafield: 'amount_patti', width: 80 , cellsformat: 'd2'},
-            { text: 'Comm Amt.', datafield: 'comm_amt', width: 100 , cellsformat: 'd2'},
+            { text: 'Comm Amt.', datafield: 'comm_amt', width: 80 , cellsformat: 'd2'},
             { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
+            { text: 'Afte Patti.', datafield: 'rate_after_patti', width: 80 , cellsformat: 'd2'},
             { text: 'Patti (%)', datafield: 'patti_total_per', width: 100 , cellsformat: 'd2'},
-            { text: 'Comm (%)', datafield: 'comm_total_per', width: 100 , cellsformat: 'd2'},
             { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox', filtertype:'bool' },
             { text: 'Is Summarized', datafield: 'is_summarized', width: 120, columntype: 'checkbox', filtertype:'bool' },
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },

@@ -4,16 +4,45 @@
 var AccountModel = require('../model/AccountModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 
+
 module.exports = {
     async demo() {
         return 'demo'
     },
 
-    async canBid(accountId) {
+    async canBid(accountId, amount=0) {
+        // Beacuse of Cyclic Dependencies i included these class within funciton
+        var JournalEntryClass = require('../class/JournalEntryClass')
+        var MatchEntryClass = require('../class/MatchEntryClass')
+        var SessionEntryClass = require('../class/SessionEntryClass')
+
         if(!accountId) return false;
         var account = await AccountModel.findOne({_id : parseInt(accountId)})
-        // console.log(account)
-        return true;
+        var limit = account.limit || 0
+        var balance = await JournalEntryClass.getBalanceByAccountId(accountId)
+        var matchEntriesLossAmount = await MatchEntryClass.getLossAmountByAccountId(accountId)
+        var SessionEntriesLossAmount = await SessionEntryClass.getLossAmountByAccountId(accountId)
+
+        // console.log(SessionEntriesLossAmount)
+        var canBidAmount = limit + (-1*balance) + matchEntriesLossAmount - SessionEntriesLossAmount
+
+        var canBid = true;
+
+        if( amount > canBidAmount) {
+            canBid = false
+        }
+
+        var result = {
+            limit: limit,
+            balance: -1*balance,
+            matchLoss: matchEntriesLossAmount,
+            sessionLoss: SessionEntriesLossAmount,
+            canBidAmount: canBidAmount,
+            currentBid: amount,
+            canBid: false
+
+        }
+        return result
     },
 
     async getPattiAggregate(id, cb) {
@@ -79,6 +108,8 @@ module.exports = {
         var isError = 0
         var errorMessage = null
 
+       
+
         // return item;
         item.patti = _.filter(item.patti, function(item, i){
              return !_.isEmpty(item.account_id)
@@ -113,6 +144,12 @@ module.exports = {
                 throw(ResponseHelper.parseMongooseFirstError(err))
             }
         } else {
+            var account1 = await AccountModel.findOne({'account_name' : { $regex : new RegExp(item.account_name, "i") }})
+
+            if(account1) {
+                throw(ResponseHelper.error(400, 'Account Name alread exists.'))
+            }
+
             let account = new AccountModel(item)
             try {
                 await account.save();

@@ -11,7 +11,8 @@ class AccountGrid extends Component {
 	static defaultProps = {
         entriesList : [],
         onDataUpdate: function() {},
-        editItem: function(account_id){}
+        editItem: function(account_id){},
+        onRowSelect: function(rowdata) {},
        
     }
 
@@ -32,6 +33,20 @@ class AccountGrid extends Component {
         // window.grid = this.refs.jqxgrid
         // window.grid_data = this.props.entriesList.slice()
         // window.dataAdapter = this.dataAdapter
+
+        this.refs.jqxgrid.on('bindingcomplete', () => {
+            this.onRowSelect()
+        })
+    }
+
+    onRowSelect = () => {
+        if(!this.refs.jqxgrid) return null
+        this.refs.jqxgrid.off('rowselect');
+        this.refs.jqxgrid.on('rowselect', (event) => {
+            var args = event.args;
+            this.props.onRowSelect(args.row)
+            
+        });
     }
 
     initDataAdapter() {
@@ -103,7 +118,7 @@ class AccountGrid extends Component {
     render() {
         return (
             <div>
-         		<JqxGrid ref="jqxgrid" key1={Math.random()}
+         		<JqxGrid ref="jqxgrid" key={Math.random()}
                    source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={540} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={true} enabletooltips={true}

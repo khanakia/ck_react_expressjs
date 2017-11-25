@@ -285,4 +285,24 @@ module.exports = {
         
     },
 
+
+    async getLossAmountByAccountId(acccountId) {
+         var entry = await SessionEntryModel.aggregate([
+
+            {
+                $match:  {
+                    account_id: parseInt(acccountId),
+                    is_declared: false
+                }
+            },
+            { 
+                $group: { 
+                    _id: null, 
+                    loose_amt_grandtotal: { $sum: "$calcs.loose_amt_grandtotal" } 
+                } 
+            }
+        ]);
+       return entry[0] ? entry[0]['loose_amt_grandtotal'] : 0
+    }
+
 };

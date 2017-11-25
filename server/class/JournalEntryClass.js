@@ -268,6 +268,26 @@ module.exports = {
         var matchIdArray = _.map(matches, '_id');
         await MatchModel.updateMany({ _id: { $in: matchIdArray } }, {  $set: { is_monday_final: true} })
         return matches
+    },
+
+
+    async getBalanceByAccountId(acccountId) {
+         var jentry = await JournalEntryModel.aggregate([
+
+            {
+                $match:  {
+                    account_id: parseInt(acccountId)
+                }
+            },
+            { 
+                $group: { 
+                    _id: null, 
+                    total: { $sum: "$bal" } 
+                } 
+            }
+        ]);
+       // console.log(jentry[0] ? jentry[0]['total'] : 0)
+       return jentry[0] ? jentry[0]['total'] : 0
     }
 
 };

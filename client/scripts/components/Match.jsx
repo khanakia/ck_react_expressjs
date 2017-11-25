@@ -33,9 +33,10 @@ class Match extends Component {
     }
 
 
-    onFormSubmit = () => {
+    onFormSubmit = (item) => {
         if(!this.props.match.params.id) {
-            this.props.matchStore.account = {}
+            this.editItem(item._id)
+            // this.props.matchStore.account = {}
         } else {
             this.props.matchStore.fetch(this.props.match.params.id)
         }
