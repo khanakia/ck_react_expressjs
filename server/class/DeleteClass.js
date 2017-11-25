@@ -17,13 +17,16 @@ module.exports = {
             account_id: parseInt(id)
         }
         var i = 0
-        i += await AccountModel.find({match_comm_to: id}).count()
-        i += await AccountModel.find({sess_comm_to: id}).count()
-        i += await AccountModel.find({meter_comm_to: id}).count()
+        i += await AccountModel.find({match_comm_to: id, _id: { $ne: id }}).count()
+        i += await AccountModel.find({sess_comm_to: id, _id: { $ne: id }}).count()
+        i += await AccountModel.find({meter_comm_to: id, _id: { $ne: id }}).count()
         i += await AccountModel.find({"patti.account_id": id}).count()
         i += await JournalEntryModel.find(q).count()
         i += await MatchEntryModel.find(q).count()
         i += await SessionEntryModel.find(q).count()
+
+
+
 
         if(i>0) {
             throw(ResponseHelper.error(401, 'Record is linked to other tables.'))

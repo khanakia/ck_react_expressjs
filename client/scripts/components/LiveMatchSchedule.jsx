@@ -40,7 +40,7 @@ class LiveMatchSchedule extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
         this.columns = [
-            { text: 'ID', datafield: '_id', width: 70 },
+            // { text: 'ID', datafield: '_id', width: 70 },
             { text: 'Date', datafield: 'dated', width: 150, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             { text: 'Time', datafield: 'time', width: 70 },
             { text: 'Match', datafield: 'match_name', width: 250 },

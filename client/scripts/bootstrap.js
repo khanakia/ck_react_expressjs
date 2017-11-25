@@ -131,7 +131,7 @@ const Root = () => (
             {/*<Route path="/states" component={State}/>*/}
             <Route path="/teams" component={Team}/>
             <Route exact path="/accounts" component={Account}/>
-            <Route path="/accounts/:id" component={Account}/>
+            <Route exact path="/accounts/:id" component={Account}/>
             {/*<Route exact path="/match_types" component={MatchType}/>*/}
             <Route exact path="/matches" component={Match}/>
             <Route path="/matches/:id" component={Match}/>

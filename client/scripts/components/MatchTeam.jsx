@@ -22,7 +22,7 @@ class MatchTeam extends Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
         this.props.matchTeamStore.fetchList(this.props.matchId)
     }
 

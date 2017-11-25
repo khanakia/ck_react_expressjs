@@ -13,11 +13,7 @@ import TooltipQuestion from './controls/TooltipQuestion';
 @observer
 class JournalEntry extends Component {
 
-    onCloseComboMember = () => {
-        const accountId = (this.refs.comboMember.getSelectedValue())
-        // console.log(accountId)
-        this.props.history.push("/journal_entries/account/" + accountId)       
-    }
+
 
     componentDidMount() {
         if(this.props.match.params.account_id) {
@@ -30,7 +26,13 @@ class JournalEntry extends Component {
 
         axios.get("/others/create_book_account")
 
+        this.initMouseTrap()
 
+        this.getAccountNameLabel()
+    }
+
+    componentDidUpdate() {
+        this.getAccountNameLabel()
     }
 
 
@@ -42,9 +44,33 @@ class JournalEntry extends Component {
         }
     }
 
+    initMouseTrap() {
+        var mousetrap = new  Mousetrap()
+        mousetrap.stopCallback = function(e, element, combo) {
+            return false;
+        }
+
+        mousetrap.bind('alt+a', (e) => {
+           this.refs.comboMember.refs.Combo.focus()
+        });
+
+    }
+
+
     fetch = () => {
         this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
         this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+    }
+
+
+    onCloseComboMember = () => {
+        const accountId = (this.refs.comboMember.getSelectedValue())
+        this.props.history.push("/journal_entries/account/" + accountId)
+    }
+
+    getAccountNameLabel = () => {
+        const item = this.refs.comboMember.getSelectedItem()
+        this.refs.accountNameHeading.innerHTML = item.label
     }
 
     onFormSubmitted = () => {
@@ -124,11 +150,14 @@ class JournalEntry extends Component {
                 <h6><i className="fa fa-book"></i> Journal Entry</h6>
                 <div className="mb-2">
                     <div className="row">
-                        <div className="col-md-6">
-                                Select Account: <ComboBoxMember 
+                        <div className="col-md-4">
+                                Select Account <span className="badge badge-secondary">ALT+A</span>: <ComboBoxMember 
                                     field_id="account_id" ref="comboMember" onClose={this.onCloseComboMember} />
                         </div>
-                        <div className="col-md-6 text-right">
+                        <div className="col-md-4 text-center">
+                            <h5 ref="accountNameHeading"></h5>
+                        </div>
+                        <div className="col-md-4 text-right">
                             { account_id ?
                             <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                             : '' }

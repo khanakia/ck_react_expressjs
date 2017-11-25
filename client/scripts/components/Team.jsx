@@ -8,7 +8,7 @@ import GlobalHelper from "../helpers/GlobalHelper"
 import {APP_URL_TEAMS} from '../Constant'
 class Team extends Component {
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
         this.refs.name.focus()
     }
 

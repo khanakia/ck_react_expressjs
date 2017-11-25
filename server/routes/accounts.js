@@ -22,6 +22,15 @@ router.get('/', function(req, res, next) {
 	})
 });
 
+router.get('/canbid', function(req, res, next) {
+  	AccountClass.canBid(req.query.account_id || null, req.query.amount).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
+});
+
 router.get('/:id', function(req, res, next) {
   	AccountModel.findOne({_id: req.params.id}).exec((err, item) => {
   		res.send(item || {})

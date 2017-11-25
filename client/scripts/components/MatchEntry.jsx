@@ -215,7 +215,9 @@ class MatchEntry extends React.Component {
                             <MatchEntryAvgBlock teamsWinLossList={teamsWinLossList} />
                         </div>
                         <div className="mt-2">
+                            <h6>Book Profit/Loss</h6>
                             <MatchEntryTeamGrid ref="teamGrid" teamsWinLossList={teamsWinLossList} />
+                            <h6>Party Profit/Loss</h6>
                             <MatchEntryTeamGrid ref="teamGrid" teamsWinLossList={lastEntryAccountTeamsWinLossList} />
                         </div>
                     </div>

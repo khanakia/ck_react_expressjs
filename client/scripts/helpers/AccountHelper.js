@@ -1,4 +1,4 @@
-import { API_URL_ACCOUNTS } from "../Constant"
+import { API_URL_ACCOUNTS, API_URL_ACCOUNTS_CANBID } from "../Constant"
 
 export default class AccountHelper {
 
@@ -54,5 +54,18 @@ export default class AccountHelper {
             var ajaxObj = AccountHelper.store(data)
         }
         return ajaxObj;
+    }
+
+
+    static canBid(accountId, amount) {
+        return axios({
+            method: 'get',
+            headers: Auth.header(),
+            url: API_URL_ACCOUNTS_CANBID,
+            params: {
+                account_id: accountId,
+                amount: amount
+            }
+        })
     }
 }

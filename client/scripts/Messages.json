@@ -7,5 +7,7 @@
 
 	"ABOUT_REPORT_BALANCE_SHEET" : "-ve Right columns Ka matlab book loss mein hai Or + Left columsn ka matlab book ko profit hai",
 	"ABOUT_REPORT_PL_MATCHWISE" : "- ka matlab Book loss mein hai Or + ka matlab Book Profit mein hai",
-	"ABOUT_REPORT_CONNECT" : "- ka matlab Book loss mein hai Or + ka matlab Book Profit mein hai"
+	"ABOUT_REPORT_CONNECT" : "- ka matlab Book loss mein hai Or + ka matlab Book Profit mein hai",
+
+	"ACCOUNT_ENTRY_PAY_RECEIVE" : "Agar book ko commissio lena hai to + mein entry daale or agar book funter ko commission degi to minus(-) mein entry daale"
 }

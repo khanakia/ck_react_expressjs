@@ -27,16 +27,21 @@ class Account extends Component {
         }
     }
 
-    onFormSubmit = () => {
+    onFormSubmit = (item) => {
         console.log(this.props.match.params.id)
         if(typeof this.props.match.params.id!=="undefined" && this.props.match.params.id) {
             // console.log('1')
             // this.props.accountStore.account = {}
+
             this.props.accountStore.fetch(this.props.match.params.id)
         } else {
             // console.log('2')
-            this.props.accountStore.account = {}
+            
             // this.props.accountStore.fetch(this.props.match.params.id)
+
+            // this.props.accountStore.account = {}
+            
+            this.editItem(item._id)
         }
         this.props.accountStore.fetchList({is_company: false})
     }
@@ -58,7 +63,7 @@ class Account extends Component {
         }
     }
 
-    grid_onRowSelect = (rowdata) => {
+    grid_onCellClick = (rowdata) => {
         this.props.history.push(APP_URL_ACCOUNTS + "/" + rowdata._id)
     }
 
@@ -69,7 +74,7 @@ class Account extends Component {
                 <h6><i className="fa fa-user"></i> Account</h6>
                 <div className="row">
                     <div className="col-md-4">
-                        <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate} onRowSelect={this.grid_onRowSelect}/>
+                        <AccountGrid entriesList={accountList} editItem={this.editItem} onDataUpdate={this.accountGrid_onDataUpdate} onCellClick={this.grid_onCellClick}/>
                     </div>
                     <div className="col-md-8">
                         

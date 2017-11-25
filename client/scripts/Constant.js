@@ -41,6 +41,7 @@ export const APP_URL_PAGE_ACTIVITY_LOG = '/activity_log'
 export const API_URL_USER = '/users';
 export const API_URL_CHANGE_PWD = '/users/changepassword';
 export const API_URL_ACCOUNTS = '/accounts';
+export const API_URL_ACCOUNTS_CANBID = '/accounts/canbid';
 export const API_URL_TEAMS = '/teams';
 export const API_URL_JOURNAL_ENTRIES = '/journal_entries'
 export const API_URL_JOURNAL_ACCOUNT_BALANCE = ((id) => { return `${API_URL_JOURNAL_ENTRIES}/account/${id}/balance` })

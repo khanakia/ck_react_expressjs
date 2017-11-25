@@ -1,4 +1,5 @@
 import React from 'react'
+import { render } from 'react-dom'
 
 
 import ComboBoxMatchTeam from '../controls/ComboBoxMatchTeam.jsx'
@@ -13,6 +14,9 @@ import CSelect from '../controls/CSelect'
 import { LIST_MATCH_LK, MATCH_TYPE_CUP} from '../../Constant'
 
 import GlobalHelper from "../../helpers/GlobalHelper"
+import AccountHelper from "../../helpers/AccountHelper"
+
+import AccountLimitExceed from '../controls/AccountLimitExceed'
 
 class MatchEntryForm extends React.Component {
     constructor(props) {
@@ -42,13 +46,13 @@ class MatchEntryForm extends React.Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
-    }
-
-    componentDidUpdate() {
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
         jQuery(this.refs.form).find('input').off('focus').focus(function(){
             jQuery(this).select()
         })
+    }
+
+    componentDidUpdate() {
     }
 
     edit(rowdata) {
@@ -73,7 +77,41 @@ class MatchEntryForm extends React.Component {
 
     formSubmit = (e) => {
         e.preventDefault()
+        
+        let data = jQuery(this.refs.form).serialize()
+        const dataJson = URI.parseQuery(data)
 
+        AccountHelper.canBid(dataJson.account_id, dataJson.amount).then((response) => {
+            console.log(response)
+            var responseData = response.data
+
+            if(responseData.canBid) {
+                this.saveForm()
+            } else {
+
+                let widgetContainer = document.createElement('div');
+                render(<AccountLimitExceed item={responseData} />, widgetContainer);
+
+                $.confirm({
+                    title: 'Limit Exceeded!',
+                    content: widgetContainer,
+                    buttons: {
+                        confirm: () => {
+                            console.log('confirmed')
+                            this.saveForm()
+                        },
+                        cancel: function () {
+                            
+                        },
+                    }
+                });
+            }
+        })
+        
+        return false;
+    }
+
+    saveForm() {
         var book_no = this.props.getBookNo();
         // console.log("book_no", book_no)
 
@@ -94,13 +132,14 @@ class MatchEntryForm extends React.Component {
             this.resetForm()
             this.refs.idinput.focus()
 
+            this.refs.idinput.focus()
+
             this.props.onFormSubmitted(response);
 
         }).catch((err) => {
             toastr.error(err.response.data.message)
         })
-        
-        return false;
+
     }
 
     render() {
@@ -115,13 +154,16 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">S.N.</label>
                             <div>
-                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" type="number" readOnly={true} ref="idinput" key={item._id} defaultValue={item._id} />
+
+                                <input className="form-control form-control-sm w-50p error-hide required number idinput-match" ref="idinput" type="number" readOnly={true} key={item._id} defaultValue={item._id} />
+
                             </div>
                         </div>
                         <div className="col-auto">
                             <label className="">Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" value={item.rate} key={scount} />
+
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" ref="rate" value={item.rate} />
                             </div>
                         </div>
                         <div className="col-auto">

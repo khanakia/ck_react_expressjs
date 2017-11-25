@@ -31,14 +31,15 @@ class MeterEntryForm extends React.Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
+
+        jQuery(this.refs.form).find('input').off('focus').focus(function(){
+            jQuery(this).select()
+        })
       
     }
 
     componentDidUpdate() {
-        jQuery(this.refs.form).find('input').off('focus').focus(function(){
-            jQuery(this).select()
-        })
     }
 
 

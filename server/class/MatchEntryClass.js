@@ -16,12 +16,12 @@ module.exports = {
 
     async save(item, id=null) {
 
-        var canbidItem = await AccountClass.canBid(item.account_id, item.amount)
+        // var canbidItem = await AccountClass.canBid(item.account_id, item.amount)
 
-        // return canbidItem;
-        if(!canbidItem.canBid) {
-            throw(ResponseHelper.error(400, 'Limit Exceeded.', 'can_bid', canbidItem))
-        }
+        // // return canbidItem;
+        // if(!canbidItem.canBid) {
+        //     throw(ResponseHelper.error(400, 'Limit Exceeded.', 'can_bid', canbidItem))
+        // }
 
         // return item;
         var match = await MatchModel.findOne({_id: item.match_id})

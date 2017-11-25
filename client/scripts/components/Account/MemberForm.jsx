@@ -9,6 +9,7 @@ import AccountHelper from '../../helpers/AccountHelper'
 import {LIST_COMM_TYPE, LIST_STATUS_BOOLEAN} from '../../Constant'
 
 import GlobalHelper from "../../helpers/GlobalHelper"
+import TooltipQuestion from '../controls/TooltipQuestion';
 
 class MemberForm extends Component {
 
@@ -46,7 +47,7 @@ class MemberForm extends Component {
     }
 
     componentDidUpdate() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
     }
 
     onSubmit = (e) => {
@@ -56,7 +57,7 @@ class MemberForm extends Component {
         }
         let data = jQuery(this.refs.form).serialize()
         AccountHelper.save(data, this.props.item._id).then( (response) => {
-            this.props.onSubmit()
+            this.props.onSubmit(response.data)
         }).catch(function(err) {
             toastr.error(err.response.data.message)
         });
@@ -105,7 +106,7 @@ class MemberForm extends Component {
                                             displayMember='account_name' data={this.props.accountsList}  selectedValue={item.match_comm_to} />
                             </div>
                             <div className="form-group col-md-2">
-                                <label className="col-form-label">Match Comm. :</label>
+                                <label className="col-form-label">Match Comm. : <TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} /></label>
                                 <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={item.match_comm} name="match_comm" />
                             </div>
                             <div className="form-group col-md-2">
@@ -154,7 +155,7 @@ class MemberForm extends Component {
                                     <label className="col-form-label">Session Comm To:</label>
                                 </div>
                                 <div className="col-md-3">
-                                    <label className="col-form-label">Session Comm.(%):</label>
+                                    <label className="col-form-label">Session Comm.(%): <TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} /></label>
                                 </div>
                             </div>
                             {Array.apply(0, Array(2)).map( (x, i) => { 

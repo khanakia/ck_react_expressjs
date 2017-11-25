@@ -36,10 +36,10 @@ module.exports = {
             limit: limit,
             balance: -1*balance,
             matchLoss: matchEntriesLossAmount,
-            sessionLoss: SessionEntriesLossAmount,
+            sessionLoss: -1*SessionEntriesLossAmount,
             canBidAmount: canBidAmount,
             currentBid: amount,
-            canBid: false
+            canBid: canBid
 
         }
         return result
@@ -153,6 +153,11 @@ module.exports = {
             let account = new AccountModel(item)
             try {
                 await account.save();
+
+                account.match_comm_to = account._id
+                account.sess_comm_accounts[0]['account_id'] = account._id
+                await account.save()
+                return ResponseHelper.ok(200, 'Successfully saved.', {_id: account._id})
             } catch(err) {
                 throw(ResponseHelper.parseMongooseFirstError(err))
             }

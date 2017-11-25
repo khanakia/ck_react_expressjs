@@ -1,4 +1,5 @@
 import React from 'react'
+import { render } from 'react-dom'
 
 
 // import ComboBoxSession from '../controls/ComboBoxSession.jsx'
@@ -14,6 +15,9 @@ import {LIST_SESSION_YN} from '../../Constant'
 
 import GlobalHelper from "../../helpers/GlobalHelper"
 
+import AccountHelper from "../../helpers/AccountHelper"
+import AccountLimitExceed from '../controls/AccountLimitExceed'
+
 class SessionEntryForm extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +25,10 @@ class SessionEntryForm extends React.Component {
             matchId: this.props.matchId,
             scount: 0,
             item: {
-                rate: 1
+                rate: 1,
+                runs: 0,
+                amount: 0,
+                account_id: null
             }
 
         }
@@ -37,13 +44,13 @@ class SessionEntryForm extends React.Component {
     }
 
     componentDidMount() {
-        this.mtrap = GlobalHelper.mounstrapFormInit(this.refs.form)
-    }
-
-    componentDidUpdate() {
+        this.mtrap = GlobalHelper.mousetrapFormInit(this.refs.form)
         jQuery(this.refs.form).find('input').off('focus').focus(function(){
             jQuery(this).select()
         })
+    }
+
+    componentDidUpdate() {
     }
 
     edit(rowdata) {
@@ -65,7 +72,42 @@ class SessionEntryForm extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault()
+        
+        let data = jQuery(this.refs.form).serialize()
+        const dataJson = URI.parseQuery(data)
 
+        AccountHelper.canBid(dataJson.account_id, dataJson.amount).then((response) => {
+            console.log(response)
+            var responseData = response.data
+
+            if(responseData.canBid) {
+                this.saveForm()
+            } else {
+
+                let widgetContainer = document.createElement('div');
+                render(<AccountLimitExceed item={responseData} />, widgetContainer);
+
+                $.confirm({
+                    title: 'Limit Exceeded!',
+                    content: widgetContainer,
+                    buttons: {
+                        confirm: () => {
+                            console.log('confirmed')
+                            this.saveForm()
+                        },
+                        cancel: function () {
+                            
+                        },
+                    }
+                });
+            }
+        })
+
+        
+        return false;
+    }
+
+    saveForm() {
         if(! $(this.refs.form).valid()) {
           return false;
         }
@@ -74,7 +116,6 @@ class SessionEntryForm extends React.Component {
             toastr.error("Please Select Match First.")
             return false;
         }
-
 
         if (!this.props.sessionId) {
             toastr.error("Please Select Session First.")
@@ -87,11 +128,11 @@ class SessionEntryForm extends React.Component {
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.resetForm()
             this.refs.idinput.focus()
+
             this.props.onFormSubmitted(response.data);
         }).catch((err) => {
             toastr.error(err.response.data.message)
         })
-        return false;
     }
 
 
@@ -132,16 +173,16 @@ class SessionEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto">
+                            <label>Amount</label>
+                            <div>
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} key={scount}  />
+                            </div>
+                        </div>
+                        <div className="col-auto">
                             <label>Y/N</label>
                             <div>
                                 <CSelect className="uk-select uk-form-small" name="yn" value={item.yn} items={LIST_SESSION_YN}>
                                 </CSelect>
-                            </div>
-                        </div>
-                        <div className="col-auto">
-                            <label>Amount</label>
-                            <div>
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" min="0" name="amount" value={item.amount} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
