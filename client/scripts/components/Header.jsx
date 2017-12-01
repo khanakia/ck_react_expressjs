@@ -100,8 +100,8 @@ class Header extends React.Component {
               },
               'minHeight': 600,
               'minWidth': 600,
-               width: 600, 
-               height: 600,
+               width: 700, 
+               height: 700,
                alwaysOnTop: true               
             })
             win.loadURL("http://andylovatock.netlify.com/")
@@ -116,8 +116,8 @@ class Header extends React.Component {
               },
               'minHeight': 600,
               'minWidth': 600,
-               width: 600, 
-               height: 600,
+               width: 700, 
+               height: 700,
                alwaysOnTop: true               
             })
             win.loadURL("http://andylovatock.netlify.com/video2.html")
