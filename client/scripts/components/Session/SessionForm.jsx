@@ -17,7 +17,7 @@ class SessionForm extends Component {
 	}
 	static defaultProps = {
         matchId : null,
-        onFormSubmitted: function() {},
+        onFormSubmitted: function(response) {},
         id: null,
         teamsList: []
     }

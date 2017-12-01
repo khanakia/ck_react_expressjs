@@ -23,6 +23,7 @@ module.exports = {
         var matchEntriesLossAmount = await MatchEntryClass.getLossAmountByAccountId(accountId)
         var SessionEntriesLossAmount = await SessionEntryClass.getLossAmountByAccountId(accountId)
 
+        // return SessionEntriesLossAmount;
         // console.log(SessionEntriesLossAmount)
         var canBidAmount = limit + (-1*balance) + matchEntriesLossAmount - SessionEntriesLossAmount
 

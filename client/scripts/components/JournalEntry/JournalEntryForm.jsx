@@ -122,7 +122,7 @@ class JournalEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto ">
-                            <label>Account ({this.state.account_bal})</label>
+                            <label>Account <strong>({this.state.account_bal})</strong></label>
                             <div>
                                 <ComboBoxMember ref="comboMember" onSelect={this.comboMemberOnSelect} width="150" field_id="from_account_id" selectedValue={item.account_id} key={item._id} />
                             </div>

@@ -7,7 +7,8 @@ jQuery(document).ready(function(){
 	    return false;
 	}
 	mousetrapGlobal.bind('esc', function() { 
-		window.history.back()
+		// window.history.back()
+		window.location.href = "/#/"
 	});
     mousetrapGlobal.bind('f1', function() { window.location.href = "/#/accounts" });
     mousetrapGlobal.bind('f2', function() { window.location.href = "/#/teams" });

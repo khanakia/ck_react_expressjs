@@ -300,11 +300,44 @@ module.exports = {
             { 
                 $group: { 
                     _id: null, 
-                    loose_amt_grandtotal: { $sum: "$calcs.loose_amt_grandtotal" } 
-                } 
+                    // loose_amt_grandtotal: { $sum: "$calcs.loose_amt_grandtotal" },
+                    // win_amt_grandtotal: { $sum: "$calcs.win_amt_grandtotal" } 
+
+                    'amount_y': { 
+                        '$sum': {
+                            '$cond': [
+                                // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$eq": [ "$yn", 'Y' ] },
+                                '$amount', 
+                                0
+                            ]
+                        }
+                    },
+
+                    'amount_n': { 
+                        '$sum': {
+                            '$cond': [
+                                // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$eq": [ "$yn", 'N' ] },
+                                '$amount', 
+                                0
+                            ]
+                        }
+                    },
+                }, 
+
+
+            },
+
+            { 
+                $project: { 
+                    amount_y: "$amount_y",
+                    amount_n: "$amount_n",
+                }, 
             }
         ]);
-       return entry[0] ? entry[0]['loose_amt_grandtotal'] : 0
+
+        return entry[0] ? entry[0]['amount_y'] - entry[0]['amount_n'] : 0 
     }
 
 };

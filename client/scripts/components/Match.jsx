@@ -64,7 +64,7 @@ class Match extends Component {
     render() {
         const {matchList, match} = this.props.matchStore
 
-        // console.log(matchList)
+        // console.log(this.props.match.params.id)
         return (
             <div className="page1200 mx-2">
                 <h6><i className="fa fa-futbol-o"></i> Match</h6>
@@ -86,7 +86,7 @@ class Match extends Component {
 
                         <div className="row">
                             <div className="col-md-12">
-                                { match._id ?
+                                { this.props.match.params.id ?
                                 <MatchTeam match={match} matchId={match._id} /> : '' }
                             </div>
                         </div>

@@ -68,8 +68,9 @@ class SessionEntry extends Component {
 		this.openSessionForm(id)
 	}
 
-	onSessionFormSubmitted = () => {
+	onSessionFormSubmitted = (response) => {
 		// this.refs.sessionGrid.refresh()
+        this.props.globalStore.setSessionId(response._id)
 		this.props.sessionStore.fetchList(this.props.matchId)
 	}
 

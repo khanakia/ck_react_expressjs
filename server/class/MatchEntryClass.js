@@ -415,11 +415,12 @@ module.exports = {
             { 
                 $group: { 
                     _id: null, 
+                    favteam_amt_grandtotal: { $sum: "$calcs.favteam_amt_grandtotal" } ,
                     otherteam_amt_grandtotal: { $sum: "$calcs.otherteam_amt_grandtotal" } 
                 } 
             }
         ]);
-       return matchEntry[0] ? matchEntry[0]['otherteam_amt_grandtotal'] : 0
+       return matchEntry[0] ? matchEntry[0]['favteam_amt_grandtotal'] + matchEntry[0]['otherteam_amt_grandtotal'] : 0
     }
 
     // HOW TO USE

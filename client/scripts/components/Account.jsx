@@ -41,7 +41,8 @@ class Account extends Component {
 
             // this.props.accountStore.account = {}
             
-            this.editItem(item._id)
+            this.props.accountStore.fetchList({is_company: false})
+            // this.editItem(item._id)
         }
         this.props.accountStore.fetchList({is_company: false})
     }

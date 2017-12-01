@@ -127,10 +127,14 @@ class SessionEntryForm extends React.Component {
         // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.resetForm()
-            this.refs.idinput.focus()
-
             this.props.onFormSubmitted(response.data);
+
+            setTimeout(() => {
+                this.refs.rate.refs.input.focus()
+            }, 400)
+            
         }).catch((err) => {
+            // console.log(err)
             toastr.error(err.response.data.message)
         })
     }
@@ -163,7 +167,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" name="rate" value={item.rate} key={scount} />
+                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" ref="rate" name="rate" value={item.rate} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">

@@ -13,6 +13,7 @@ class ReportConnectGrid extends Component {
     }
 
     componentDidUpdate() {
+
         this.dataAdapter.dataBind()
         this.refs.jqxgrid.on('cellendedit', (event) => {
             var args = event.args;
@@ -32,6 +33,17 @@ class ReportConnectGrid extends Component {
 
             console.log(args.value)
         });
+
+        var bal = (this.refs.jqxgrid.getcolumnaggregateddata('bal', ['sum']))
+        var bal1 = (this.refs.jqxgrid.getcolumnaggregateddata('bal1', ['sum']))
+
+        bal = (typeof bal.sum == "undefined") ? 0 : bal.sum
+        bal1 = (typeof bal1.sum == "undefined") ? 0 : bal1.sum
+        console.log(bal)
+        var gtotal = bal + bal1
+        this.refs.total_profit.innerHTML = bal
+        this.refs.total_loss.innerHTML = bal1
+        this.refs.grand_total.innerHTML = gtotal
     }
 
     refresh = () => {
@@ -40,7 +52,13 @@ class ReportConnectGrid extends Component {
 
 
     componentDidMount() {
+        // console.log('MOUNTEDF')
+        // this.refs.jqxgrid.on('bindingcomplete', () => {
+        //     console.log('bindingcomplete')
+        // })
     }
+
+
 
 
     cellclass(row, columnfield, value) {
@@ -48,14 +66,18 @@ class ReportConnectGrid extends Component {
             return 'red';
         }
 
-        else return 'green';
+        if (value > 0) {
+            return 'green';
+        }
+
+        return null;
     }
 
     
 
     render() {
         // console.log(this.props.entriesList.slice())
-
+        var _this = this
         var datafields = [
             { name: 'account_id', type: 'string' },
             { name: 'account_name', type: 'string' },
@@ -80,7 +102,11 @@ class ReportConnectGrid extends Component {
         };
 
 
-        this.dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(source, {
+            loadComplete: () => {
+                // console.log(_this.refs.jqxgrid.getcolumnaggregateddata('bal', ['sum']))
+            }
+        });
 
         let columns = [
 
@@ -89,13 +115,13 @@ class ReportConnectGrid extends Component {
             // { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account', datafield: 'account_name', width: 150, editable:false },
             { text: 'Amount', datafield: 'bal', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2'},
             { text: '', datafield: 'empty', width: 50, editable:false, filterable: false, cellclassname: () => { return 'emptyseparator'; } },
             // { text: 'AccountId', datafield: 'account_id1', width: 100 },
             { text: 'Tally', datafield: 'tally1', width: 50, columntype: 'checkbox', editable: true  },
             { text: 'Account', datafield: 'account_name1', width: 150, editable:false },
             { text: 'Amount', datafield: 'bal1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2'},
         ];
 
         return (
@@ -103,11 +129,28 @@ class ReportConnectGrid extends Component {
                 <div className="mt-3 mb-1 text-left">
                     <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
-                <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "900"} height={400} source={this.dataAdapter} 
-                        pageable={false} sortable={false} altrows={false} enabletooltips={false} selectionmode={'multiplecells'}
-                        editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
-                        showstatusbar={true} showaggregates={true} statusbarheight={25}/>
+                <div className="row">
+                    <div className="col-md-8">
+                        <JqxGrid key={Math.random()} ref="jqxgrid" 
+                                width={ "900"} height={350} source={this.dataAdapter} 
+                                pageable={false} sortable={false} altrows={false} enabletooltips={false} selectionmode={'multiplecells'}
+                                editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
+                                showstatusbar={true} showaggregates={true} statusbarheight={25}/>
+
+                        <div className="row mt-3">
+                            <div className="col-md-4">
+                                <label>Total Profit: <span ref="total_profit">0</span></label>
+                            </div>
+                            <div className="col-md-4">
+                                <label>Grand Total: <span ref="grand_total">0</span></label>
+                            </div>
+                            <div className="col-md-4">
+                                <label>Total Loss: <span ref="total_loss">0</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         );
     }
