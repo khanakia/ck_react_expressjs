@@ -45,7 +45,8 @@ class MatchForm extends Component {
         }
 
         MatchHelper.save(data, this.props.item._id).then((res) => {
-            console.log(res);
+            toastr.success('Successfully Saved.')
+            // console.log(res);
             this.refs.match_name.value = ''
             this.refs.match_name.focus()
             this.props.onSubmit(res.data)

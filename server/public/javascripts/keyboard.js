@@ -6,14 +6,17 @@ jQuery(document).ready(function(){
 	mousetrapGlobal.stopCallback = function(e, element, combo) {
 	    return false;
 	}
-	mousetrapGlobal.bind('esc', function() { window.location.href = "/#" });
+	mousetrapGlobal.bind('esc', function() { 
+		window.history.back()
+	});
     mousetrapGlobal.bind('f1', function() { window.location.href = "/#/accounts" });
     mousetrapGlobal.bind('f2', function() { window.location.href = "/#/teams" });
     mousetrapGlobal.bind('f3', function() { window.location.href = "/#/matches" });
     mousetrapGlobal.bind('f4', function() { window.location.href = "/#/match_entries" });
-    mousetrapGlobal.bind('f8', function() { window.location.href = "/#/journal_entries" });
+    mousetrapGlobal.bind('f8', function() { window.location.href = "/#/report_before_declaration" });
     mousetrapGlobal.bind('f6', function() { window.location.href = "/#/reports/connect" });
     mousetrapGlobal.bind('f9', function() { window.location.href = "/#/report_bsheet" });
+    mousetrapGlobal.bind('f11', function() { window.location.href = "/#/journal_entries" });
     mousetrapGlobal.bind('f7', function() {
     	var matchId = localStorage.getItem('matchId')
         if(matchId) {

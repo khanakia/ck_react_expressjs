@@ -70,7 +70,7 @@ class JournalEntry extends Component {
 
     getAccountNameLabel = () => {
         const item = this.refs.comboMember.getSelectedItem()
-        this.refs.accountNameHeading.innerHTML = item.label
+        this.refs.accountNameHeading.innerHTML = item ? item.label : null
     }
 
     onFormSubmitted = () => {
@@ -126,26 +126,26 @@ class JournalEntry extends Component {
         const account_id = this.props.match.params.account_id
         const {journalEntriesList, selectedAccMonFinalBal, selectedAccBal, selectedAccCurrentBal} = this.props.journalEntryStore
 
-        console.log(Messages.JENTRY_GT_PROFIT)
+        // console.log(Messages.JENTRY_GT_PROFIT)
         var message = selectedAccBal > 0 ? Messages.JENTRY_GT_PROFIT : Messages.JENTRY_GT_LOSS
         message = selectedAccBal==0 ? null : message
         // console.log(message)
         return (
             <div className="page mx-2">
                 <div className="row info-heading-block">
-                    <div className="col-auto">
+                    <div className="col-md-6">
                         <label>Opening Balance: </label>
                         {selectedAccMonFinalBal}
                     </div>
-                    <div className="col-auto">
+                    <div className="col-md-6 text-right">
                         <label>Current Balance: </label>
                         {selectedAccCurrentBal}
                     </div>
-                    <div className="col-auto">
+                    {/*<div className="col-auto">
                         <label>Grand Total: </label>
                         <span className="d-inline-block">{selectedAccBal}</span>
                         <span className="ml-3 d-inline-block">{message}</span>
-                    </div>
+                    </div>*/}
                 </div>
                 <h6><i className="fa fa-book"></i> Journal Entry</h6>
                 <div className="mb-2">

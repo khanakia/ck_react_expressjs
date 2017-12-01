@@ -43,6 +43,9 @@ class SessionForm extends Component {
 	          toastr.error("Validation Failed")
 	        })
 		}
+
+
+        this.refs.session_name.focus()
 	}
 
 	componentWillMount() {
@@ -60,11 +63,12 @@ class SessionForm extends Component {
         const dataJson = URI.parseQuery(data)
         // console.log(dataJson)
         SessionHelper.save(dataJson, this.props.id).then((response) => {
+            toastr.success("Successfully Saved.")
         	this.refs.jqxWindow.close()
         	this.props.onFormSubmitted(response);
         }).catch((error) => {
             // console.log(error)
-          toastr.error("Validation Failed")
+            toastr.error("Validation Failed")
         })
         return false;
     }
@@ -92,7 +96,7 @@ class SessionForm extends Component {
                                 <div className="col-md-611">
                                     <div className="form-group">
                                         <label>Sesion Name</label>
-            	                        <input  className="form-control form-control-sm" type="text" name="session_name" defaultValue={this.state.item.session_name} key={this.state.scount} />
+            	                        <input  className="form-control form-control-sm" type="text" ref="session_name" name="session_name" defaultValue={this.state.item.session_name} key={this.state.scount} />
                                     </div>
                                     <div className="form-group">
                                        <label>Team</label>

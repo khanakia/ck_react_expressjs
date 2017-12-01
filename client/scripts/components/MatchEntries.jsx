@@ -61,7 +61,7 @@ class MatchEntries extends React.Component {
                 <JqxGrid ref="jqxgrid" source={dataAdapter} columns={columns}
                     width={"750"} height={500}  
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 
-                    editable={true} filterable={true} showfilterrow={true} />
+                    editable={false} filterable={true} showfilterrow={true} />
             </div>
         );
     }

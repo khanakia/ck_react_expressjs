@@ -89,6 +89,7 @@ class MeterGrid extends Component {
             { name: 'declared_runs', type: 'Number' },
             { name: 'is_declared', type: 'Boolean' },
             { name: 'inn', type: 'Number' },
+            { name: 'is_monday_final', type: 'Boolean' },
         ];
 
         this.source = {
@@ -151,6 +152,7 @@ class MeterGrid extends Component {
             { text: 'Meter', datafield: 'meter_name', width: 100 },
             { text: 'Inn', datafield: 'inn', width: 50 },
             { text: 'Runs', datafield: 'declared_runs', width: 50 },
+            { text: 'MF', datafield: 'is_monday_final', width: 40, columntype: 'checkbox', filtertype:'bool' },
         ];
         
     }

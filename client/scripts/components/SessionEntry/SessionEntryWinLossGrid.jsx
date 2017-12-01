@@ -29,10 +29,11 @@ class SessionEntryWinLossGrid extends Component {
         // this.refs.jqxgrid.ensurerowvisible(rows.length-1)
         // console.log(index)
         if(index>0) {
+            var newIndex = index+4
             try {
-                console.log(index)
+                // console.log(index)
                 this.refs.jqxgrid.selectrow(index)
-                this.refs.jqxgrid.ensurerowvisible(index)
+                this.refs.jqxgrid.ensurerowvisible(newIndex)
             } catch(err) {
                 
             }

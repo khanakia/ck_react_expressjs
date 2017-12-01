@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom'
 import createHistory from 'history/createHashHistory';
 import { Provider } from 'mobx-react';
 
-import {APP_URL_REPORT_CONNECT, APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
+import {APP_URL_REPORT_CONNECT, APP_URL_REPORT_BSHEET, APP_URL_REPORT_BEFORE_DECLARATION, APP_URL_REPORT_JOURNAL_SUMMARY, APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE } from "./Constant"
 
 
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
@@ -93,6 +93,8 @@ import MatchEntries from './components/MatchEntries.jsx'
 import MatchEntry from './components/MatchEntry.jsx'
 import MdiMatch from './components/MdiMatch.jsx'
 import Demo from './components/Demo.jsx'
+
+import ReportBeforeDeclaration from './components/ReportBeforeDeclaration.jsx'
 import ReportBalanceSheet from './components/ReportBalanceSheet.jsx'
 import ReportJournalSummary from './components/ReportJournalSummary.jsx'
 import ReportPlMatchAccountWise from './components/ReportPlMatchAccountWise.jsx'
@@ -105,12 +107,14 @@ import ActivityLog from './components/ActivityLog.jsx'
 import LiveMatchSchedule from './components/LiveMatchSchedule.jsx'
 import LiveCommentary from './components/LiveCommentary.jsx'
 import RemoveAllRecord from './components/RemoveAllRecord.jsx'
+import Setting from './components/Setting.jsx'
 
 
 
 
 import Auth from './helpers/auth'
 import Messages from './Messages.json'
+window.settings = {}
 window.Messages = Messages
 window.Auth = Auth;
 window.ReactDOM = ReactDOM
@@ -140,6 +144,8 @@ const Root = () => (
             <Route exact path="/match_entries" component={MatchEntries}/>
             <Route path="/match_entries/match/:id" component={MatchEntry}/>
             <Route path="/mdimatch/:id" component={MdiMatch}/>
+
+            <Route exact path={APP_URL_REPORT_BEFORE_DECLARATION} component={ReportBeforeDeclaration}/>
             <Route exact path={APP_URL_REPORT_JOURNAL_SUMMARY} component={ReportJournalSummary}/>
             <Route path={APP_URL_REPORT_CONNECT} component={ReportConnect}/>
             <Route path={APP_URL_REPORT_BSHEET} component={ReportBalanceSheet}/>
@@ -154,6 +160,7 @@ const Root = () => (
             <Route path="/server_status" component={ServerStatus}/>
 
             <Route path="/live/match_schedule" component={LiveMatchSchedule}/>
+            <Route path="/setting" component={Setting}/>
       </Layout>
           
       

@@ -15,6 +15,14 @@ router.get('/', function(req, res, next) {
 	})
 });
 
+router.get('/before_declaration', function(req, res, next) {
+	MatchEntryClass.beforeDeclarationList({match_id: req.query.match_id || null}).then((data) => {
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send(err)
+	})
+});
+
 router.get('/match_plinfo', function(req, res, next) {
 	async.parallel({
 		bookNoList: function (cb){ MatchEntryModel.find({match_id: req.query.match_id}).distinct('book_no').exec(cb) },

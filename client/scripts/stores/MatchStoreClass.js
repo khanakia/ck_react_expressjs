@@ -10,8 +10,8 @@ export class MatchStoreClass {
 	@observable matchList = [];
 	@observable teamsList = [];
 
-	fetchList() {
-		MatchHelper.index().then((res) => {
+	fetchList(params) {
+		MatchHelper.index(params).then((res) => {
 		    this.matchList = res.data
 		})
   	}

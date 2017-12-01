@@ -7,7 +7,7 @@ var async = require("async");
 
 var tableSchema = mongoose.Schema({
     created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: null },
     match_id: { type: Number, required: true },
     match_team_id: { type: Number, required: true },
     account_id: { type: Number, required: true },

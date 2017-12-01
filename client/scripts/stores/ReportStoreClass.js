@@ -7,7 +7,8 @@ import {
 	API_URL_REPORTS_BALANCE_SHEET,
 	API_URL_REPORTS_PL_MATCH_ACCOUNTWISE,
 	API_URL_REPORTS_PL_MATCHWISE,
-	API_URL_REPORTS_ACTIVITY_LOG
+	API_URL_REPORTS_ACTIVITY_LOG,
+	API_URL_MATCH_ENTRIES_BEFORE_DECLARATION
 } from "../Constant"
 
 export class ReportStoreClass {
@@ -21,7 +22,9 @@ export class ReportStoreClass {
 	@observable connectListMatches = [];
 	@observable connectReportList = [];
 	@observable activityLogList = [];
-	
+	@observable beforeDeclarationList = [];
+
+
 	fetchAccountBalanceList() {
 		axios.get(API_URL_REPORTS_BALANCE_SHEET, {
   		})
@@ -85,6 +88,16 @@ export class ReportStoreClass {
   		})
 	    .then((res) => {
 	    	this.activityLogList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
+	fetchBeforeDeclarationList(params) {
+		axios.get(API_URL_MATCH_ENTRIES_BEFORE_DECLARATION, {
+			params : params
+  		})
+	    .then((res) => {
+	    	this.beforeDeclarationList = res.data
 	    })
 	    .catch(() => this.fetched = false);
 	}

@@ -18,6 +18,7 @@ class JournalEntry extends Component {
             <span className="questionTooltip">
                    <JqxTooltip style={tooltipStyle}
                       position={'mouse'} name={'questionTooltip'}
+                      autoHide={false}
                       theme = {'shinyblack'}
                       content={this.props.content}
                     >

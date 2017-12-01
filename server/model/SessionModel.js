@@ -11,7 +11,9 @@ var tableSchema = mongoose.Schema({
     team_id: { type: Number, required: true },
     session_name: { type: String, required: true },
     is_declared: { type: Boolean, default: false },
-    declared_runs: { type: Number, default: null }
+    declared_runs: { type: Number, default: null },
+
+    is_monday_final: { type: Boolean, default: false },
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

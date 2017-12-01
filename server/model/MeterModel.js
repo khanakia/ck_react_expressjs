@@ -9,7 +9,9 @@ var tableSchema = mongoose.Schema({
     meter_name: { type: String, required: true },
     is_declared: { type: Boolean, default: false },
     declared_runs: { type: Number, default: null },
-    inn: { type: Number, default: 1 }
+    inn: { type: Number, default: 1 },
+
+    is_monday_final: { type: Boolean, default: false },
 });
 
 tableSchema.plugin(autoIncrement.plugin, {

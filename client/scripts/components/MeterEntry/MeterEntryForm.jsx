@@ -137,7 +137,7 @@ class MeterEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />
                             </div>
                         </div>
                         <div className="col-auto ">

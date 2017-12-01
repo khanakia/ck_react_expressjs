@@ -14,7 +14,7 @@ var DeleteClass = require('../class/DeleteClass')
 var ResponseHelper = require('../class/ResponseHelper')
 
 router.get('/', function(req, res, next) {
-  	AccountClass.list({is_company: req.query.is_company || null}).then((data)=>{
+  	AccountClass.list({is_company: req.query.is_company || null, status: req.query.status || null}).then((data)=>{
 		res.send(data)
 	}).catch((err) => {
 		console.log('ERROR', err)

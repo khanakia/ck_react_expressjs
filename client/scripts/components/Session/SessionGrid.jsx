@@ -89,6 +89,7 @@ class SessionGrid extends Component {
             { name: 'declared_runs', type: 'Boolean' },
             { name: 'is_declared', type: 'Boolean' },
             { name: 'team_name', type: 'Boolean' },
+            { name: 'is_monday_final', type: 'Boolean' },
         ];
 
         this.source = {
@@ -150,7 +151,8 @@ class SessionGrid extends Component {
             { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Session', datafield: 'session_name', width: 100 },
             { text: 'Runs', datafield: 'declared_runs', width: 50 },
-            { text: 'Team', datafield: 'team_name', width: 100 },   
+            { text: 'Team', datafield: 'team_name', width: 70 },   
+            { text: 'MF', datafield: 'is_monday_final', width: 40, columntype: 'checkbox', filtertype:'bool' },
         ];
         
     }

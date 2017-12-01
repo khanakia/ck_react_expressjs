@@ -6,6 +6,7 @@ var _ = require('lodash');
 var ResponseHelper = require('../class/ResponseHelper')
 var MatchClass = require('./MatchClass')
 var SessionClass = require('./SessionClass')
+var MeterClass = require('./MeterClass')
 
 var JournalEntryModel = require('../model/JournalEntryModel')
 
@@ -511,6 +512,7 @@ module.exports = {
     async connectListMatches() {
         var matchList = await MatchClass.list({is_declared: true})
         var sessionList = await SessionClass.list({is_declared: true})
+        var meterList = await MeterClass.list({is_declared: true})
 
         var matches = [];
         matchList.map((item, i) => {
@@ -531,6 +533,17 @@ module.exports = {
                 match_id: item.match_id,
                 id: item._id,
                 name: item.session_name,
+                created_at: item.created_at,
+                is_declared: item.is_declared,
+            })
+        })
+
+        meterList.map((item, i) => {
+            matches.push({
+                ref_type: 'Meter',
+                match_id: item.match_id,
+                id: item._id,
+                name: item.meter_name,
                 created_at: item.created_at,
                 is_declared: item.is_declared,
             })
@@ -581,6 +594,15 @@ module.exports = {
                 return {
                     "$and" : [
                         {"journal.ref_type": "Session"}, 
+                        {"journal.ref_id": item.id}, 
+                    ]
+                }
+            }
+
+            if(item.ref_type=='Meter') {
+                return {
+                    "$and" : [
+                        {"journal.ref_type": "Meter"}, 
                         {"journal.ref_id": item.id}, 
                     ]
                 }

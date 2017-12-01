@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Auth from '../helpers/auth.js'
 import { APP_ROOT_HOST, APP_TITLE, APP_LOCATION_HREF_MDI_MATCH, APP_URL_ACCOUNTS, APP_URL_TEAMS, APP_URL_MATCHES, 
-        APP_URL_MATCH_ENTRIES, APP_URL_JOURNAL_ENTRIES, APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY,
+        APP_URL_MATCH_ENTRIES, APP_URL_JOURNAL_ENTRIES, APP_URL_REPORT_BEFORE_DECLARATION, APP_URL_REPORT_BSHEET, APP_URL_REPORT_JOURNAL_SUMMARY,
         APP_URL_REPORT_PL_MATCH_WISE, APP_URL_REPORT_PL_MATCH_ACCOUNTWISE, APP_URL_REPORT_CONNECT,
         API_URL_OTHERS_START_ANYDESK, API_URL_OTHERS_START_AMMY, APP_URL_LIVE_COMMENTARY,
         APP_URL_PAGE_CHANGE_PASSWORD, APP_URL_PAGE_LIVE_MATCH_SCHEDULE, APP_URL_PAGE_SERVER_STATUS, APP_URL_PAGE_REMOVE_ALL_RECORD,
@@ -90,8 +90,42 @@ class Header extends React.Component {
         } else {
              hashHistory.push(APP_URL_LIVE_COMMENTARY)
         }
-        
     }
+
+    openLiveVideo1() {
+        if (typeof electron !== 'undefined') {
+            var win = new electron.remote.BrowserWindow({
+              webPreferences: {
+                nodeIntegration: false
+              },
+              'minHeight': 600,
+              'minWidth': 600,
+               width: 600, 
+               height: 600,
+               alwaysOnTop: true               
+            })
+            win.loadURL("http://andylovatock.netlify.com/")
+        }
+    }
+
+    openLiveVideo2() {
+        if (typeof electron !== 'undefined') {
+            var win = new electron.remote.BrowserWindow({
+              webPreferences: {
+                nodeIntegration: false
+              },
+              'minHeight': 600,
+              'minWidth': 600,
+               width: 600, 
+               height: 600,
+               alwaysOnTop: true               
+            })
+            win.loadURL("http://andylovatock.netlify.com/video2.html")
+        }
+
+    }
+
+
     render() {        
         const currentUser = Auth.getTokenDecoded()
         return (
@@ -124,21 +158,24 @@ class Header extends React.Component {
                                     <li>
                                         <Link to={APP_URL_MATCHES}>Match Master (F3)</Link>
                                     </li>
-                                    <li>
+                                    {/*<li>
                                         <Link to={APP_URL_MATCH_ENTRIES}>Match Entry (F4)</Link>
-                                    </li>
+                                    </li>*/}
                                     <li><a href="#" onClick={this.showLastMatch}>Last Match (F7)</a></li>
                                 </ul>
                             </li>
                             <li><i className="fa fa-book"></i> Ledger
                                 <ul>
                                     <li>
-                                        <Link to={APP_URL_JOURNAL_ENTRIES}>Journal Entries (F8)</Link>
+                                        <Link to={APP_URL_JOURNAL_ENTRIES}>Journal Entries (F11)</Link>
                                     </li>
                                 </ul>
                             </li>
                             <li><i className="fa fa-bar-chart"></i> Reports
                                 <ul>
+                                    <li>
+                                        <Link to={APP_URL_REPORT_BEFORE_DECLARATION}>Before Declaration (F8)</Link>
+                                    </li>
                                     <li>
                                         <Link to={APP_URL_REPORT_CONNECT}>Connect Report (F6)</Link>
                                     </li>
@@ -177,6 +214,10 @@ class Header extends React.Component {
                                     </li>
                                     : '' }
 
+                                    <li>
+                                        <Link to={"/setting"}>Settings</Link>
+                                    </li>
+
                                     <li><a href="#" onClick={this.openAnydesk}>Anydesk Online Support</a></li>
                                     <li><a href="#" onClick={this.openAmmy}>Ammy Online Support</a></li>
                                 </ul>
@@ -187,6 +228,8 @@ class Header extends React.Component {
                                         <Link to={APP_URL_PAGE_LIVE_MATCH_SCHEDULE}>Match Schedule</Link>
                                     </li>
                                     <li><a href="#" onClick={this.openLiveCommentaryWindow}>Session Odds</a></li>
+                                    <li><a href="#" onClick={this.openLiveVideo1}>Video Channel 1</a></li>
+                                    <li><a href="#" onClick={this.openLiveVideo2}>Video Channel 2</a></li>
                                 </ul>
                             </li>
                             <li><a href="#" onClick={this.logout}><i className="fa fa-sign-out"></i> Logout</a></li>

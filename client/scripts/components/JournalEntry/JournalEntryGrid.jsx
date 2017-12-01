@@ -102,7 +102,7 @@ class JournalEntryGrid extends Component {
                 <JqxGrid key={Math.random()} ref="jqxgrid"  source={this.dataAdapter} columns={this.columns} 
                         width={ "100%"} height={400}
                         pageable={true} pagesize={200}  pagesizeoptions={['50', '100', '200']}
-                        sortable={true} altrows={false} enabletooltips={false} 
+                        sortable={true} altrows={true} enabletooltips={false} 
                         editable={false} filterable={true} showfilterrow={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}
                         columnsresize={true} />

@@ -8,6 +8,8 @@ var moment = require('moment');
 var JournalModel = require('../model/JournalModel')
 var JournalEntryModel = require('../model/JournalEntryModel')
 var MatchModel = require('../model/MatchModel')
+var SessionModel = require('../model/SessionModel')
+var MeterModel = require('../model/MeterModel')
 // var ResponseHelper = require('../class/ResponseHelper')
 
 module.exports = {
@@ -254,20 +256,69 @@ module.exports = {
 
             {
                 $unwind: "$journal"
-            },
+            }
 
+            // {
+            //     $group: {
+            //         _id: "$journal.match_id",
+            //         // "match_id" : { $first: "$journal.match_id"  }
+            //     }
+            // },
+        );
+
+
+        var aggregate1 = [...aggregate]
+        aggregate1.push(
+            {
+                $group: {
+                    _id: {
+                        "match_id" : "$journal.match_id",
+                        "ref_type" : "$journal.ref_type",
+                        "ref_id" : "$journal.ref_id"
+                    },
+                    "match_id" : { $first: "$journal.match_id"  },
+                    "ref_type" : { $first: "$journal.ref_type"  },
+                    "ref_id" : { $first: "$journal.ref_id"  }
+                }
+            }
+        )
+
+        var aggregate2 = [...aggregate]
+        aggregate2.push(
             {
                 $group: {
                     _id: "$journal.match_id",
                     // "match_id" : { $first: "$journal.match_id"  }
                 }
-            }
-        );
+            },
+        )
+        
 
-        var matches = await JournalEntryModel.aggregate(aggregate);
-        var matchIdArray = _.map(matches, '_id');
-        await MatchModel.updateMany({ _id: { $in: matchIdArray } }, {  $set: { is_monday_final: true} })
-        return matches
+        var matches1 = await JournalEntryModel.aggregate(aggregate1);
+        var matches2 = await JournalEntryModel.aggregate(aggregate2);
+      
+
+        var sessionIds = []
+         _.map(matches1, function(item) {
+            if(item.ref_type=='Session') sessionIds.push(item.ref_id)
+        })
+
+        var meterIds = []
+         _.map(matches1, function(item) {
+            if(item.ref_type=='Meter') meterIds.push(item.ref_id)
+        })
+
+        var matchIdArray = _.uniq(_.map(matches2, '_id'));
+        
+
+        // return matchIdArray;    
+
+        await MatchModel.updateMany({is_declared: true, _id: { $in: matchIdArray } }, {  $set: { is_monday_final: true} })
+        await MatchModel.updateMany({is_abandoned: true, _id: { $in: matchIdArray } }, {  $set: { is_monday_final: true} })
+        await SessionModel.updateMany({ _id: { $in: sessionIds } }, {  $set: { is_monday_final: true} })
+        await MeterModel.updateMany({ _id: { $in: meterIds } }, {  $set: { is_monday_final: true} })
+        // return matches
+        return ResponseHelper.ok(200, 'Successfully Monday Finaled.')
     },
 
 

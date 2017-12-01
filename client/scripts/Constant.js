@@ -24,6 +24,7 @@ export const APP_URL_MATCH_ENTRIES = '/match_entries'
 export const APP_URL_JOURNALS = '/journals'
 export const APP_URL_JOURNAL_ENTRIES = '/journal_entries'
 export const APP_URL_REPORT_BSHEET = '/report_bsheet'
+export const APP_URL_REPORT_BEFORE_DECLARATION = '/report_before_declaration'
 export const APP_URL_REPORT_JOURNAL_SUMMARY = '/report_journal_summary'
 export const APP_URL_REPORT_PL_MATCH_WISE = '/reports/pl_matchwise'
 export const APP_URL_REPORT_PL_MATCH_ACCOUNTWISE = '/reports/pl_match_accountwise'
@@ -55,6 +56,7 @@ export const API_URL_MATCH_TEAM_SET_WINNER = API_URL_MATCH_TEAMS + '/set_winner'
 export const API_URL_MATCH_TEAM_SET_UNSET_LOSER = API_URL_MATCH_TEAMS + '/unset_loser';
 export const API_URL_MATCH_ENTRIES = '/match_entries'
 export const API_URL_MATCH_ENTRIES_PLINFO = API_URL_MATCH_ENTRIES + "/match_plinfo"
+export const API_URL_MATCH_ENTRIES_BEFORE_DECLARATION = API_URL_MATCH_ENTRIES + "/before_declaration"
 export const API_URL_METERS = '/meters'
 export const API_URL_METER_ENTRIES = '/meter_entries'
 export const API_URL_METER_ENTRIES_PLINFO = API_URL_METER_ENTRIES + "/meter_plinfo"
@@ -84,6 +86,8 @@ export const API_URL_OTHERS_REMOVE_LEDGER_RECORDS = API_URL_OTHERS + "/remove_le
 export const API_URL_OTHERS_CLEAR_WHOLE_DB = API_URL_OTHERS + "/clear_wholedb"
 export const API_URL_OTHERS_START_ANYDESK = API_URL_OTHERS + "/start_anydesk"
 export const API_URL_OTHERS_START_AMMY = API_URL_OTHERS + "/start_ammy"
+
+export const API_URL_OTHERS_SETTINGS = API_URL_OTHERS + "/settings"
 export const API_URL_EXPORTS = '/exportreports'
 export const API_URL_EXPORTS_BALANCE_SHEET = API_URL_EXPORTS + '/balance_sheet'
 export const API_URL_EXPORTS_CONNECT_REPORT = API_URL_EXPORTS + '/connect_report'
@@ -131,6 +135,12 @@ export const LIST_SESSION_YN = [
 export const LIST_YN = [
     { id: "Y", text: "Y" },
     { id: "N", text: "N" }
+]
+
+
+export const LIST_YN_BOOLEAN = [
+    { id: true, text: "Yes" },
+    { id: false, text: "No" }
 ]
 
 

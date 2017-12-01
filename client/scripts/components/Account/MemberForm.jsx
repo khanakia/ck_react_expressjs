@@ -57,6 +57,7 @@ class MemberForm extends Component {
         }
         let data = jQuery(this.refs.form).serialize()
         AccountHelper.save(data, this.props.item._id).then( (response) => {
+            toastr.success('Successfully Saved.')
             this.props.onSubmit(response.data)
         }).catch(function(err) {
             toastr.error(err.response.data.message)

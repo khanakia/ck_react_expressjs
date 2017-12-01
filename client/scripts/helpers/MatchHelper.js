@@ -2,11 +2,12 @@ import { API_URL_MATCHES } from "../Constant"
 
 export default class MatchHelper {
 
-    static index(data) {
+    static index(params) {
         return axios({
             method: 'get',
             headers: Auth.header(),
-            url: API_URL_MATCHES
+            url: API_URL_MATCHES,
+            params: params
         })
     }
 

@@ -35,7 +35,8 @@ class MatchEntryGrid extends Component {
             { name: 'amounts', type: 'string' },
             { name: 'comm_yn', type: 'boolean' },
             { name: 'is_summarized', type: 'boolean' },
-            { name: 'created_at', type: 'date'}
+            { name: 'created_at', type: 'date'},
+            { name: 'updated_at', type: 'date'}
         ];
 
         if (teamsList.length > 0) {
@@ -91,9 +92,15 @@ class MatchEntryGrid extends Component {
                 filterable: false,
                 cellclassname: function (row, column, value, data) {
                      // console.log(row, column , value, data)
-                     if(data.is_declared || data.is_summarized) {
-                        return "jqx_cell_disabled"
+                     var cssClass = ''
+                     if(data.updated_at) {
+                        cssClass = 'jqx_modified '
                      }
+                     if(data.is_declared || data.is_summarized) {
+                        cssClass += "jqx_cell_disabled"
+                     }
+
+                     return cssClass
                 },
                 cellsrenderer: (row, column, value) => {
                     return 'Edit';
@@ -131,7 +138,7 @@ class MatchEntryGrid extends Component {
                 <JqxGrid key={Math.random()}
                   ref="jqxgrid"
                   width={"100%"} height={400} source={this.dataAdapter} pageable={false}
-                  sortable={true} altrows={false} enabletooltips={false}
+                  sortable={true} altrows={true} enabletooltips={false}
                   editable={false} columns={columns}
                   filterable={true} showfilterrow={true}
                 />

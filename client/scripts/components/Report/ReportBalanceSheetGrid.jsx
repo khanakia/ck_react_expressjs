@@ -32,6 +32,14 @@ class ReportBalanceSheetGrid extends Component {
     
     }
 
+    cellclass(row, columnfield, value) {
+        if (value < 0) {
+            return 'red';
+        }
+
+        else return 'green';
+    }
+
     render() {
         // console.log(this.props.entriesList.slice())
 
@@ -59,11 +67,11 @@ class ReportBalanceSheetGrid extends Component {
 
             // { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account', datafield: 'account_name', width: 150 },
-            { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: '', datafield: 'empty', width: 100, filterable: false },
+            { text: 'Balance', datafield: 'bal', width: 100, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: '', datafield: 'empty', width: 50, filterable: false, cellclassname: () => { return 'emptyseparator'; } },
             // { text: 'AccountId', datafield: 'account_id1', width: 100 },
             { text: 'Account', datafield: 'account_name1', width: 150 },
-            { text: 'Balance', datafield: 'bal1', width: 100, cellsformat: 'd2', aggregates: ['sum'] }
+            { text: 'Balance', datafield: 'bal1', width: 100, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] }
         ];
 
         return (

@@ -18,6 +18,7 @@ module.exports = {
 
         if(id) {
              try {
+                item.updated_at = Date.now()
                 let meterEntry = await MeterEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
                 // emitter.emit('accountUpdate', id);

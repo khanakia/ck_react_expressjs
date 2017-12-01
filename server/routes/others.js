@@ -76,6 +76,23 @@ router.get('/clear_wholedb', function(req, res, next) {
 });
 
 
+router.post('/settings', function(req, res, next) {
+    OtherClass.saveSettings(req.body).then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.status(401).send(err)
+    })
+});
+
+router.get('/settings', function(req, res, next) {
+    OtherClass.getSettings().then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.status(401).send(err)
+    })
+});
+
+
 
 // router.get('/db_backup', function(req, res, next) {
 

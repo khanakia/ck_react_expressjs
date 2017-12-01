@@ -1,5 +1,7 @@
 var JournalModel = require('../model/JournalModel')
 
+var MetaDataModel = require('../model/MetaDataModel')
+
 var UserClass = require('../class/UserClass')
 var ReportClass = require('../class/ReportClass')
 var AccountClass = require('./AccountClass')
@@ -127,6 +129,20 @@ module.exports = {
         await db.collection('identitycounters').updateMany({ model: { $nin: [ "User" ] } },  { '$set':  {"count": 0} });
 
         return ResponseHelper.ok(200, 'Successfully cleared database.')
+    },
+
+    async saveSettings(args = {} ) {
+        await MetaDataModel.updateMeta('setting_show_decimals', HelperClass.stringToBoolean(args.show_decimals))
+
+        var settings = await this.getSettings()
+        return ResponseHelper.ok(200, 'Successfully saved.', {settings: settings})
+    },
+
+    async getSettings() {
+        var show_decimals = await MetaDataModel.get('setting_show_decimals', true)
+        return {
+            show_decimals: HelperClass.stringToBoolean(show_decimals)
+        }
     },
 
 

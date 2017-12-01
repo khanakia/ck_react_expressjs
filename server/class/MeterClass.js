@@ -34,6 +34,11 @@ module.exports = {
 
     async undeclare(id) {
         var meter = await MeterModel.findOne({_id: parseInt(id)})
+
+        if(meter.is_monday_final) {
+            throw(ResponseHelper.error(400, 'Meter is Monday Finaled.'))
+        }
+
         try {
             await MatchSummaryClass.meter_deleteJournal(id)
             meter.declared_runs = null
@@ -87,6 +92,7 @@ module.exports = {
                     declared_runs: 1,
                     inn : 1 ,
                     created_at: 1,
+                    is_monday_final: 1,
                     match_name :"$match.match_name",
                 } 
             }

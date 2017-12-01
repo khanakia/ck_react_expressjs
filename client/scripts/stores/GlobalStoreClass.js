@@ -2,10 +2,15 @@ import { observable } from 'mobx';
 
 import { LOCALSTORAGE_SESSIONID, LOCALSTORAGE_METERID } from "../Constant"
 
+import OtherHelper from '../helpers/OtherHelper'
+
+
 export class GlobalStoreClass {
 	@observable fetched = false;
 	@observable selectedSessionId = localStorage.getItem(LOCALSTORAGE_SESSIONID);
 	@observable selectedMeterId = localStorage.getItem(LOCALSTORAGE_METERID);
+
+	@observable settings = {}
 
 	setSessionId(id) {
 		localStorage.setItem(LOCALSTORAGE_SESSIONID, id)
@@ -15,6 +20,16 @@ export class GlobalStoreClass {
 	setMeterId(id) {
 		localStorage.setItem(LOCALSTORAGE_METERID, id)
 		this.selectedMeterId = id
+	}
+
+
+	fetchSettings() {
+		OtherHelper.getSettings()
+		.then((res) => {
+	    	this.settings = res.data
+	    	window.settings = res.data
+	    })
+	    .catch(() => this.fetched = false);
 	}
 }
 

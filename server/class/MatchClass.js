@@ -23,7 +23,7 @@ module.exports = {
         }
     },
 
-    list(args={is_declared: null}) {
+    list(args={is_declared: null, is_abandoned: null}) {
         var aggregate = [];
 
         var match = {}
@@ -33,6 +33,12 @@ module.exports = {
 
         if(args.is_declared) {
             match['is_declared'] = JSON.parse(args.is_declared)
+ 
+        }
+
+        if(args.is_abandoned) {
+            match['is_abandoned'] = JSON.parse(args.is_abandoned)
+       
         }
 
         aggregate.push(

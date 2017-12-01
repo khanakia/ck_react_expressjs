@@ -41,6 +41,16 @@ class ReportConnectGrid extends Component {
 
     componentDidMount() {
     }
+
+
+    cellclass(row, columnfield, value) {
+        if (value < 0) {
+            return 'red';
+        }
+
+        else return 'green';
+    }
+
     
 
     render() {
@@ -78,14 +88,14 @@ class ReportConnectGrid extends Component {
             { text: 'Tally', datafield: 'tally', width: 50, columntype: 'checkbox', editable: true  },
             // { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account', datafield: 'account_name', width: 150, editable:false },
-            { text: 'Amount', datafield: 'bal', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: '', datafield: 'empty', width: 100, editable:false, filterable: false },
+            { text: 'Amount', datafield: 'bal', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: '', datafield: 'empty', width: 50, editable:false, filterable: false, cellclassname: () => { return 'emptyseparator'; } },
             // { text: 'AccountId', datafield: 'account_id1', width: 100 },
             { text: 'Tally', datafield: 'tally1', width: 50, columntype: 'checkbox', editable: true  },
             { text: 'Account', datafield: 'account_name1', width: 150, editable:false },
-            { text: 'Amount', datafield: 'bal1', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Amount', datafield: 'bal1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
         ];
 
         return (

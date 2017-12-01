@@ -28,7 +28,7 @@ module.exports = {
 
         var canBid = true;
 
-        if( amount > canBidAmount) {
+        if( limit>0 && (amount > canBidAmount)) {
             canBid = false
         }
 
@@ -166,10 +166,13 @@ module.exports = {
         return ResponseHelper.ok(200, 'Successfully saved.')
     },
 
-    async list(args={is_company: null}) {
+    async list(args={is_company: null, status: null}) {
         var filters = {}
         if(args.is_company!==null) {
             filters.is_company = args.is_company
+        }
+        if(args.status!==null) {
+            filters.status = HelperClass.stringToBoolean(args.status)
         }
         return AccountModel.find(filters)
     }

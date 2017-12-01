@@ -95,11 +95,23 @@ class MatchEntryForm extends React.Component {
                 $.confirm({
                     title: 'Limit Exceeded!',
                     content: widgetContainer,
+                    // onOpen: function () {
+                    //     // after the modal is displayed.
+                    //     alert('onOpen');
+                    // },
                     buttons: {
-                        confirm: () => {
-                            console.log('confirmed')
-                            this.saveForm()
+                        confirm: {
+                            text: 'Confirm',
+                            btnClass: 'btn-blue',
+                            keys: ['enter'],
+                            action: () => {
+                                this.saveForm()
+                            }
                         },
+                        // confirm: () => {
+                        //     console.log('confirmed')
+                        //     this.saveForm()
+                        // },
                         cancel: function () {
                             
                         },
@@ -188,7 +200,7 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />
                             </div>
                         </div>
                         <div className="col-auto ">

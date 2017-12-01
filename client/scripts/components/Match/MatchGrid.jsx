@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import MatchHelper from '../../helpers/MatchHelper'
-import {URL_MATCHES} from '../../Constant'
+import {URL_MATCHES, APP_URL_MDI_MATCH} from '../../Constant'
 
 class MatchGrid extends Component {
 
@@ -27,6 +27,7 @@ class MatchGrid extends Component {
     }    
 
     initDataAdapter() {
+        var _this = this;
         this.source = {
             datatype: 'json',
             datafields: [
@@ -87,6 +88,21 @@ class MatchGrid extends Component {
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
                     this.props.editItem(dataRecord.uid)
+                }
+            },
+
+            {
+                text: '',
+                datafield: 'Select1',
+                columntype: 'button',
+                width: 100,
+                filterable: false,
+                cellsrenderer: () => {
+                    return 'Enter Match';
+                },
+                buttonclick: (row) => {
+                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                     hashHistory.push(APP_URL_MDI_MATCH + "/" + dataRecord.uid)
                 }
             },
             { text: 'Id', datafield: '_id', width: 50 },

@@ -34,6 +34,11 @@ module.exports = {
 
     async undeclare(id) {
         var session = await SessionModel.findOne({_id: parseInt(id)})
+
+        if(session.is_monday_final) {
+            throw(ResponseHelper.error(400, 'Session is Monday Finaled.'))
+        }
+
         try {
             await MatchSummaryClass.session_deleteJournal(id)
             session.declared_runs = null
@@ -102,6 +107,7 @@ module.exports = {
                     is_declared: 1,
                     created_at: 1,
                     updated_at: 1,
+                    is_monday_final: 1,
                     match_name :"$match.match_name",
                     team_name :"$team.team_name"
                 } 

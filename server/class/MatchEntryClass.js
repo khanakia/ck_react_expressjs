@@ -35,6 +35,7 @@ module.exports = {
 
         if(id) {
              try {
+                item.updated_at = Date.now()
                 let matchEntry = await MatchEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
                 await ActivityLogClass.create({type: Constant.ENTRY_TYPE.MATCH_ENTRY, action: Constant.ACTIVITY_ACTION.UPDATED, id: matchEntry._id })
@@ -198,6 +199,7 @@ module.exports = {
             "team_name": "$team.team_name",
             "account_name": "$account.account_name",
             created_at: 1,
+            updated_at: 1,
             comm_yn: 1,
         };
 
@@ -240,6 +242,76 @@ module.exports = {
                 $project : project
             } 
         ], cb )
+    },
+
+    async beforeDeclarationList(args = { match_id: null}){
+        var match = {};
+        if(args.match_id) {
+            match['match_id'] = parseInt(args.match_id)
+        }
+
+        var matchTeams = await MatchTeamClass.list({match_id:args.match_id});
+   
+        // var project = {
+        //     _id: 1,
+        //     match_id: 1,
+        //     match_name: 1,
+        //     account_id: 1,
+        //     "account_name": "$account_name",
+        //     team_id: 1,
+        //     "team_name": "$team_name",
+        // };
+
+        // matchTeams.forEach(function(item,i) {
+        //     project[item.team_name] = { $multiply: [ "$teams."+item.team_name, -1 ] }
+        // });
+
+
+
+        var group = {
+           _id: {
+                match_id: "$match_id",
+                account_id: "$account_id",
+           },
+
+            "match_id": { $first: "$match_id" },
+            "account_id": { $first: "$account_id" },
+            "account_name": { $first: "$account.account_name" },
+        }
+
+         matchTeams.forEach(function(item,i) {
+            group[item.team_name] = { $sum: "$teams."+item.team_name }
+        });
+
+         // return group;
+
+
+        return MatchEntryModel.aggregate( [ 
+            {
+               $match: match
+            },
+            {
+                $lookup:
+                {
+                   from: "accounts",
+                   localField: "account_id",
+                   foreignField: "_id",
+                   as: "account"
+                }
+            },
+            {
+                $unwind:"$account"
+            },
+
+
+            {
+               $group: group
+            },
+
+            // { 
+            //     $project : project
+            // } 
+        ])
     },
 
     async teamsWinLossList(args = { match_id: null, book_no: null, account_id: null}, cb) {

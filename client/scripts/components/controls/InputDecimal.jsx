@@ -4,9 +4,13 @@ class InputDecimal extends React.Component {
 
     constructor(props) {
       super(props);
+
+
+      var value = parseFloat(this.props.value)
+      value = window.settings.show_decimals=="1" ? parseFloat(value).toFixed(2) : value
       
       this.state = {
-          value: parseFloat(this.props.value).toFixed(2),
+          value: value,
       }
     }
 
@@ -57,9 +61,16 @@ class InputDecimal extends React.Component {
 
     handleBlur = (event) => {
       var zero = 0;
-      var value = parseFloat(event.target.value).toFixed(this.props.scale);
-      value = isNaN(value) ? zero.toFixed(this.props.scale)  : value;
-      // console.log(value)
+
+      console.log(window.settings.show_decimals)
+      if(window.settings.show_decimals) {
+        var value = parseFloat(event.target.value).toFixed(this.props.scale);
+        value = isNaN(value) ? zero.toFixed(this.props.scale)  : value;
+      } else {
+          var value = parseFloat(event.target.value);
+          value = isNaN(value) ? zero : value;
+      }
+      
       this.setState({
           value: value
       })
@@ -76,6 +87,10 @@ class InputDecimal extends React.Component {
     render() {
       // console.log(this.state.value )
       // var value = this.state.value ? parseFloat(this.state.value).toFixed(2) : 0;
+
+      let value = this.state.value
+      // value = window.settings.show_decimals=="1" ? parseFloat(value).toFixed(2) : value
+
       return (
           <input 
             ref="input"
@@ -85,7 +100,7 @@ class InputDecimal extends React.Component {
             onBlur={this.handleBlur}  
             onChange={this.handleChange} 
             onFocus={this.handleOnFocus}
-            value={this.state.value} 
+            value={value} 
             tabIndex={this.props.tabIndex} 
             min= {this.props.min}
             />

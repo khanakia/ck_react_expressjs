@@ -20,6 +20,7 @@ module.exports = {
 
         if(id) {
              try {
+                item.updated_at = Date.now()
                 let sessionEntry = await SessionEntryModel.findOneAndUpdate({_id: id}, item);
                 await this.updateEntryAfterInsert(id)
                 // emitter.emit('accountUpdate', id);
@@ -237,6 +238,7 @@ module.exports = {
             is_declared: 1,
             is_summarized: 1,
             created_at: 1,
+            updated_at: 1,
             comm_yn: 1,
             "account_name": "$account.account_name",
             // sess_comm: "$calcs.sess_comm",

@@ -50,7 +50,7 @@ export default class Auth {
 
 	static is_admin() {
 		const data = Auth.getTokenDecoded();
-		return data.is_admin;
+		return data.is_admin | data.is_sa;
 	}
 
 	static getUserID() {

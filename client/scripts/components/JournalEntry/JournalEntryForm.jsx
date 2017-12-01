@@ -23,6 +23,8 @@ class JournalEntryForm extends React.Component {
                 dr_amt: 0,
                 cr_amt: 0,                
             },
+
+            account_bal: 0
         }
     }
 
@@ -82,6 +84,7 @@ class JournalEntryForm extends React.Component {
         dataJson.account_id = this.props.accountId
         console.log(dataJson)
         JournalEntryHelper.save(dataJson, this.state.item._id).then((response) => {
+            toastr.success(response.data.message)
             this.resetForm()
             this.props.onFormSubmitted(response);
             this.refs.comboMember.refs.Combo.focus()
@@ -91,6 +94,17 @@ class JournalEntryForm extends React.Component {
             // console.log(error)
         })
         
+    }
+
+    comboMemberOnSelect = (item) => {
+        const accountId = (this.refs.comboMember.getSelectedValue())
+        JournalEntryHelper.accountBalance(accountId)
+            .then((res) => {
+                this.setState({
+                    account_bal: res.data.totalBal
+                })
+            })
+        // console.log(accountId)
     }
 
     render() {
@@ -108,15 +122,15 @@ class JournalEntryForm extends React.Component {
                             </div>
                         </div>
                         <div className="col-auto ">
-                            <label>Account</label>
+                            <label>Account ({this.state.account_bal})</label>
                             <div>
-                                <ComboBoxMember ref="comboMember" width="150" field_id="from_account_id" selectedValue={item.account_id} key={item._id} />
+                                <ComboBoxMember ref="comboMember" onSelect={this.comboMemberOnSelect} width="150" field_id="from_account_id" selectedValue={item.account_id} key={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
-                            <label>Narration</label>
+                            <label>Narration (3rd Party)</label>
                             <div>
-                                <input className="form-control form-control-sm error-hide w-300p required" name="narration" defaultValue={item.narration}  key={item._id} />
+                                <input className="form-control form-control-sm error-hide w-300p required11" name="narration" defaultValue={item.narration}  key={item._id} />
                             </div>
                         </div>
                         <div className="col-auto">
