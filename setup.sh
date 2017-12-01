@@ -29,7 +29,7 @@ function create_dist
 	    rm -f $ck_exe
 	fi
 	npm run build
-	mv -f $ck_exe $dir_dist
+	mv -f $ck_exe "${dir_dist}/ck-server1.exe"
 
 
 }
