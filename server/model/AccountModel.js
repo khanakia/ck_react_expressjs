@@ -13,12 +13,12 @@ var pattiSchema = mongoose.Schema({
 
 var sessCommSchema = mongoose.Schema({
     account_id:  { type: Number, default: null },
-    sess_comm: { type: Number, default: 0, min: 0 , max: 100}, // In Percentage
+    sess_comm: { type: Number, default: 0}, // In Percentage
 });
 
 var meterCommSchema = mongoose.Schema({
     account_id:  { type: Number, default: null },
-    meter_comm: { type: Number, default: 0, min: 0 , max: 100}, // In Percentage
+    meter_comm: { type: Number, default: 0}, // In Percentage
 });
 
 

@@ -42,10 +42,10 @@ class MatchTeam extends Component {
 
         const team_id = this.refs.comboTeam.refs.idInput.value
 
-        // if (!team_id) {
-        //     toastr.error('Please Select Team first.')
-        //     return false;
-        // }
+        if (!team_id) {
+            toastr.error('Please Select Team first.')
+            return false;
+        }
 
         MatchTeamHelper.store({
             team_id: team_id,

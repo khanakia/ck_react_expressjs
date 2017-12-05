@@ -175,7 +175,7 @@ class MatchEntryForm extends React.Component {
                             <label className="">Rate</label>
                             <div>
 
-                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" ref="rate" value={item.rate} />
+                                <InputDecimal className="form-control form-control-sm w-100p error-hide required number" name="rate" scale={3} ref="rate" value={item.rate} />
                             </div>
                         </div>
                         <div className="col-auto">

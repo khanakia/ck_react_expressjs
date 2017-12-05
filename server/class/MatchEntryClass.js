@@ -1,6 +1,7 @@
 var async = require("async");
 var await = require("async").await;
 var mongoose = require('mongoose');
+var round = require('mongo-round');
 
 const ObjectId1 = mongoose.Types.ObjectId;
 var AccountModel = require('../model/AccountModel')
@@ -206,7 +207,7 @@ module.exports = {
         matchTeams.forEach(function(item,i) {
             // project[item.team_name] = "$teams_data."+item.team_id;
             // project[item.team_name] = { $multiply: [ "$teams_data."+item.team_id, -1 ] }
-            project[item.team_name] = { $multiply: [ "$teams."+item.team_name, -1 ] }
+            project[item.team_name] = round({ $multiply: [ "$teams."+item.team_name, -1 ] }, 2)
             
         });
 

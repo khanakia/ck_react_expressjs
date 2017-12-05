@@ -7,7 +7,7 @@ class InputDecimal extends React.Component {
 
 
       var value = parseFloat(this.props.value)
-      value = window.settings.show_decimals=="1" ? parseFloat(value).toFixed(2) : value
+      value = window.settings.show_decimals=="1" ? parseFloat(value).toFixed(this.props.scale) : value
       
       this.state = {
           value: value,

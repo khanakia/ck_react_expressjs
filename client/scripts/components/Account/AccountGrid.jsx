@@ -39,6 +39,8 @@ class AccountGrid extends Component {
             // this.onRowSelect()
             if(!this.refs.jqxgrid) return null
             this.refs.jqxgrid.on('cellclick', (event) => {
+                if(event.args.columnindex<2) return false;
+                console.log(event.args)
                 this.props.onCellClick(event.args.row.bounddata)
                 
             });

@@ -30,7 +30,7 @@ class MatchEntryTeamGrid extends Component {
                         <span className="ml-2" dangerouslySetInnerHTML={{__html: `<i class="fa ${classname_fa}" aria-hidden="true"></i>` }} />                        
                         <span className="ml-2" dangerouslySetInnerHTML={{__html: item.status==MATCH_TEAM_STATUS_WINNER ? '<i class="fa fa-trophy" aria-hidden="true"></i>' : ''}} />                        
                     </td>
-                    <td>{amount}</td>
+                    <td>{amount.toFixed(2)}</td>
                     <td>{item.is_declared ? 'Y' : 'N'}</td>
                 </tr>
             )
