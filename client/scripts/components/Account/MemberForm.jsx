@@ -34,6 +34,8 @@ class MemberForm extends Component {
             status: true,
             hide: false,
             patti: [],
+
+            match_comm_accounts: [],
             sess_comm_accounts:[],
             meter_comm_accounts:[]
 
@@ -100,20 +102,50 @@ class MemberForm extends Component {
                     <fieldset>
                         <legend>Commission:</legend>
                         <div className="form-row">
-                            <div className="form-group col-auto">
+                            {/*<div className="form-group col-auto">
                                 <label className="col-form-label">Match Comm. To:</label>
-                                {/*<ComboBoxMember ref="memberDdl" field_id="match_comm_to" selectedValue={item._id} />*/}
                                 <ComboBoxLocal width={"100%"} ref="memberDdl" field_id="match_comm_to" valueMember='_id'
                                             displayMember='account_name' data={this.props.accountsList}  selectedValue={item.match_comm_to} />
                             </div>
                             <div className="form-group col-auto">
                                 <label className="col-form-label">Match Comm. : <TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} /></label>
                                 <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={item.match_comm} name="match_comm" />
-                            </div>
+                            </div>*/}
                             <div className="form-group col-auto">
-                                <label className="col-form-label">Entry Type</label>
+                                <label className="col-form-label">Match Commission Type</label>
                                 <CSelect className="form-control form-control-sm" name="match_comm_type" value={item.match_comm_type} items={LIST_COMM_TYPE}> </CSelect>
                             </div>
+                        </div>
+
+                        <div className="">
+                            <div className="row">
+                                <div className="col-md-1">
+                                    <label className="col-form-label">S.N.</label>
+                                </div>
+                                <div className="col-md-3">
+                                    <label className="col-form-label">Match Comm To:</label>
+                                </div>
+                                <div className="col-md-3">
+                                    <label className="col-form-label">Match Comm.(%):</label>
+                                </div>
+                            </div>
+                            {Array.apply(0, Array(2)).map( (x, i) => { 
+                                var account_id = (item.match_comm_accounts[i] == undefined) ? '' : item.match_comm_accounts[i]['account_id']; 
+                                var match_comm = (item.match_comm_accounts[i] == undefined) ? 0 : item.match_comm_accounts[i]['match_comm']; 
+                                return (
+                                    <div className="row" key={`${item.id}_key_${i}`}>
+                                        <div className="col-md-1">
+                                            <label className="col-form-label">{i+1}</label>
+                                        </div>
+                                        <div className="col-md-3">
+                                                <ComboBoxLocal width={"100%"} field_id={`match_comm_accounts[${i}][account_id]`} valueMember='_id'
+                                            displayMember='account_name' data={this.props.accountsList}  selectedValue={account_id} width="100%" />
+                                        </div>
+                                        <div className="col-md-2">
+                                            <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={match_comm} name={`match_comm_accounts[${i}][match_comm]`}  />
+                                        </div>
+                                    </div>
+                            ) })}
                         </div>
 
                         <div className="">

@@ -11,6 +11,13 @@ var pattiSchema = mongoose.Schema({
     khada: { type: Number, default: 0 , min: 0, max: 100} //In Percentage
 });
 
+
+var matchCommSchema = mongoose.Schema({
+    account_id:  { type: Number, default: null },
+    match_comm: { type: Number, default: 0}, // In Percentage
+});
+
+
 var sessCommSchema = mongoose.Schema({
     account_id:  { type: Number, default: null },
     sess_comm: { type: Number, default: 0}, // In Percentage
@@ -26,9 +33,14 @@ var tableSchema = new mongoose.Schema({
     created_at: { type: Date, default: Date.now },
     account_name: { type: String, required: true },
     limit: { type: Number, default: 0 },
-    match_comm_to: { type: Number, default: null },
-    match_comm: { type: Number, default: 0 },
+    // match_comm_to: { type: Number, default: null },
+    // match_comm: { type: Number, default: 0 },
     match_comm_type: { type: String, default: 0 },   
+
+    match_comm_accounts: { type:[matchCommSchema] , validate: [
+      // { validator: pattiTotal, msg: 'Email already exists'}
+    ]},
+
     // sess_comm: { type: Number, default: 0 },
     // sess_comm_to: { type: Number, default: null },
     sess_comm_accounts: { type:[sessCommSchema] , validate: [

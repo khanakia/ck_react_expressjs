@@ -628,7 +628,7 @@ module.exports = {
             var amount_neg = matchTeamStatus==Constant.MATCH_TEAM_STATUS.WINNER ? matchEntry.favteam_neg : matchEntry.otherteam_neg;
 
             narration = ` (Match: ${matchEntry.match_id} - ${matchEntry.match_name}) (Team: ${matchEntry.team_name})`
-
+            var narration_party = ` (Party: ${account._id} - ${account.account_name}) ${narration}`
             
 
             // Distribute Commission
@@ -643,19 +643,41 @@ module.exports = {
                 narration1 = `Comm Net (${account.match_comm}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
             }
 
-            var comm_amt = Math.abs(amountForComm * account.match_comm/100);
+            // var comm_amt = Math.abs(amountForComm * account.match_comm/100);
             // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, account.match_comm_to, comm_amt, "Commission", false, narration1)
-            var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
-                journal_id: journalItem._id, 
-                by_account_id: companyAccountId, 
-                account_id: account.match_comm_to, 
-                amount: comm_amt, 
-                type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
-                narration: narration1
-            })
+            // var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
+            //     journal_id: journalItem._id, 
+            //     by_account_id: companyAccountId, 
+            //     account_id: account.match_comm_to, 
+            //     amount: comm_amt, 
+            //     type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
+            //     narration: narration1
+            // })
+
+
+
+            var com_amt_total = 0
+            await Promise.all(account.match_comm_accounts.map(async (item) => {
+                if(!item.account_id) return null
+                var comm_amt = Math.abs(amountForComm) * item.match_comm/100
+
+                com_amt_total += comm_amt
+                var n = `Comm (${item.match_comm}%) - ${narration_party}`
+                var jeitem2 = await JournalEntryClass.createJournalEntryItem1({
+                    journal_id: journalItem._id, 
+                    by_account_id: companyAccountId, 
+                    account_id: item.account_id, 
+                    amount: comm_amt, 
+                    type: Constant.JOURNAL_ENTRY_TYPE.COMMISSION, 
+                    narration: n
+                })
+                // return await jeitem.save()
+            }))
+
 
             // Distribute Patti
-            var final_amount = amount + comm_amt
+            // var final_amount = amount + comm_amt
+            var final_amount = amount + com_amt_total
             var patti_distributed_total = 0
             await Promise.all(account.patti.map(async (item) => {
                 // i added -1 bcause final_amount is Funter PL so if Funter is in profit then book will have losss and vice versa so we are reversing the amount

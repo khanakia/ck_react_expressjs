@@ -71,11 +71,10 @@ module.exports = {
     },
 
 
-    async updateEntryAfterInsert(id, cb) {
+    async updateEntryAfterInsert(id) {
         var item = await MatchEntryModel.findOne({"_id": id});
-
-    
         var account = await AccountModel.findOne({_id: item.account_id})
+        var match_comm_aggregate = await AccountClass.getMatchCommAggregate(item.account_id)
         var patti_aggregate = await AccountClass.getPattiAggregate(item.account_id)
 
         // We assume fav team will always win so if fav team wins then we are calculating that funter will get or loose money if fav wins
@@ -85,9 +84,11 @@ module.exports = {
         var otherteam_amt = otherteam_subtotal = item.lk=="L" ? -1 * item.amount : item.amount
 
 
-        var match_comm = account.match_comm;
+        // var match_comm = account.match_comm;
+        var match_comm = match_comm_aggregate;
+       
         var fav_comm_amt = otherteam_comm_amt = 0
-        var match_comm_to = account.match_comm_to==null ? item.account_id : account.match_comm_to;
+        // var match_comm_to = account.match_comm_to==null ? item.account_id : account.match_comm_to;
         if(item.comm_yn==true && account.match_comm_type=='entrywise') {
 
             // Funter will get commission if he has lose
@@ -113,10 +114,10 @@ module.exports = {
 
             // if it is same accoutn id then add or subtract commission and display on frontend otherwise we will add commision for third parties directly in match summary
             // so in match summary win amt or loss amt will be always without commissino we will add new entry for commission in match summary always
-            if(match_comm_to == item.account_id) {
-                favteam_subtotal = favteam_subtotal + fav_comm_amt
-                otherteam_subtotal = otherteam_subtotal + otherteam_comm_amt
-            }
+            // if(match_comm_to == item.account_id) {
+            //     favteam_subtotal = favteam_subtotal + fav_comm_amt
+            //     otherteam_subtotal = otherteam_subtotal + otherteam_comm_amt
+            // }
         }
 
 
@@ -130,9 +131,9 @@ module.exports = {
 
         item.set("calcs.favteam_amt", favteam_amt)
         item.set("calcs.otherteam_amt", otherteam_amt)
-        item.set("calcs.match_comm", match_comm)
+        // item.set("calcs.match_comm", match_comm)
         item.set("calcs.match_comm_type", account.match_comm_type)
-        item.set("calcs.match_comm_to", match_comm_to)
+        // item.set("calcs.match_comm_to", match_comm_to)
         item.set("calcs.fav_comm_amt", fav_comm_amt)
         item.set("calcs.otherteam_comm_amt", otherteam_comm_amt)
         item.set("calcs.favteam_subtotal", favteam_subtotal)
@@ -155,7 +156,8 @@ module.exports = {
         });
 
         item.set("teams", teams)
-        item.save(cb)
+        await item.save()
+        return item;
     },
 
     winAmtByLK(rate, amount, mode) {

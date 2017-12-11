@@ -77,9 +77,13 @@ router.get('/', function(req, res, next) {
  //        })
 
 
-// MatchEntryClass.updateEntryAfterInsert(4, function(err, data){
-// 	// console.log(err)
-// })
+MatchEntryClass.updateEntryAfterInsert(1).then((data)=>{
+	console.log('DONE1')
+	res.send(data)
+}).catch((data)=>{
+	console.log('ERROR')
+	res.send(data)
+});
 
 // MatchSummaryClass.buildSummaryByMatchEntry(4, 'Winner', function(err, data){
 // 	if(err) return res.send(err)
@@ -247,10 +251,10 @@ router.get('/', function(req, res, next) {
 // })
 
 
-MeterEntryClass.meter_updateEntries_onAccountUpdate(1)
+// MeterEntryClass.meter_updateEntries_onAccountUpdate(1)
 
 // MetaDataModel.updateMeta('version', 1)
-res.send('respond with a resource');
+// res.send('respond with a resource');
 
 
 });

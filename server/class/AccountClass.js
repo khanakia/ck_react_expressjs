@@ -93,6 +93,21 @@ module.exports = {
     
     },
 
+
+    async getMatchCommAggregate(id, cb) {
+        var _this = this;
+        var account = await AccountModel.findOne({_id: id})
+        var aggregate = account.match_comm_accounts.reduce(function(totals, v) {
+                    if(v.account_id) {
+                        totals += parseFloat(v.match_comm);
+                    }
+                    return totals;
+                }, 0);
+
+        // console.log(aggregate)
+        return aggregate;
+    },
+
     async getSessCommAggregate(id, cb) {
         var _this = this;
         var account = await AccountModel.findOne({_id: id})
@@ -174,8 +189,14 @@ module.exports = {
             try {
                 await account.save();
 
-                account.match_comm_to = account._id
-                account.sess_comm_accounts[0]['account_id'] = account._id
+                // account.match_comm_to = account._id
+                if(!account.sess_comm_accounts[0]['account_id']) {
+                    account.sess_comm_accounts[0]['account_id'] = account._id                    
+                }
+
+                if(!account.match_comm_accounts[0]['account_id']) {
+                    account.match_comm_accounts[0]['account_id'] = account._id
+                }
                 await account.save()
                 return ResponseHelper.ok(200, 'Successfully saved.', {_id: account._id})
             } catch(err) {
