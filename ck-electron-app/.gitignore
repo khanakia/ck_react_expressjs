@@ -1,0 +1,8 @@
+node_modules
+dist
+log
+backup
+temp
+mongodb
+ck-server.exe
+nircmd.exe

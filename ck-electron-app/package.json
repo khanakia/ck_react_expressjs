@@ -1,0 +1,72 @@
+{
+  "name": "lbf",
+  "version": "1.0.0",
+  "description": "London BetExchange Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "build --ia32"
+  },
+  "build": {
+    "appId": "com.electron.lbf",
+    "productName": "London BetExchange",
+    "buildVersion": "1.0",
+    "asar": "true",
+    "files": [
+      {
+        "from": "./",
+        "to": "./",
+        "filter": [
+          "!temp",
+          "!backup",
+          "!log",
+          "!mongodb",
+          "!ck-server.exe",
+          "!nircmd.exe"
+        ]
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "../dist",
+        "to": "./",
+        "filter": [
+          "**/*",
+          "!ck-server1.exe",
+          "!temp",
+          "!backup",
+          "!log",
+          "!mongodb/data/*",
+          "!mongodb/log/*",
+          "mongodb/data/storage.bson",
+          "mongodb/log/mono.log"
+        ]
+      }
+    ],
+    "win": {
+      "target": "dir",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": "false",
+      "allowToChangeInstallationDirectory": "true"
+    }
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8",
+    "electron-builder": "^19.45.4"
+  },
+  "dependencies": {
+    "async": "^2.6.0"
+  }
+}
