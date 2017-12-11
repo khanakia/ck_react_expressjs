@@ -171,7 +171,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" ref="rate" name="rate" scale={3} value={item.rate} key={scount} />
+                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" ref="rate" name="rate" scale={4} value={item.rate} key={scount} />
                             </div>
                         </div>
                         <div className="col-auto">
