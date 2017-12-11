@@ -76,6 +76,8 @@ export const API_URL_REPORTS_CONNECT_LIST_MATCHES = API_URL_REPORTS + '/connect_
 export const API_URL_REPORTS_CONNECT_REPORT = API_URL_REPORTS + '/connect_report'
 export const API_URL_REPORTS_BALANCE_SHEET = API_URL_REPORTS + '/balance_sheet'
 export const API_URL_REPORTS_PL_MATCH_ACCOUNTWISE = API_URL_REPORTS + '/pl_match_accountwise'
+export const API_URL_REPORTS_PL_MATCH_ACCOUNTWISE_MATCHSUMMARY = API_URL_REPORTS + '/pl_match_accountwise_matchsummary'
+export const API_URL_REPORTS_PL_MATCH_ACCOUNTWISE_ENTRIES = API_URL_REPORTS + '/pl_match_accountwise_entries'
 export const API_URL_REPORTS_PL_MATCHWISE = API_URL_REPORTS + '/pl_matchwise'
 export const API_URL_REPORTS_ACTIVITY_LOG = API_URL_REPORTS + '/activity_log'
 export const API_URL_OTHERS = '/others'
@@ -142,6 +144,22 @@ export const LIST_YN_BOOLEAN = [
     { id: true, text: "Yes" },
     { id: false, text: "No" }
 ]
+
+
+export const LIST_THEMES = [
+    { id: 'default', text: "Default" },
+    { id: 'energyblue', text: "Energy Blue" },
+    { id: 'darkblue', text: "Dark Blue" },
+    { id: 'darkyellow', text: "Dark Yellow" }
+]
+
+export const LIST_GRID_THEMES = [
+    { id: 'metro', text: "Metro" },
+    { id: 'energyblue', text: "Energy Blue" },
+    { id: 'darkblue', text: "Dark Blue" },
+]
+
+
 
 
 export const LIST_MATCH_LK = [

@@ -14,7 +14,7 @@ class Account extends Component {
     }
 
     componentDidMount() {
-        this.props.accountStore.fetchList({is_company: false})
+        this.props.accountStore.fetchList()
         if(this.props.match.params.id) {
             this.props.accountStore.fetch(this.props.match.params.id)
         }
@@ -41,10 +41,10 @@ class Account extends Component {
 
             // this.props.accountStore.account = {}
             
-            this.props.accountStore.fetchList({is_company: false})
+            this.props.accountStore.fetchList()
             // this.editItem(item._id)
         }
-        this.props.accountStore.fetchList({is_company: false})
+        this.props.accountStore.fetchList()
     }
 
     editItem = (id) => {        
@@ -58,7 +58,7 @@ class Account extends Component {
     }
 
     accountGrid_onDataUpdate = () => {
-        this.props.accountStore.fetchList({is_company: false})
+        this.props.accountStore.fetchList()
         if(this.props.match.params.id) {
             this.props.accountStore.fetch(this.props.match.params.id)
         }

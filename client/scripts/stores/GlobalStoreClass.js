@@ -26,8 +26,8 @@ export class GlobalStoreClass {
 	fetchSettings() {
 		OtherHelper.getSettings()
 		.then((res) => {
-	    	this.settings = res.data
 	    	window.settings = res.data
+	    	this.settings = res.data
 	    })
 	    .catch(() => this.fetched = false);
 	}

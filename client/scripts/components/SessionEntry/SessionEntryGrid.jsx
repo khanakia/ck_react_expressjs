@@ -11,7 +11,10 @@ class SessionEntryGrid extends Component {
     static defaultProps = {
         entriesList : [],
         onEditButtonClick: function(data) {},
-        onDataUpdate: function() {}
+        onDataUpdate: function() {},
+        filterable: true,
+        showfilterrow: true,
+        selectionmode: 'singlerow'
     }
 
     componentWillMount() {
@@ -130,14 +133,16 @@ class SessionEntryGrid extends Component {
     }
 
     render() {
+        const { filterable, showfilterrow, selectionmode } = this.props
+
         return (
             <div>
                 <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={true} enabletooltips={true}
-                    editable={false} 
-                    filterable={true} showfilterrow={true}
+                    editable={false}  selectionmode={selectionmode}
+                    filterable={filterable} showfilterrow={showfilterrow}
                 />
             </div>
         );

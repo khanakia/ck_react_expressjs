@@ -46,7 +46,7 @@ module.exports = {
                 $match: match
             },
 
-            { $sort: { createdDate: -1 } },
+            { $sort: { created_at: -1 } },
 
             {
                 $lookup:

@@ -102,6 +102,7 @@ class ComboBoxLocal extends Component {
                       <input type="hidden" ref="nameInput" name={this.props.field_name} />
                       <input type="hidden" ref="idInput" name={this.props.field_id} />
                       <JqxComboBox ref='Combo'
+                            autoComplete={true} searchMode={'startswithignorecase'}
                           width={this.props.width} height={22} selectedIndex={-1} source={this.dataAdapter}
                           displayMember={this.props.displayMember} valueMember={this.props.valueMember}
                       />

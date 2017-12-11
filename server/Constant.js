@@ -3,7 +3,7 @@ module.exports = {
 	ACCOUNT_NAME_BOOK : "Book",
 	ENTRY_TYPE: {
 		MATCH_ENTRY: "Match Entry",
-		SESSION_ENTRY: "Match Entry",
+		SESSION_ENTRY: "Session Entry",
 		METER_ENTRY: "Meter Entry",
 		MATCH: "Match",
 		SESSION: "Session",

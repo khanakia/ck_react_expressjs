@@ -133,6 +133,10 @@ module.exports = {
 
     async saveSettings(args = {} ) {
         await MetaDataModel.updateMeta('setting_show_decimals', HelperClass.stringToBoolean(args.show_decimals))
+        await MetaDataModel.updateMeta('theme_name', args.theme_name)
+        await MetaDataModel.updateMeta('grid_theme_name', args.grid_theme_name)
+        
+        await AccountClass.updateCompanyName(args.company_name)
 
         var settings = await this.getSettings()
         return ResponseHelper.ok(200, 'Successfully saved.', {settings: settings})
@@ -140,8 +144,14 @@ module.exports = {
 
     async getSettings() {
         var show_decimals = await MetaDataModel.get('setting_show_decimals', true)
+        var theme_name = await MetaDataModel.get('theme_name', 'default')
+        var grid_theme_name = await MetaDataModel.get('grid_theme_name', 'metro')
+        var accountCompany = await AccountClass.getCompanyAccount()
         return {
-            show_decimals: HelperClass.stringToBoolean(show_decimals)
+            show_decimals: HelperClass.stringToBoolean(show_decimals),
+            company_name: accountCompany.account_name,
+            theme_name: theme_name,
+            grid_theme_name: grid_theme_name
         }
     },
 

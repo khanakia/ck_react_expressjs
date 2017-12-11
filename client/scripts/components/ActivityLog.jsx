@@ -10,6 +10,7 @@ class RenderTable extends Component {
     }
 
     render_matchEntry(data) {
+        if(!data) return null
         return (
             <table className="table table-striped table-sm">
                 <tbody>
@@ -278,7 +279,8 @@ class ActivityLog extends Component {
                 content: html,
                 position: 'top',
                 name: 'movieTooltip',
-                width: 300
+                width: 300,
+                position: 'right'
             })
             jQuery(cell).jqxTooltip('open')
 

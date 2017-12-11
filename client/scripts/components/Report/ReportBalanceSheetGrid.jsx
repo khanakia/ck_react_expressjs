@@ -80,7 +80,7 @@ class ReportBalanceSheetGrid extends Component {
                     <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
-                        width={ "600"} height={400} source={this.dataAdapter} 
+                        width={ "600"} height={600} source={this.dataAdapter} 
                         pageable={false} sortable={false} altrows={false} enabletooltips={false}
                         editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}/>

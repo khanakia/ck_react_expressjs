@@ -4,12 +4,68 @@
 // const ObjectId1 = mongoose.Types.ObjectId;
 // var Constant = require('../Constant')
 
+var TeamModel = require('../model/TeamModel')
 var MatchModel = require('../model/MatchModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
 var MatchSummaryClass = require('./MatchSummaryClass')
 var ActivityLogClass = require('../class/ActivityLogClass')
 
 module.exports = {
+
+    async save(body) {
+        var match_id = body.match_id
+        var team_id = body.team_id
+        var team_name = body.team_name
+
+        try {
+            if(!team_id) {
+                var team = await TeamModel.findOne({'team_name' : { $regex : new RegExp("^" + team_name + "$", 'i') }})
+                if(team) {
+                    team_id = team._id
+                } else {   
+                    var teamNew = new TeamModel({
+                        team_name : team_name
+                    })
+                    await teamNew.save()
+                    team_id = teamNew._id
+                }
+            }
+        } catch(e) {
+            
+        }
+        
+        var matchTeam = await MatchTeamModel.findOne({match_id: match_id, team_id: team_id});
+
+        if(matchTeam) {
+            throw(ResponseHelper.error(400, 'Team already added.'))
+            return true;
+        }
+               
+        let matchTeamNew = new MatchTeamModel({
+            match_id: match_id,
+            team_id: team_id
+        });  
+        matchTeamNew = await matchTeamNew.save()
+
+        return matchTeamNew;
+
+        // MatchTeamModel.findOne({match_id: req.body.match_id, team_id: req.body.team_id}).exec(function (err, matchTeam) {
+        //     if(err) return res.status(500).send(err);
+        //     if(matchTeam) return res.status(401).send(ResponseHelper.error(400, 'Team already added.'));
+            
+        //     // delete req.body["_id"];
+        //     let item = new MatchTeamModel(req.body);  
+        //     item.save((err, obj) => {  
+        //         if (err) {
+        //             res.status(500).send(err);
+        //         }
+        //         res.status(200).send(obj);
+        //     });
+            
+        // })
+    },
+
+
     list(args = { match_id: null}) {
         var aggregate = [];
 

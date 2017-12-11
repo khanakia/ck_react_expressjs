@@ -52,12 +52,12 @@ class ReportConnect extends Component {
         return (
             <div className="page mx-2">
                 <h6><i className="fa fa-bar-chart"></i> Report - Connect <TooltipQuestion content={Messages.ABOUT_REPORT_CONNECT} /></h6>
-                <div className="">
-                    <div className="">
+                <div className="row">
+                    <div className="col-md-4">
                         <button className="btn btn-sm btn-primary" onClick={this.connectReport}>Connect</button>
                         <AllMatchGrid ref="allMatchGrid" entriesList={connectListMatches}  />
                     </div>
-                    <div className="">
+                    <div className="col-md-8">
                         <ReportConnectGrid entriesList={connectReportList} exportReportClick={this.exportConnectReport} />
                     </div>
 

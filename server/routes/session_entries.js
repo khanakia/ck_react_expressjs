@@ -11,9 +11,16 @@ var SessionEntryClass = require('../class/SessionEntryClass')
     
 router.get('/', function(req, res, next) {
 
-	SessionEntryClass.getsessionEntryGridList(req.query.session_id, function(err, doc){
-		if(err) return res.send(err);
-		return res.send(doc);
+	// SessionEntryClass.getsessionEntryGridList(req.query.session_id, function(err, doc){
+	// 	if(err) return res.send(err);
+	// 	return res.send(doc);
+	// })
+
+	SessionEntryClass.getsessionEntryGridList({session_id: req.query.session_id}).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
 	})
 });
 

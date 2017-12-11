@@ -175,13 +175,17 @@ module.exports = {
     },
 
 
-    async getMatchEntryGridList(args = { match_id: null, book_no: null}, cb){
+    async getMatchEntryGridList(args = { match_id: null, book_no: null, account_id: null}){
         var match = {};
         if(args.match_id) {
             match['match_id'] = parseInt(args.match_id)
         }
         if(args.book_no) {
             match['book_no'] = parseInt(args.book_no)
+        }
+
+        if(args.account_id) {
+            match['account_id'] = parseInt(args.account_id)
         }
 
         var matchTeams = await MatchTeamClass.list({match_id:args.match_id});
@@ -211,10 +215,12 @@ module.exports = {
             
         });
 
-        MatchEntryModel.aggregate( [ 
-             {
+        return MatchEntryModel.aggregate( [ 
+            { $sort: { created_at: -1 } },
+            
+            {
                $match: match
-           },
+            },
             {
                 $lookup:
                 {
@@ -242,7 +248,7 @@ module.exports = {
             { 
                 $project : project
             } 
-        ], cb )
+        ] )
     },
 
     async beforeDeclarationList(args = { match_id: null}){

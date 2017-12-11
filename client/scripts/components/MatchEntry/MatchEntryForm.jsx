@@ -142,9 +142,10 @@ class MatchEntryForm extends React.Component {
             // if(this.state.item._id) {
             // }
             this.resetForm()
-            this.refs.idinput.focus()
 
-            this.refs.idinput.focus()
+            setTimeout(() => {
+                this.refs.idinput.focus()
+            }, 500)
 
             this.props.onFormSubmitted(response);
 
@@ -154,13 +155,17 @@ class MatchEntryForm extends React.Component {
 
     }
 
+    onCloseComboMember = () => {
+        this.refs.submitBtn.focus()
+    }
+
     render() {
 
         const { item, scount } = this.state
         const comm_yn = this.props.match.match_type==MATCH_TYPE_CUP ? false : true
         return (
             <div>
-                <form ref="form">
+                <form ref="form" className="matchEntryForm">
                     <input type="hidden" defaultValue={this.props.matchId} name="match_id" />
                     <div className="form-row align-items-center">
                         <div className="col-auto">
@@ -200,14 +205,14 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />
                             </div>
                         </div>
                         <div className="col-auto ">
                             <label className="">&nbsp;</label>
                             <div>
                                 <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                    <button className="btn btn-primary btn-sm" type="button" onClick={this.formSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                                    <button className="btn btn-primary btn-sm" type="button" ref="submitBtn" onClick={this.formSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                                 </div>
                             </div>
                         </div>

@@ -10,6 +10,38 @@ module.exports = {
         return 'demo'
     },
 
+    async getCompanyAccounId() {
+        var accounts = await AccountModel.find({is_company: true})
+        var account = new AccountModel({
+            // "account_name" : Constant.ACCOUNT_NAME_BOOK,
+            "is_company" : true
+        })
+        if(accounts.length > 0) {
+            account = accounts[0]
+        } else {
+            account.account_name = Constant.ACCOUNT_NAME_BOOK
+            await account.save()
+        }
+
+        // console.log(account._id)
+        return account._id
+    },
+
+    async getCompanyAccount() {
+        var accountId = await this.getCompanyAccounId()
+        var account = await AccountModel.findOne({_id: accountId})
+        return account;
+    },
+
+    async updateCompanyName(companyName) {
+        if(!companyName) return false;
+        var accountId = await this.getCompanyAccounId()
+        var account = await AccountModel.findOne({_id: accountId})
+        account.account_name = companyName
+        await account.save()
+        return account;
+    },
+
     async canBid(accountId, amount=0) {
         // Beacuse of Cyclic Dependencies i included these class within funciton
         var JournalEntryClass = require('../class/JournalEntryClass')
@@ -89,21 +121,7 @@ module.exports = {
         return aggregate;
     },
 
-    async getCompanyAccounId() {
-        var accounts = await AccountModel.find({is_company: true})
-        var account = new AccountModel({
-            "account_name" : Constant.ACCOUNT_NAME_BOOK,
-            "is_company" : true
-        })
-        if(accounts.length > 0) {
-            account = accounts[0]
-        } else {
-            await account.save()
-        }
-
-        // console.log(account._id)
-        return account._id
-    },
+    
 
     async save(item, id=null) {
         var isError = 0
@@ -145,7 +163,8 @@ module.exports = {
                 throw(ResponseHelper.parseMongooseFirstError(err))
             }
         } else {
-            var account1 = await AccountModel.findOne({'account_name' : { $regex : new RegExp(item.account_name, "i") }})
+            // var account1 = await AccountModel.findOne({'account_name' : { $regex : new RegExp(item.account_name, "i") }})
+            var account1 = await AccountModel.findOne({'account_name' : { $regex : new RegExp("^" + item.account_name + "$", 'i') }})
 
             if(account1) {
                 throw(ResponseHelper.error(400, 'Account Name alread exists.'))

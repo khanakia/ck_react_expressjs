@@ -8,11 +8,14 @@ class MatchGrid extends Component {
 
 	constructor(props) {
         super(props);
+
+        this.entered = false
     }
 
 	static defaultProps = {
         entriesList : [],
         onDataUpdate: function() {},
+        onDelete: function() {},
         editItem: function(account_id){}
        
     }
@@ -21,10 +24,70 @@ class MatchGrid extends Component {
         this.initDataAdapter()        
     }
 
+
+    componentDidMount() {
+        this.initMouseTrap()
+    }
+
     componentDidUpdate() {
         this.source.localdata = this.props.entriesList.slice()
         this.dataAdapter.dataBind()
-    }    
+    }
+
+     initMouseTrap = () => {
+        var mtrap = new  Mousetrap()
+        mtrap.stopCallback = function(e, element, combo) {
+            return false;
+        }
+
+        mtrap.bind('alt+g', () => { 
+            if(typeof this.refs.jqxgrid !=="undefined") {
+                this.refs.jqxgrid.selectrow(0)
+                this.refs.jqxgrid.focus()
+            }
+        });
+
+        mtrap.bind('enter', (e) => { 
+
+            var isJqxgrid = jQuery(e.target).parents('.jqx-grid').length
+            if(isJqxgrid > 0) {
+                var data = this.getSelectedRowData()
+                if(data) {
+                    hashHistory.push(APP_URL_MDI_MATCH + "/" + data.uid)
+                }
+                // console.log(data)
+            }
+        });
+
+        
+    }
+
+
+    getSelectedRowData() {
+        if(typeof this.refs.jqxgrid == "undefined") return false;
+        var getselectedrowindex = this.refs.jqxgrid.getselectedrowindex()
+        console.log(getselectedrowindex)
+        if (getselectedrowindex !== -1) {
+            // returns the selected row's data.
+            var selectedRowData = this.refs.jqxgrid.getrowdata(getselectedrowindex);
+            return selectedRowData;
+        }
+        return {}    
+    }
+
+    handlekeyboardnavigation = (event) => {
+        if(this.entered) return true
+        var key = event.charCode ? event.charCode : event.keyCode ? event.keyCode : 0;
+        if(key==13) {
+            this.entered = true
+            var data = this.getSelectedRowData()
+            hashHistory.push(APP_URL_MDI_MATCH + "/" + data.uid)
+            console.log(data)
+            return true;
+        }
+
+        // console.log(key)
+    }
 
     initDataAdapter() {
         var _this = this;
@@ -67,7 +130,7 @@ class MatchGrid extends Component {
                     var r = confirm("Are you sure!", ' ');
                     if (r == true) {
                         MatchHelper.delete(dataRecord.uid).then( (res) => {
-                            this.props.onDataUpdate()
+                            this.props.onDelete()
                         })
                         .catch((err) => {
                             toastr.error(err.response.data.message)
@@ -102,7 +165,7 @@ class MatchGrid extends Component {
                 },
                 buttonclick: (row) => {
                     let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                     hashHistory.push(APP_URL_MDI_MATCH + "/" + dataRecord.uid)
+                    hashHistory.push(APP_URL_MDI_MATCH + "/" + dataRecord.uid)
                 }
             },
             { text: 'Id', datafield: '_id', width: 50 },
@@ -120,6 +183,7 @@ class MatchGrid extends Component {
         return (
             <div>
          		<JqxGrid ref="jqxgrid" key={Math.random()} source={this.dataAdapter} columns={this.columns} 
+                    
                     width={"100%"} height={500} 
          			pageable={true} sortable={true} altrows={true} enabletooltips={true} 
          			editable={false}  filterable={false} showfilterrow={false} />

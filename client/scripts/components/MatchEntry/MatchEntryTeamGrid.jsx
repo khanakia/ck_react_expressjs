@@ -41,8 +41,8 @@ class MatchEntryTeamGrid extends Component {
         // console.log(this.props.teamsWinLossList)
         return (
             <div>
-                <table className="table table-striped table-sm">
-                    <thead className="thead-inverse">
+                <table className="table table-striped table-sm tableStyle1">
+                    <thead className="thead-dark">
                         <tr>
                             <th>Team</th>
                             <th>Amount</th>

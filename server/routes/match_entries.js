@@ -9,9 +9,15 @@ var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchEntryClass = require('../class/MatchEntryClass')
 
 router.get('/', function(req, res, next) {
-	MatchEntryClass.getMatchEntryGridList({match_id: req.query.match_id, book_no: req.query.book_no}, function(err, doc){
-		if(err) return res.send(err);
-		return res.send(doc);
+	// MatchEntryClass.getMatchEntryGridList({match_id: req.query.match_id, book_no: req.query.book_no}, function(err, doc){
+	// 	if(err) return res.send(err);
+	// 	return res.send(doc);
+	// })
+
+	MatchEntryClass.getMatchEntryGridList({match_id: req.query.match_id, book_no: req.query.book_no}).then((data) => {
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send(err)
 	})
 });
 

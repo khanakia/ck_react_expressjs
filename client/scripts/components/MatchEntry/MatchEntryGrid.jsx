@@ -13,6 +13,9 @@ class MatchEntryGrid extends Component {
         entriesList : [],
         onEditButtonClick: function(data) {},
         onDataUpdate: function() {},
+        filterable: true,
+        showfilterrow: true,
+        selectionmode: 'singlerow'
     }
 
     refresh = () => {        
@@ -133,14 +136,15 @@ class MatchEntryGrid extends Component {
                 { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             )
 
+        const { filterable, showfilterrow, selectionmode } = this.props
         return (
             <div>
                 <JqxGrid key={Math.random()}
                   ref="jqxgrid"
                   width={"100%"} height={400} source={this.dataAdapter} pageable={false}
                   sortable={true} altrows={true} enabletooltips={false}
-                  editable={false} columns={columns}
-                  filterable={true} showfilterrow={true}
+                  editable={false} columns={columns} selectionmode={selectionmode}
+                  filterable={filterable} showfilterrow={showfilterrow}
                 />
             </div>
         );

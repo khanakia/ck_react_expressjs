@@ -221,8 +221,16 @@ module.exports = {
     },
 
 
-    async getsessionEntryGridList(session_id, cb){
+    async getsessionEntryGridList(args = { session_id: null, account_id: null}){
+        var match = {};
+        if(args.session_id) {
+            match['session_id'] = parseInt(args.session_id)
+        }
    
+        if(args.account_id) {
+            match['account_id'] = parseInt(args.account_id)
+        }
+
         var project = {
             _id: 1,
             rate: 1,
@@ -246,11 +254,9 @@ module.exports = {
             comm_total_per: "$calcs.comm_total_per",
         };
 
-        SessionEntryModel.aggregate( [ 
+        return SessionEntryModel.aggregate( [ 
             {
-                $match: {
-                    session_id: parseInt(session_id)
-                }
+                $match: match
             },
             {
                 $lookup:
@@ -267,7 +273,7 @@ module.exports = {
             { 
                 $project : project
             } 
-        ], cb )
+        ])
     },
 
 

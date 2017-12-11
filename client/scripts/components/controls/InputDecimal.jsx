@@ -51,6 +51,7 @@ class InputDecimal extends React.Component {
    }
 
     handleChange = (event) => {
+      console.log('change')
       // var val = parseFloat(event.target.value).toFixed(2);
       var value = event.target.value.replace(/[^0-9\.\-]+/g, '');
       this.setState({
@@ -76,7 +77,19 @@ class InputDecimal extends React.Component {
       })
     }
 
-    handleKeypress(evt) {
+    handleKeypress = (evt) => {
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      // console.log(charCode)
+      if(charCode==107) {
+        this.setState({
+            value: this.state.value * 1000
+        })
+      }
+      if(charCode==108) {
+        this.setState({
+            value: this.state.value * 100000
+        })
+      }
       return false;
     }
 
@@ -97,6 +110,7 @@ class InputDecimal extends React.Component {
             type={this.props.type} 
             name={this.props.name} 
             className={this.props.className}
+            onKeyPress={this.handleKeypress}
             onBlur={this.handleBlur}  
             onChange={this.handleChange} 
             onFocus={this.handleOnFocus}

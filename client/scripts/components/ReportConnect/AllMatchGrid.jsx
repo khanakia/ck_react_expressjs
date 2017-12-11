@@ -58,12 +58,12 @@ class AllMatchGrid extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
         this.columns = [
-            { text: 'MatchId', datafield: 'match_id', width: 100 },
+            { text: 'MatchId', datafield: 'match_id', width: 80 },
             { text: 'Dated', datafield: 'created_at', width: 100, cellsformat: 'dd/MM/yyyy' },
-            { text: 'Id', datafield: 'id', width: 50 },
+            { text: 'Id', datafield: 'id', width: 70 },
             { text: 'Name', datafield: 'name', width: 150 },
             { text: 'Type', datafield: 'ref_type', width: 150 },
-            { text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },
+            /*{ text: 'Is Declared', datafield: 'is_declared', width: 100, columntype: 'checkbox'  },*/
         ];
     }
 
@@ -72,7 +72,7 @@ class AllMatchGrid extends Component {
         return (
             <div>
          		<JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"700"} height={150} 
+                    width={"100%"} height={550} 
          			pageable={false} sortable={true} altrows={true} enabletooltips={true} 
          			editable={false}  filterable={false} showfilterrow={false}
                     selectionmode={'checkbox'} />

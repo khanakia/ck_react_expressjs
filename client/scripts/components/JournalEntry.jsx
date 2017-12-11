@@ -130,16 +130,20 @@ class JournalEntry extends Component {
         var message = selectedAccBal > 0 ? Messages.JENTRY_GT_PROFIT : Messages.JENTRY_GT_LOSS
         message = selectedAccBal==0 ? null : message
         // console.log(message)
+
+
+        const cbClass = selectedAccCurrentBal >= 0 ? ' red1' : ' green1';
+        const obClass = selectedAccMonFinalBal >= 0 ? ' red1' : ' green1';
         return (
             <div className="page mx-2">
                 <div className="row info-heading-block">
                     <div className="col-md-6">
                         <label>Opening Balance: </label>
-                        {selectedAccMonFinalBal}
+                        <span className={"amount" + cbClass}>{selectedAccMonFinalBal}</span>
                     </div>
                     <div className="col-md-6 text-right">
                         <label>Current Balance: </label>
-                        {selectedAccCurrentBal}
+                        <span className={"amount" + obClass}>{selectedAccCurrentBal}</span>
                     </div>
                     {/*<div className="col-auto">
                         <label>Grand Total: </label>

@@ -44,7 +44,30 @@ class SessionEntry extends Component {
     	} else {            
             this.props.sessionEntryStore.clearAll()
         }
+
+
+        this.initMouseTrap()
 	}
+
+    initMouseTrap = () => {
+        var mtrap = new  Mousetrap()
+        mtrap.stopCallback = function(e, element, combo) {
+            return false;
+        }
+
+        mtrap.bind('alt+s a', () => { 
+            this.showAddSessionWindow()
+        });
+
+        mtrap.bind('alt+s d', () => { 
+            this.openDeclareWindow()
+        });
+
+        mtrap.bind('alt+s u', () => { 
+            this.sessionUndeclare()
+        });
+    }
+
 
     fetch = (sessionId) => {
     	this.props.sessionEntryStore.fetchAll(sessionId)

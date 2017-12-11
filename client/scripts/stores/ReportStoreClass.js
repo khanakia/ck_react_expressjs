@@ -6,6 +6,7 @@ import {
 	API_URL_REPORTS_CONNECT_REPORT,
 	API_URL_REPORTS_BALANCE_SHEET,
 	API_URL_REPORTS_PL_MATCH_ACCOUNTWISE,
+	API_URL_REPORTS_PL_MATCH_ACCOUNTWISE_MATCHSUMMARY,
 	API_URL_REPORTS_PL_MATCHWISE,
 	API_URL_REPORTS_ACTIVITY_LOG,
 	API_URL_MATCH_ENTRIES_BEFORE_DECLARATION
@@ -17,6 +18,7 @@ export class ReportStoreClass {
 	
 	@observable accountBalanceList = [];
 	@observable plMatchAccountWiseList = [];
+	@observable plMatchAccountWise_MatchSummaryList = [];
 	@observable plMatchWiseList = [];
 	@observable journalSummaryList = [];
 	@observable connectListMatches = [];
@@ -61,6 +63,19 @@ export class ReportStoreClass {
   		})
 	    .then((res) => {
 	    	this.plMatchAccountWiseList = res.data
+	    })
+	    .catch(() => this.fetched = false);
+	}
+
+	fetchPlMatchAccountWise_MatchSummaryList(matchId, accountId) {
+		axios.get(API_URL_REPORTS_PL_MATCH_ACCOUNTWISE_MATCHSUMMARY, {
+			params : {
+				match_id: matchId,
+				account_id: accountId
+			}
+  		})
+	    .then((res) => {
+	    	this.plMatchAccountWise_MatchSummaryList = res.data
 	    })
 	    .catch(() => this.fetched = false);
 	}

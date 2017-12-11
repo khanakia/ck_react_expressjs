@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 
 import CSelect from './controls/CSelect'
-import {LIST_YN_BOOLEAN} from '../Constant'
+import {LIST_YN_BOOLEAN, LIST_THEMES, LIST_GRID_THEMES} from '../Constant'
 import OtherHelper from '../helpers/OtherHelper'
 
 @inject('globalStore')
@@ -15,6 +15,10 @@ class Setting extends Component {
 
 
 	saveSettings = (e) => {
+		 if(! $(this.refs.form).valid()) {
+          return false;
+        }
+
 		let data = jQuery(this.refs.form).serialize()
 		OtherHelper.saveSettings(data)
 	    .then((res) => {
@@ -29,7 +33,7 @@ class Setting extends Component {
     render() {
 
     	const { settings } = this.props.globalStore
-
+    	console.log(settings)
         return (
             <div className="page mx-w-600px mx-2">
                 <h6><i className="fa fa-gear"></i> Settings</h6>
@@ -46,12 +50,46 @@ class Setting extends Component {
 						      </thead>
 						      <tbody>
 						        <tr>
-						        	<th scope="row">2</th>
+						        	<th scope="row">1</th>
 						        	<td>
 						        		Show Decimals
 						        	</td>
 						        	<td>
 						        		<CSelect className="uk-select uk-form-small" name="show_decimals" value={settings.show_decimals} items={LIST_YN_BOOLEAN}>
+	                                	</CSelect>
+						        		
+						        	</td>
+						        </tr>
+
+						        <tr>
+						        	<th scope="row">2</th>
+						        	<td>
+						        		Company Name
+						        	</td>
+						        	<td>
+						        		<input type="text" className="uk-select uk-form-small required error-hide" name="company_name" defaultValue={settings.company_name} key={Math.random()} />
+						        		
+						        	</td>
+						        </tr>
+
+						        <tr>
+						        	<th scope="row">2</th>
+						        	<td>
+						        		Theme
+						        	</td>
+						        	<td>
+						        		<CSelect className="uk-select uk-form-small" name="theme_name" value={settings.theme_name} items={LIST_THEMES}>
+	                                	</CSelect>
+						        		
+						        	</td>
+						        </tr>
+						        <tr>
+						        	<th scope="row">2</th>
+						        	<td>
+						        		Grid Theme
+						        	</td>
+						        	<td>
+						        		<CSelect className="uk-select uk-form-small" name="grid_theme_name" value={settings.grid_theme_name} items={LIST_GRID_THEMES}>
 	                                	</CSelect>
 						        		
 						        	</td>

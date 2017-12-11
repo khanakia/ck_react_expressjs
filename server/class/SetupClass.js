@@ -5,7 +5,8 @@ var UserModel = require('../model/UserModel')
 
 module.exports = {
     async initDb() {
-      this.createUsers()
+      await this.createUsers()
+      await this.createCompanyAccount()
       return 'done setup'
     },
 
@@ -44,6 +45,19 @@ module.exports = {
         }
     },
     
+
+    async createCompanyAccount() {
+        var accounts = await AccountModel.find({is_company: true})
+        var account = new AccountModel({
+            // "account_name" : Constant.ACCOUNT_NAME_BOOK,
+            "is_company" : true
+        })
+        if(accounts.length == 0) {
+            account.account_name = Constant.ACCOUNT_NAME_BOOK
+            await account.save()
+        }
+        return account._id
+    }
    
 
 };

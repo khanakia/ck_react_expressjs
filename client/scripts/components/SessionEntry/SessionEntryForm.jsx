@@ -140,12 +140,16 @@ class SessionEntryForm extends React.Component {
     }
 
 
+    onCloseComboMember = () => {
+        this.refs.submitBtn.focus()
+    }
+
     render() {
 
         const { item, scount } = this.state
         return (
             <div>
-                <form ref="form"  className="moustrapform" >
+                <form ref="form"  className="moustrapform sessionEntryForm" >
                     <input type="hidden" defaultValue={this.props.matchId} name="match_id" />
                     {/*<input type="hidden" defaultValue={this.props.sessionId} name="session_id" key={this.props.sessionId}/>*/}
                     <div className="form-row align-items-center">
@@ -192,14 +196,14 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />
+                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />
                             </div>
                         </div>
                         <div className="col-auto ">
                           <label className="">&nbsp;</label>
                           <div>
                             <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
-                              <button className="btn btn-primary btn-sm btnsubmit" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                              <button className="btn btn-primary btn-sm btnsubmit" type="button" ref="submitBtn" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                             </div>
                           </div>
                         </div>

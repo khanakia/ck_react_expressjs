@@ -61,16 +61,21 @@ class Match extends Component {
         }
     }
 
+    matchGrid_onDelete = () => {
+        this.props.matchStore.match = {}
+        this.props.history.push(APP_URL_MATCHES)
+    }
+
     render() {
         const {matchList, match} = this.props.matchStore
 
         // console.log(this.props.match.params.id)
         return (
             <div className="page1200 mx-2">
-                <h6><i className="fa fa-futbol-o"></i> Match</h6>
+                <h6><i className="fa fa-futbol-o"></i> Match  <span className="badge badge-dark">ALT+G</span></h6>
                 <div className="row">
                     <div className="col-md-6">
-                        <MatchGrid entriesList={matchList} editItem={this.editItem} onDataUpdate={this.matchGrid_onDataUpdate} />
+                        <MatchGrid entriesList={matchList} editItem={this.editItem} onDataUpdate={this.matchGrid_onDataUpdate} onDelete={this.matchGrid_onDelete} />
                     </div>
                     <div className="col-md-6" >
                     {!match.is_declared && !match.is_abandoned

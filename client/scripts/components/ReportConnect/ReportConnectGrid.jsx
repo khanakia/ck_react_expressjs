@@ -129,11 +129,11 @@ class ReportConnectGrid extends Component {
                 <div className="mt-3 mb-1 text-left">
                     <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
-                <div className="row">
-                    <div className="col-md-8">
+                <div className="row mx-w-900px">
+                    <div className="col-md-12">
                         <JqxGrid key={Math.random()} ref="jqxgrid" 
-                                width={ "900"} height={350} source={this.dataAdapter} 
-                                pageable={false} sortable={false} altrows={false} enabletooltips={false} selectionmode={'multiplecells'}
+                                width={ "100%"} height={500} source={this.dataAdapter} 
+                                pageable={false} sortable={false} altrows={true} enabletooltips={false} selectionmode={'multiplecells'}
                                 editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                                 showstatusbar={true} showaggregates={true} statusbarheight={25}/>
 
@@ -141,10 +141,10 @@ class ReportConnectGrid extends Component {
                             <div className="col-md-4">
                                 <label>Total Profit: <span ref="total_profit">0</span></label>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-4 text-center">
                                 <label>Grand Total: <span ref="grand_total">0</span></label>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-4 text-right">
                                 <label>Total Loss: <span ref="total_loss">0</span></label>
                             </div>
                         </div>

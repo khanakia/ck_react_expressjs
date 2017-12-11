@@ -48,6 +48,21 @@ router.get('/pl_match_accountwise', function(req, res, next) {
     })
 });
 
+router.get('/pl_match_accountwise_matchsummary', function(req, res, next) {
+    ReportClass.plMatchAccountWiseMatchSummary({matchId: req.query.match_id, accountId: req.query.account_id}).then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+});
+router.get('/pl_match_accountwise_entries', function(req, res, next) {
+    ReportClass.plMatchAccountWise_Entries(req.query).then(function(data){
+        res.send(data)    
+    }).catch((err)=>{
+        res.send(err)
+    })
+});
+
 router.get('/journal_summary', function(req, res, next) {
     ReportClass.journalSummary().then(function(data){
         res.send(data)    

@@ -78,7 +78,7 @@ class MatchForm extends Component {
                         <div className="form-group col-auto">
                             <label className="col-form-label">&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                                <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit} onFocus={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                                 <button className="btn btn-danger btn-sm ml-1" type="button" onClick={()=>this.props.cancelFormClick()}><i className="fa fa-undo"></i> Cancel</button>
                             </div>
                         </div>

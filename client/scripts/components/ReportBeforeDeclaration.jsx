@@ -4,6 +4,7 @@ import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
 import ExportHelper from '../helpers/ExportHelper'
 
 import ComboBoxLocal from './controls/ComboBoxLocal.jsx'
+import { LOCALSTORAGE_MATCHID } from "../Constant"
 
 
 @inject('matchStore')
@@ -17,6 +18,11 @@ class ReportBeforeDeclaration extends Component {
 
     componentDidMount() {
     	this.props.matchStore.fetchList({is_declared: false, is_abandoned: false})
+
+        const matchId = localStorage.getItem(LOCALSTORAGE_MATCHID);
+        this.props.matchStore.fetchTeams(matchId)
+        this.props.reportStore.fetchBeforeDeclarationList({match_id: matchId})
+
         // this.props.reportStore.fetchBeforeDeclarationList()
     }
 
@@ -52,8 +58,9 @@ class ReportBeforeDeclaration extends Component {
         // this.source.localdata = this.props.reportStore.beforeDeclarationList.slice()
         // this.dataAdapter.dataBind()
 
+        
         const {matchList, teamsList} = this.props.matchStore
-        console.log(teamsList)
+        // console.log(teamsList)
     	// if(teamsList.length==0) return null
 
 

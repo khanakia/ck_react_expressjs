@@ -8,6 +8,10 @@ var MatchClass = require('./MatchClass')
 var SessionClass = require('./SessionClass')
 var MeterClass = require('./MeterClass')
 
+var MatchEntryClass = require('./MatchEntryClass')
+var SessionEntryClass = require('./SessionEntryClass')
+var MeterEntryClass = require('./MeterEntryClass')
+
 var JournalEntryModel = require('../model/JournalEntryModel')
 
 
@@ -436,23 +440,147 @@ module.exports = {
     },
 
 
+    async plMatchAccountWiseMatchSummary(args = {matchId: match_id, accounId: account_id}) {
+        var data = []
+
+        if(!args.matchId || !args.accountId) return data;
+
+        var connectList = await this.connectListMatches()
+        connectList = _.filter(connectList, {match_id: 1})
+        var journalSummary = await this.journalSummaryByAccountAndMatch({matchId: args.matchId, accounId: args.accountId })
+
+
+        connectList.map((item, i) => {
+
+            var entry = _.find(journalSummary, {ref_type: item.ref_type , ref_id: item.id})
+            var total = typeof entry!=="undefined" ? entry.total : 0
+
+            if(item.ref_type=="Match") {
+                entry = _.filter(journalSummary, {ref_type: 'Match Team'})
+                total = entry.reduce(function(totals, v) {
+                    totals += parseFloat(v.total);
+                    return totals;
+                }, total);
+                
+            }
+            console.log(entry)
+            data.push({
+                name: item.name,
+                ref_type: item.ref_type,
+                ref_id: item.id,
+                total: total.toFixed(2),
+                account_id: args.accountId
+            })
+        })
+
+        return data;
+    },
+
+    async plMatchAccountWise_Entries(args = {ref_type: ref_type, ref_id: ref_id, account_id: account_id}) {
+        // if(!args.ref_type || !args.ref_id || !args.account_id) return [];
+
+        if(args.ref_type=="Match") {
+            return await MatchEntryClass.getMatchEntryGridList({
+                match_id : args.ref_id,
+                account_id: args.account_id
+            })
+        }
+
+        if(args.ref_type=="Session") {
+            return await SessionEntryClass.getsessionEntryGridList({
+                session_id : args.ref_id,
+                account_id: args.account_id
+            })
+        }
+
+    },
+
+    journalSummaryByAccountAndMatch(args = {}) {
+        var aggregate = [];
+        var match = {}
+
+        if(args.matchId) {
+            match['journal.match_id'] = parseInt(args.matchId)
+        }
+
+        if(args.accounId) {
+            match['account_id'] = parseInt(args.accounId)
+        }
+
+    
+        // return match;    
+
+        aggregate.push(
+            { $sort: { created_at: -1 } },
+           
+            {
+                $lookup:
+                {
+                   from: "journals",
+                   localField: "journal_id",
+                   foreignField: "_id",
+                   as: "journal"
+                }
+            },
+
+            {                
+                $unwind: {
+                    path: "$journal",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $match: match
+            },
+
+            { 
+                $group: {
+                    _id: {
+                        "match_id" : "$journal.match_id",
+                        "ref_type" : "$journal.ref_type",
+                        "ref_id" : "$journal.ref_id",
+                        "account_id" : "$account_id"
+                    },
+                    "match_id" : { $first: "$journal.match_id"  },
+                    "ref_type" : { $first: "$journal.ref_type"  },
+                    "ref_id" : { $first: "$journal.ref_id"  },
+                    "account_id" : { $first: "$account_id"  },
+                    total: { $sum: "$bal" } 
+                }
+            }
+        );
+
+        return JournalEntryModel.aggregate(aggregate);
+    },
+
+
     journalSummary(args = {}) {
         var aggregate = [];
         var match = {}
+
+
         if(args.ref_type) {
             match['ref_type'] = args.ref_type
         }
 
         if(args.ref_id) {
             match['ref_id'] = parseInt(args.ref_id)
-            
         }
-        
+
+        if(args.matchId) {
+            match['journal.match_id'] = parseInt(args.matchId)
+        }
+
+        if(args.accounId) {
+            match['account_id'] = parseInt(args.accounId)
+        }
+
+    
+        // return match;    
+
         aggregate.push(
             { $sort: { created_at: -1 } },
-            // {
-            //     $match: match
-            // },
+           
             {
                 $lookup:
                 {
@@ -482,6 +610,10 @@ module.exports = {
 
             {
                 $unwind: "$account"
+            },
+
+            {
+                $match: match
             },
 
             { 

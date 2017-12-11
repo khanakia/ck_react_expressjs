@@ -17,7 +17,7 @@ class ReportBalanceSheet extends Component {
     render() {
     	const {accountBalanceList} = this.props.reportStore
         return (
-            <div className="page d-inline-block mx-2">
+            <div className="page pageBsheet">
                 <h6><i className="fa fa-bar-chart"></i> Report - Balance Sheet. <TooltipQuestion content={Messages.ABOUT_REPORT_BALANCE_SHEET} /></h6>
          		<ReportBalanceSheetGrid  entriesList={accountBalanceList} />
             </div>

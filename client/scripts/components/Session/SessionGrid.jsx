@@ -26,9 +26,9 @@ class SessionGrid extends Component {
             this.selectRowBySessonId(this.props.sessionId)
             this.onRowSelect()
         })
-        window.grid = this.refs.jqxgrid
-        window.grid_data = this.props.entriesList.slice()
-        window.dataAdapter = this.dataAdapter
+        // window.grid = this.refs.jqxgrid
+        // window.grid_data = this.props.entriesList.slice()
+        // window.dataAdapter = this.dataAdapter
 
     }
 
@@ -164,7 +164,7 @@ class SessionGrid extends Component {
                 <JqxGrid ref="jqxgrid"
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={365} pageable={false}
-                    sortable={true} altrows={false} enabletooltips={true}
+                    sortable={true} altrows={true} enabletooltips={true}
                     editable={false} 
                     filterable={false} showfilterrow={false}
                 />

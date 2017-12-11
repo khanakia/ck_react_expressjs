@@ -38,6 +38,8 @@ class AccountGrid extends Component {
         this.refs.jqxgrid.on('bindingcomplete', () => {
             // this.onRowSelect()
             if(!this.refs.jqxgrid) return null
+                
+            this.refs.jqxgrid.off('cellclick')
             this.refs.jqxgrid.on('cellclick', (event) => {
                 if(event.args.columnindex<2) return false;
                 console.log(event.args)
@@ -64,6 +66,7 @@ class AccountGrid extends Component {
             { name: 'limit', type: 'number' },
             { name: 'status', type: 'boolean' },
             { name: 'hide', type: 'boolean' },
+            { name: 'is_company', type: 'boolean' },
         ];
 
         this.source = {
@@ -83,6 +86,14 @@ class AccountGrid extends Component {
                 columntype: 'button',
                 width: 50,
                 filterable: false,
+                cellclassname: function (row, column, value, data) {
+                     // console.log(row, column , value, data)
+                     var cssClass = ''
+                     if(data.is_company) {
+                        cssClass += "jqx_cell_disabled"
+                     }
+                     return cssClass
+                },
                 cellsrenderer: () => {
                     return 'Del';
                 },
@@ -106,6 +117,14 @@ class AccountGrid extends Component {
                 columntype: 'button',
                 width: 50,
                 filterable: false,
+                cellclassname: function (row, column, value, data) {
+                     // console.log(row, column , value, data)
+                     var cssClass = ''
+                     if(data.is_company) {
+                        cssClass += "jqx_cell_disabled"
+                     }
+                     return cssClass
+                },
                 cellsrenderer: () => {
                     return 'Edit';
                 },
@@ -126,7 +145,7 @@ class AccountGrid extends Component {
     render() {
         return (
             <div>
-         		<JqxGrid ref="jqxgrid" key={Math.random()}
+         		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns} selectionmode={'singlecell'}
                     width={"100%"} height={540} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={true} enabletooltips={true}

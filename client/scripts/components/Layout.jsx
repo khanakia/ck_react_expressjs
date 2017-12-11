@@ -11,12 +11,28 @@ class Layout extends Component {
         if (!Auth.check()) {
             hashHistory.push('/')
         }
-
         this.props.globalStore.fetchSettings()
     }
+
+    componentDidMount() {
+        this.init()
+    }
+
+    componentDidUpdate() {
+        this.init()
+    }
+
+    init() {
+        const { settings } = this.props.globalStore
+        jQuery('body').addClass(settings.theme_name)
+        $.jqx.theme = settings.grid_theme_name;
+    }
+
     render() {  
+        const { settings } = this.props.globalStore
+        if(jQuery.isEmptyObject(settings)) return null
+
         return (
-                
             <div className="layout">
                 <Header />
   

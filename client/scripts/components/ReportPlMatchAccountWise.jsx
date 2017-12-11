@@ -1,17 +1,38 @@
 import React, { Component } from "react";
+import { render } from 'react-dom'
 import { inject, observer } from 'mobx-react';
 import JqxGrid from './jqwidgets-react/react_jqxgrid.js';
 import ExportHelper from '../helpers/ExportHelper'
 
+import ReportPlMatchAccountWise_MatchSummary from './Report/ReportPlMatchAccountWise_MatchSummary';
+
 @inject('reportStore')
 @observer
 class ReportPlMatchAccountWise extends Component {
-    componentDidMount() {
-        this.props.reportStore.fetchPlMatchAccountWiseList()
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            match_id: null,
+            account_id: null,
+            selected: false
+        }
     }
+
+    static defaultProps = {
+        onRowSelect: function(rowdata) {},
+    }
+
 
     componentWillMount() {
         this.initDataAdapter()        
+    }
+
+    componentDidMount() {
+        this.props.reportStore.fetchPlMatchAccountWiseList()
+        this.refs.jqxgrid.on('bindingcomplete', () => {
+            this.onRowSelect()
+        })
     }
 
     componentDidUpdate() {
@@ -29,6 +50,23 @@ class ReportPlMatchAccountWise extends Component {
         })
     }
     
+    onRowSelect() {
+        this.refs.jqxgrid.off('rowselect');
+        this.refs.jqxgrid.on('rowselect', (event) => {
+            var args = event.args;
+            var row = args.row
+            console.log(row)
+
+            this.setState({
+                match_id: row.match_id,
+                account_id: row.account_id,
+                selected: true
+            })
+            // this.props.onRowSelect(args.row)
+            
+        });
+    }
+
     initDataAdapter() {
         this.source = {
             datatype: 'json',
@@ -61,17 +99,33 @@ class ReportPlMatchAccountWise extends Component {
         // plMatchWiseList when i call this variable then mobx will update the component otherwise not
         this.source.localdata = this.props.reportStore.plMatchAccountWiseList.slice()
         this.dataAdapter.dataBind()
+
+        let initrowdetails = (index, parentElement, gridElement, record) => {
+            // console.log(index, parentElement, gridElement, record)
+            let grid = $($(parentElement).children()[0]);
+            let grid1 = ($(parentElement).children()[0]);
+            if (grid != null) {
+                render(<ReportPlMatchAccountWise_MatchSummary match_id={record.match_id} account_id={record.account_id} key={Math.random()} /> , grid1);
+            }
+           // return 'dsfds'
+        }
+
+       let rowdetailstemplate = { rowdetails: '<div id="grid" class="grid" style="margin: 10px;"></div>', rowdetailsheight: 500 , rowdetailshidden: true };
+
         
         return (
-            <div className="page d-inline-block mx-2">
+            <div className="page mx-2">
                 <h6><i className="fa fa-bar-chart"></i> Report - PL Match AccountWise</h6>
                 <div className="mb-1 text-right">
                     <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
                 </div>
-                <JqxGrid key={Math.random()} ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
-                    width={"600"} height={500} 
+                <JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
+                    width={"100%"} height={500} selectionmode={'none'}
+                    rowdetails={true} rowdetailstemplate={rowdetailstemplate} initrowdetails={initrowdetails}
                     pageable={true} sortable={true} altrows={true} enabletooltips={true} 
                     editable={false}  filterable={true} showfilterrow={true} />
+
+                {/*<ReportPlMatchAccountWise_MatchSummary match_id={this.state.match_id} account_id={this.state.account_id} key={Math.random()} />    */}
             </div>
         );
     }

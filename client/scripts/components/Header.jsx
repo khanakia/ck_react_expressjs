@@ -16,7 +16,8 @@ class Header extends React.Component {
 
 
     componentDidMount() {
-        $("#jqxMenu").jqxMenu({ height: 30, showTopLevelArrows: true, keyboardNavigation: true });
+        console.log(window.settings.grid_theme_name)
+        $("#jqxMenu").jqxMenu({ height: 30, showTopLevelArrows: true, keyboardNavigation: true, theme: window.settings.grid_theme_name });
 
         
     }
@@ -144,7 +145,7 @@ class Header extends React.Component {
                                         <Link to={APP_URL_ACCOUNTS}>Parties (F1)</Link>
                                     </li>
                                     <li>
-                                        <Link to={APP_URL_TEAMS}>Teams (F2)</Link>
+                                        <Link to={APP_URL_TEAMS}>Teams</Link>
                                     </li>
                                     {Auth.is_admin() ?
                                     <li>
@@ -156,7 +157,7 @@ class Header extends React.Component {
                             <li><i className="fa fa-futbol-o"></i> Match
                                 <ul>
                                     <li>
-                                        <Link to={APP_URL_MATCHES}>Match Master (F3)</Link>
+                                        <Link to={APP_URL_MATCHES}>Match Master (F2)</Link>
                                     </li>
                                     {/*<li>
                                         <Link to={APP_URL_MATCH_ENTRIES}>Match Entry (F4)</Link>
@@ -189,7 +190,7 @@ class Header extends React.Component {
                                         <Link to={APP_URL_REPORT_JOURNAL_SUMMARY}>Journal Summary</Link>
                                     </li>
                                     <li>
-                                        <Link to={APP_URL_REPORT_BSHEET}>Balance Sheet (F9)</Link>
+                                        <Link to={APP_URL_REPORT_BSHEET}>Balance Sheet (F12)</Link>
                                     </li>
                                     <li>
                                         <Link to={APP_URL_PAGE_ACTIVITY_LOG}>Activity Log</Link>

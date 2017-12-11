@@ -29,20 +29,10 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/',function(req, res, next) {
-
-	MatchTeamModel.findOne({match_id: req.body.match_id, team_id: req.body.team_id}).exec(function (err, matchTeam) {
-	    if(err) return res.status(500).send(err);
-	    if(matchTeam) return res.status(401).send(ResponseHelper.error(400, 'Team already added.'));
-	    
-		// delete req.body["_id"];
-		let item = new MatchTeamModel(req.body);  
-		item.save((err, obj) => {  
-		    if (err) {
-		        res.status(500).send(err);
-		    }
-		    res.status(200).send(obj);
-		});
-	    
+	MatchTeamClass.save(req.body).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		res.status(401).send(err)
 	})
 });
 

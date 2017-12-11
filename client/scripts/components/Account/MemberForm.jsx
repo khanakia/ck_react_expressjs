@@ -100,17 +100,17 @@ class MemberForm extends Component {
                     <fieldset>
                         <legend>Commission:</legend>
                         <div className="form-row">
-                            <div className="form-group col-md-2">
+                            <div className="form-group col-auto">
                                 <label className="col-form-label">Match Comm. To:</label>
                                 {/*<ComboBoxMember ref="memberDdl" field_id="match_comm_to" selectedValue={item._id} />*/}
                                 <ComboBoxLocal width={"100%"} ref="memberDdl" field_id="match_comm_to" valueMember='_id'
                                             displayMember='account_name' data={this.props.accountsList}  selectedValue={item.match_comm_to} />
                             </div>
-                            <div className="form-group col-md-2">
+                            <div className="form-group col-auto">
                                 <label className="col-form-label">Match Comm. : <TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} /></label>
                                 <InputDecimal className="form-control form-control-sm uk-form-small error-hide required number" type="text" value={item.match_comm} name="match_comm" />
                             </div>
-                            <div className="form-group col-md-2">
+                            <div className="form-group col-auto">
                                 <label className="col-form-label">Entry Type</label>
                                 <CSelect className="form-control form-control-sm" name="match_comm_type" value={item.match_comm_type} items={LIST_COMM_TYPE}> </CSelect>
                             </div>
@@ -237,7 +237,7 @@ class MemberForm extends Component {
                         </div>
                     </fieldset>    
                     <div className="mt-3 text-right col-md-101">
-                        <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                        <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit} onFocus={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                         <button className="btn btn-danger btn-sm ml-1" type="button" onClick={this.props.cancelFormClick}><i className="fa fa-undo"></i> Cancel</button>
                     </div>
                 </form>
