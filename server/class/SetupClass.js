@@ -2,6 +2,7 @@
 var bcrypt = require('bcryptjs');
 
 var UserModel = require('../model/UserModel')
+var AccountModel = require('../model/AccountModel')
 
 module.exports = {
     async initDb() {
