@@ -8,6 +8,8 @@ var Schema = mongoose.Schema,
 
 var SessionModel = require('../model/SessionModel')
 var SessionClass = require('../class/SessionClass')
+
+var DeleteClass = require('../class/DeleteClass')
     
 router.get('/', function(req, res, next) {
   SessionClass.list(req.query).exec(function (err, items) {
@@ -63,10 +65,17 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
-  SessionModel.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+ //  	SessionModel.remove({_id: req.params.id}, function(err){
+ //    if (err) return res.send(500, { error: err });
+ //    return res.send("succesfully saved");
+	// });
+
+	DeleteClass.session(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 

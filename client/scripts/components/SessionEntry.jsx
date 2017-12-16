@@ -13,6 +13,7 @@ import SessionForm from './Session/SessionForm'
 @inject('matchStore')
 @inject('sessionStore')
 @inject('sessionEntryStore')
+@inject('accountStore')
 @observer
 class SessionEntry extends Component {
 	constructor(props) {
@@ -37,8 +38,8 @@ class SessionEntry extends Component {
     }
 
     componentDidMount() {
-    	this.props.matchStore.fetchTeams(this.props.matchId)
-    	this.props.sessionStore.fetchList(this.props.matchId)
+    	// this.props.matchStore.fetchTeams(this.props.matchId)
+    	// this.props.sessionStore.fetchList(this.props.matchId)
     	if(this.props.globalStore.selectedSessionId) {
     		this.fetch(this.props.globalStore.selectedSessionId)
     	} else {            
@@ -68,7 +69,6 @@ class SessionEntry extends Component {
         });
     }
 
-
     fetch = (sessionId) => {
     	this.props.sessionEntryStore.fetchAll(sessionId)
     }
@@ -93,8 +93,9 @@ class SessionEntry extends Component {
 
 	onSessionFormSubmitted = (response) => {
 		// this.refs.sessionGrid.refresh()
-        this.props.globalStore.setSessionId(response._id)
+        this.props.globalStore.setSessionId(response.data._id)
 		this.props.sessionStore.fetchList(this.props.matchId)
+        this.fetch(response.data._id)
 	}
 
 	sessionGrid_onRowSelect = (rowdata) => {
@@ -106,6 +107,10 @@ class SessionEntry extends Component {
 	sessionGrid_onEdit= (rowdata) => {
 		this.openSessionForm(rowdata._id)
 	}
+
+    sessionGrid_onSessionDeleted = () => {
+        this.props.sessionStore.fetchList(this.props.matchId)
+    }
 
 
     openDeclareWindow = () => {
@@ -242,6 +247,7 @@ class SessionEntry extends Component {
     	const {selectedSessionId} = this.props.globalStore
     	const {sessionList} = this.props.sessionStore
     	const {sessionEntriesList, sessionPlInfo, sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
+        const { accountList } = this.props.accountStore
 
     	// console.log(selectedSessionId)
 
@@ -255,6 +261,7 @@ class SessionEntry extends Component {
             	<div className="row mt-2 mb-2">
          			<div className="col-md-12">
      					<SessionEntryForm ref="entryForm" matchId={this.props.matchId} 
+                                    accountList={accountList}
      								sessionId={selectedSessionId} sessionList={sessionList}
      								onFormSubmitted={this.sessionEntry_onFormSubmitted} 
      								comboSessionOnClose={this.comboSessionOnClose} />
@@ -275,7 +282,7 @@ class SessionEntry extends Component {
          				<button className="btn btn-primary btn-sm" onClick={this.sessionUndeclare}>Un Declare</button>
          				<div className="mt-2 mb-2">
 	         				<SessionGrid ref="sessionGrid" entriesList={sessionList} sessionId={selectedSessionId}
-	         							 onRowSelect={this.sessionGrid_onRowSelect} onEditButtonClick={this.sessionGrid_onEdit} />
+	         							 onRowSelect={this.sessionGrid_onRowSelect} onEditButtonClick={this.sessionGrid_onEdit} onSessionDeleted={this.sessionGrid_onSessionDeleted} />
          				</div>
          				
          			</div>

@@ -21,6 +21,7 @@ import { API_URL_MATCH_ABANDON, API_URL_MATCH_UNABANDON , API_URL_MATCH_UNDECLAR
 @inject('matchEntryStore')
 @inject('sessionStore')
 @inject('sessionEntryStore')
+@inject('accountStore')
 @observer
 class MatchEntry extends React.Component {
     constructor(props) {
@@ -32,21 +33,29 @@ class MatchEntry extends React.Component {
     }
 
     componentDidMount() {
-        this.fetch()
-        this.props.matchStore.fetch(this.props.matchId)
-
-        // For Session Form
+        this.props.matchStore.fetchTeams(this.props.matchId)
+        this.props.accountStore.fetchList()
         this.props.sessionStore.fetchList(this.props.matchId)
+        
+        this.fetch()
+        // this.props.matchStore.fetch(this.props.matchId)
+
+        // // For Session Form
+
     }
 
     onFormSubmitted = () => {
         this.fetch()
+        setTimeout(() => {
+        }, 1000)
     }
 
     fetch = () => {
-        this.props.matchEntryStore.fetchPlInfo(this.props.matchId, this.getBookNo())
-        this.props.matchEntryStore.fetchList(this.props.matchId, this.getBookNo())
-        this.props.matchStore.fetchTeams(this.props.matchId)
+        // this.props.matchEntryStore.fetchPlInfo(this.props.matchId, this.getBookNo())
+        // this.props.matchEntryStore.fetchList(this.props.matchId, this.getBookNo())
+        this.props.matchEntryStore.fetchAll(this.props.matchId, this.getBookNo())
+
+        
     }
 
     onEditButtonClick = (data) => {
@@ -186,10 +195,10 @@ class MatchEntry extends React.Component {
     }
 
     render() {
-        const {matchId} = this.props
-        const {match, teamsList} = this.props.matchStore
-        if (!this.props.matchId) return null;
-        if (_.isEmpty(match)) return null;
+        const {matchId, match} = this.props
+        const {teamsList} = this.props.matchStore
+        // if (!this.props.matchId) return null;
+        // if (_.isEmpty(match)) return null;
         const {entriesList, matchPlInfo} = this.props.matchEntryStore
         const {bookNoList, teamsWinLossList, lastEntryAccountTeamsWinLossList} = matchPlInfo
 
@@ -199,6 +208,8 @@ class MatchEntry extends React.Component {
         const {sessionList} = this.props.sessionStore
         const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
         
+
+        const { accountList } = this.props.accountStore
 
         const cssClassHidden = match.match_type==MATCH_TYPE_CUP ? ' hidden' : ''
         return ( 
@@ -224,13 +235,14 @@ class MatchEntry extends React.Component {
                     <div className="col-md-10">
                         <div className="mt-2 mb-2">
                             <SessionEntryForm ref="sessionEntryForm" matchId={this.props.matchId} 
+                                        accountList={accountList}
                                         sessionId={selectedSessionId} sessionList={sessionList}
                                         onFormSubmitted={this.sessionEntry_onFormSubmitted} 
                                         comboSessionOnClose={this.comboSessionOnClose} />
                         </div>
                         <div className="mb-2">
                             <MatchEntryForm ref="matchEntryForm" 
-                                matchId={matchId} match={match}
+                                matchId={matchId} match={match} accountList={accountList}
                                 onFormSubmitted={this.onFormSubmitted} getBookNo={this.getBookNo} 
                                 teamsList={teamsList} />
                         </div>

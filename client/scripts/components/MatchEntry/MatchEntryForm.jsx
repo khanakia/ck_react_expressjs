@@ -3,6 +3,8 @@ import { render } from 'react-dom'
 
 
 import ComboBoxMatchTeam from '../controls/ComboBoxMatchTeam.jsx'
+import ComboBoxLocal from '../controls/ComboBoxLocal.jsx'
+
 import ComboBoxTeam from '../controls/ComboBoxTeam.jsx'
 import ComboBoxMember from '../controls/ComboBoxMember.jsx'
 import InputDecimal from '../controls/InputDecimal.jsx'
@@ -78,11 +80,22 @@ class MatchEntryForm extends React.Component {
     formSubmit = (e) => {
         e.preventDefault()
         
+        if (!this.props.matchId) {
+            toastr.error("Please Select Match First.")
+            return false;
+        }
+
+        if(!this.refs.comboMember.getSelectedValue()) {
+            toastr.error('Please Select Party First.')
+            return false;
+        }
+
+
         let data = jQuery(this.refs.form).serialize()
         const dataJson = URI.parseQuery(data)
 
         AccountHelper.canBid(dataJson.account_id, dataJson.amount).then((response) => {
-            console.log(response)
+            // console.log(response)
             var responseData = response.data
 
             if(responseData.canBid) {
@@ -129,9 +142,9 @@ class MatchEntryForm extends React.Component {
 
         // return false;
 
-        if (!this.props.matchId) {
-            toastr.error("Please Select Match First.")
-        }
+        // if (!this.props.matchId) {
+        //     toastr.error("Please Select Match First.")
+        // }
 
         let data = jQuery(this.refs.form).serialize()
         const dataJson = URI.parseQuery(data)
@@ -142,10 +155,11 @@ class MatchEntryForm extends React.Component {
             // if(this.state.item._id) {
             // }
             this.resetForm()
+            toastr.success('Saved Successfully.')
 
+            this.refs.idinput.focus()
             setTimeout(() => {
-                this.refs.idinput.focus()
-            }, 500)
+            }, 300)
 
             this.props.onFormSubmitted(response);
 
@@ -205,7 +219,9 @@ class MatchEntryForm extends React.Component {
                         <div className="col-auto">
                             <label className="">Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />
+                                {/*<ComboBoxMember width={150} ref="comboMember" field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />*/}
+                                <ComboBoxLocal width={150} ref="comboMember" field_id="account_id" valueMember='_id' key={scount} onClose={this.onCloseComboMember}
+                                                displayMember='account_name' data={this.props.accountList}  selectedValue={item.account_id} />
                             </div>
                         </div>
                         <div className="col-auto ">

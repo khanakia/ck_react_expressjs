@@ -9,7 +9,7 @@ class ComboBoxLocal extends Component {
         width: 175,
         valueMember: '_id',
         displayMember: 'name',
-        data: {},
+        data: [],
         onChange: function() {},
         onSelect: function() {},
         onClose: function() {},

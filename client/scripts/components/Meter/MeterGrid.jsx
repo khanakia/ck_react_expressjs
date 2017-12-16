@@ -13,6 +13,7 @@ class MeterGrid extends Component {
         meterId: null,
         entriesList : [],
         
+        onDeleted: function(data) {},
         onDataUpdate: function(data) {},
         onEditButtonClick: function(data) {},
         onRowSelect: function(rowdata) {},
@@ -117,13 +118,17 @@ class MeterGrid extends Component {
                     return 'Delete';
                 },
                 buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    MeterHelper.delete(dataRecord.uid).then((res) => {
-                        this.props.onDataUpdate()
-                    }).catch((res)=> {
-                        toastr.error("Cannot Remove Item.")
-                    })
+                    var r = confirm("Are you sure!", ' ');
+                    if (r == true) {
+                        let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                        // console.log(dataRecord.uid)
+                        MeterHelper.delete(dataRecord.uid).then((res) => {
+                            // this.props.onDataUpdate()
+                            this.props.onDeleted()
+                        }).catch((error)=> {
+                            toastr.error(error.response.data.message)
+                        })
+                    }
 
                 }
             },

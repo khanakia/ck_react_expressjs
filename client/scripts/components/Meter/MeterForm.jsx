@@ -39,6 +39,9 @@ class MeterForm extends Component {
 	          toastr.error("Validation Failed")
 	        })
 		}
+
+
+        this.refs.meter_name.focus()
 	}
 
 	componentWillMount() {
@@ -88,7 +91,7 @@ class MeterForm extends Component {
                                 <div className="col-md-611">
                                     <div className="form-group">
                                         <label>Meter Name</label>
-            	                        <input  className="form-control form-control-sm" type="text" name="meter_name" defaultValue={this.state.item.meter_name} key={this.state.scount} />
+            	                        <input  className="form-control form-control-sm" type="text" ref="meter_name" name="meter_name" defaultValue={this.state.item.meter_name} key={this.state.scount} />
                                     </div>
                                     <div className="text-right">
         	                           <button className="btn btn-primary btn-sm text-right" type="submit">Save</button>

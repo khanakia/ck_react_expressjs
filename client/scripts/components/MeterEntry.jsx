@@ -13,6 +13,7 @@ import MeterForm from './Meter/MeterForm'
 @inject('matchStore')
 @inject('meterStore')
 @inject('meterEntryStore')
+@inject('accountStore')
 @observer
 class MeterEntry extends Component {
 	constructor(props) {
@@ -35,7 +36,7 @@ class MeterEntry extends Component {
     }
 
     componentDidMount() {
-    	this.props.matchStore.fetchTeams(this.props.matchId)
+    	// this.props.matchStore.fetchTeams(this.props.matchId)
     	this.props.meterStore.fetchList(this.props.matchId)
     	if(this.props.globalStore.selectedMeterId) {
     		this.fetch(this.props.globalStore.selectedMeterId)
@@ -54,7 +55,7 @@ class MeterEntry extends Component {
 		let mainDemoContainer = document.getElementById('footerContainer');
         let widgetContainer = document.createElement('div');
         mainDemoContainer.appendChild(widgetContainer);
-        render(<MeterForm onFormSubmitted={this.onMeterFormSubmitted} matchId={this.props.matchId} id={id} teamsList={teamsList} />, widgetContainer);
+        render(<MeterForm onFormSubmitted={this.onMeterFormSubmitted} onDeleted={this.meterGrid_onDeleted} matchId={this.props.matchId} id={id} teamsList={teamsList} />, widgetContainer);
 	}
 
 	showAddMeterWindow =() => {
@@ -82,6 +83,10 @@ class MeterEntry extends Component {
 	meterGrid_onDataUpdate = () => {
 		this.props.meterStore.fetchList(this.props.matchId)
 	}
+
+    meterGrid_onDeleted = () => {
+        this.props.meterStore.fetchList(this.props.matchId)
+    }
 
 
     openDeclareWindow = () => {
@@ -198,7 +203,7 @@ class MeterEntry extends Component {
     	const {selectedMeterId} = this.props.globalStore
     	const {meterList} = this.props.meterStore
     	const {meterEntriesList, meterPlInfo, meterWinLossList, lastEnteredRun} = this.props.meterEntryStore
-
+        const { accountList } = this.props.accountStore
     	// console.log(selectedMeterId)
 
         return (
@@ -211,6 +216,7 @@ class MeterEntry extends Component {
             	<div className="row mt-2 mb-2">
          			<div className="col-md-12">
      					<MeterEntryForm ref="entryForm" matchId={this.props.matchId} 
+                                    accountList={accountList}
      								meterId={selectedMeterId} meterList={meterList}
      								onFormSubmitted={this.meterEntry_onFormSubmitted} 
      								comboMeterOnClose={this.comboMeterOnClose} />

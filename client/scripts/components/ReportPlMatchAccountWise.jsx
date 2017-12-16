@@ -71,11 +71,13 @@ class ReportPlMatchAccountWise extends Component {
         this.source = {
             datatype: 'json',
             datafields: [
-                { name: 'match_id', type: 'string'},
+                { name: 'match_id', type: 'number'},
                 { name: 'match_name', type: 'string' },
-                { name: 'account_id', type: 'string' },
+                { name: 'account_id', type: 'number' },
                 { name: 'account_name', type: 'string' },                
-                { name: 'bal', type: 'string' },
+                // { name: 'bal', type: 'number' },
+                { name: 'pl_bal', type: 'number' },
+                { name: 'pl_comm', type: 'number' },
             ],
 
             // id: '_id',
@@ -90,7 +92,9 @@ class ReportPlMatchAccountWise extends Component {
             { text: 'Match Name', datafield: 'match_name', width: 150 },
             { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account Name', datafield: 'account_name', width: 150 },
-            { text: 'Balance', datafield: 'bal', width: 100 },
+            { text: 'P/L', datafield: 'pl_bal', width: 100 },
+            { text: 'Total Comm.', datafield: 'pl_comm', width: 100 },
+            // { text: 'Balance', datafield: 'bal', width: 100 },
         ];
     }
 

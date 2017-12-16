@@ -13,6 +13,7 @@ class SessionGrid extends Component {
         sessionId: null,
         entriesList : [],
         
+        onSessionDeleted: function(data) {},
         onEditButtonClick: function(data) {},
         onRowSelect: function(rowdata) {},
     }
@@ -117,13 +118,17 @@ class SessionGrid extends Component {
                     return 'Delete';
                 },
                 buttonclick: (row) => {
-                    let dataRecord = this.refs.jqxgrid.getrowdata(row);
-                    console.log(dataRecord.uid)
-                    SessionHelper.delete(dataRecord.uid).then((res) => {
-                        this.refresh()
-                    }).catch((res)=> {
-                        toastr.error("Cannot Remove Item.")
-                    })
+                    var r = confirm("Are you sure!", ' ');
+                    if (r == true) {
+                        let dataRecord = this.refs.jqxgrid.getrowdata(row);
+                        // console.log(dataRecord.uid)
+                        SessionHelper.delete(dataRecord.uid).then((res) => {
+                            this.refresh()
+                            this.props.onSessionDeleted()
+                        }).catch((error)=> {
+                            toastr.error(error.response.data.message)
+                        })
+                    }
 
                 }
             },

@@ -51,7 +51,7 @@ class InputDecimal extends React.Component {
    }
 
     handleChange = (event) => {
-      console.log('change')
+      // console.log('change')
       // var val = parseFloat(event.target.value).toFixed(2);
       var value = event.target.value.replace(/[^0-9\.\-]+/g, '');
       this.setState({
@@ -63,7 +63,7 @@ class InputDecimal extends React.Component {
     handleBlur = (event) => {
       var zero = 0;
 
-      console.log(window.settings.show_decimals)
+      // console.log(window.settings.show_decimals)
       if(window.settings.show_decimals) {
         var value = parseFloat(event.target.value).toFixed(this.props.scale);
         value = isNaN(value) ? zero.toFixed(this.props.scale)  : value;

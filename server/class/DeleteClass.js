@@ -4,8 +4,10 @@ var JournalEntryModel = require('../model/JournalEntryModel')
 var MatchModel = require('../model/MatchModel')
 var MatchEntryModel = require('../model/MatchEntryModel')
 var MatchTeamModel = require('../model/MatchTeamModel')
-var SessionModel = require('../model/AccountModel')
+var SessionModel = require('../model/SessionModel')
 var SessionEntryModel = require('../model/SessionEntryModel')
+var MeterModel = require('../model/MeterModel')
+var MeterEntryModel = require('../model/MeterEntryModel')
 var TeamModel = require('../model/TeamModel')
 
 var ResponseHelper = require('../class/ResponseHelper')
@@ -62,6 +64,46 @@ module.exports = {
         return ResponseHelper.ok(200, 'Successfully deleted.')
     },
 
+    async session(id) {
+        id = parseInt(id)
+        var q = {
+            session_id: parseInt(id)
+        }
+        var i = 0
+        i += await SessionEntryModel.find(q).count()
+
+        if(i>0) {
+            throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
+        } else {
+            try {
+                await SessionModel.remove({_id: id});
+            } catch(err) {
+                // throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
+            }
+        }
+        return ResponseHelper.ok(200, 'Successfully deleted.')
+    },
+
+    async meter(id) {
+        id = parseInt(id)
+        var q = {
+            meter_id: parseInt(id)
+        }
+        var i = 0
+        i += await MeterEntryModel.find(q).count()
+
+        if(i>0) {
+            throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
+        } else {
+            try {
+                await MeterModel.remove({_id: id});
+            } catch(err) {
+                // throw(ResponseHelper.error(401, 'Record is linked to other tables.'))
+            }
+        }
+        return ResponseHelper.ok(200, 'Successfully deleted.')
+    },
+
     async match(id) {
         id = parseInt(id)
         var q = {
@@ -72,8 +114,8 @@ module.exports = {
         i += await MatchEntryModel.find(q).count()
         i += await SessionModel.find(q).count()
         i += await SessionEntryModel.find(q).count()
-        i += await SessionModel.find(q).count()
-        i += await SessionModel.find(q).count()
+        i += await MeterModel.find(q).count()
+        i += await MeterEntryModel.find(q).count()
 
         if(i>0) {
             throw(ResponseHelper.error(401, 'Record is linked to other tables.'))

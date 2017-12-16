@@ -74,7 +74,8 @@ class MdiMatch extends Component {
     render() {
     	const matchId = this.props.match.params.id
     	const {match} = this.props.matchStore
-
+    	if (!matchId) return null;
+    	if (_.isEmpty(match)) return null;
         return (
 	        <div className="mdiPage">
 	        	<div>
@@ -99,13 +100,13 @@ class MdiMatch extends Component {
 			    </ul>
 			    <div className="tab-content" id="pills-tabContent">
 			        <div className="tab-pane fade show active" id="pills-match" role="tabpanel" aria-labelledby="pills-match-tab">
-			        	<MatchEntry matchId={matchId} />
+			        	<MatchEntry matchId={matchId} match={match} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
-			        	<SessionEntry matchId={matchId} />
+			        	{/*<SessionEntry matchId={matchId} />*/}
 			        </div>
 			        <div className="tab-pane fade" id="pills-meter" role="tabpanel" aria-labelledby="pills-meter-tab">
-			        	<MeterEntry matchId={matchId} />
+			        	{/*<MeterEntry matchId={matchId} />*/}
 			        </div>		    
 			    </div>
 	        </div>

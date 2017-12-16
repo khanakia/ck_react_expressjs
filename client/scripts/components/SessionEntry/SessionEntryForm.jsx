@@ -129,8 +129,8 @@ class SessionEntryForm extends React.Component {
             this.resetForm()
             this.props.onFormSubmitted(response.data);
 
+            this.refs.rate.refs.input.focus()
             setTimeout(() => {
-                this.refs.rate.refs.input.focus()
             }, 400)
             
         }).catch((err) => {
@@ -196,7 +196,10 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />
+                                {/*<ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" onClose={this.onCloseComboMember} />*/}
+
+                                <ComboBoxLocal width={150} ref="comboMember" field_id="account_id" valueMember='_id' key={scount} onClose={this.onCloseComboMember}
+                                                displayMember='account_name' data={this.props.accountList}  selectedValue={item.account_id} />
                             </div>
                         </div>
                         <div className="col-auto ">

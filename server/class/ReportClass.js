@@ -398,7 +398,7 @@ module.exports = {
             {
             "$match": {
                     "journal.match_id": { "$exists": true, "$ne": null },
-                    "is_company" : { "$in": [null, false] },
+                    // "is_company" : { "$in": [null, false] },
                 }
             },
 
@@ -409,6 +409,7 @@ module.exports = {
                     match_id: "$journal.match_id",
                     match_name: "$match.match_name",
                     bal : 1,
+                    type: 1
                 }
             },
 
@@ -425,8 +426,36 @@ module.exports = {
                     "account_id" : { $first: "$account_id"  },
                     "account_name" : { $first: "$account_name"  },
                     
-                    'bal': { 
-                            '$sum': '$bal'
+                    // 'bal': { 
+                    //     '$sum': '$bal'
+                    // },
+
+                    'pl_bal': { 
+                        '$sum': {
+                            '$cond': [
+                                // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$type", "PL" ] },
+                                   ]
+                                },
+                                '$bal', 
+                                0
+                            ]
+                        }
+                    },
+
+                    'pl_comm': { 
+                        '$sum': {
+                            '$cond': [
+                                // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                { "$and" : [
+                                       { "$eq": [ "$type", "Commission" ] },
+                                   ]
+                                },
+                                '$bal', 
+                                0
+                            ]
+                        }
                     },
                 }        
             } ,

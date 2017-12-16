@@ -3,6 +3,7 @@ var router = express.Router();
 
 var MeterModel = require('../model/MeterModel')
 var MeterClass = require('../class/MeterClass')
+var DeleteClass = require('../class/DeleteClass')
     
 router.get('/', function(req, res, next) {
   MeterClass.list(req.query).exec(function (err, items) {
@@ -58,10 +59,17 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
-  MeterModel.remove({_id: req.params.id}, function(err){
-    if (err) return res.send(500, { error: err });
-    return res.send("succesfully saved");
-	});
+ //  MeterModel.remove({_id: req.params.id}, function(err){
+ //    if (err) return res.send(500, { error: err });
+ //    return res.send("succesfully saved");
+	// });
+
+    DeleteClass.meter(req.params.id).then((data)=>{
+		res.send(data)
+	}).catch((err) => {
+		console.log('ERROR', err)
+		res.status(401).send(err)
+	})
 });
 
 

@@ -91,6 +91,9 @@ class MeterEntryForm extends React.Component {
         return false;
     }
 
+    onCloseComboMember = () => {
+        this.refs.submitBtn.focus()
+    }
 
     render() {
 
@@ -137,14 +140,16 @@ class MeterEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Party</label>
                             <div>
-                                <ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />
+                                {/*<ComboBoxMember width={150} field_id="account_id" selectedValue={item.account_id} key={scount} url="/accounts?status=true" />*/}
+                                <ComboBoxLocal width={150} ref="comboMember" field_id="account_id" valueMember='_id' key={scount} onClose={this.onCloseComboMember}
+                                                displayMember='account_name' data={this.props.accountList}  selectedValue={item.account_id} />
                             </div>
                         </div>
                         <div className="col-auto ">
                           <label className="">&nbsp;</label>
                           <div>
                             <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
-                              <button className="btn btn-primary btn-sm btnsubmit" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                              <button className="btn btn-primary btn-sm btnsubmit" type="button" ref="submitBtn" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                             </div>
                           </div>
                         </div>

@@ -16,7 +16,7 @@ class Header extends React.Component {
 
 
     componentDidMount() {
-        console.log(window.settings.grid_theme_name)
+        // console.log(window.settings.grid_theme_name)
         $("#jqxMenu").jqxMenu({ height: 30, showTopLevelArrows: true, keyboardNavigation: true, theme: window.settings.grid_theme_name });
 
         
