@@ -103,10 +103,10 @@ class MdiMatch extends Component {
 			        	<MatchEntry matchId={matchId} match={match} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
-			        	{/*<SessionEntry matchId={matchId} />*/}
+			        	<SessionEntry matchId={matchId} />
 			        </div>
 			        <div className="tab-pane fade" id="pills-meter" role="tabpanel" aria-labelledby="pills-meter-tab">
-			        	{/*<MeterEntry matchId={matchId} />*/}
+			        	<MeterEntry matchId={matchId} />
 			        </div>		    
 			    </div>
 	        </div>

@@ -54,6 +54,33 @@ error_log
 /cli/
 /cgi-bin/
 
+
 *.archive
-dist/
-!server/public/dist/
+
+# ignore Node Webkit files
+minidump_stackwalk
+nwjc
+nwjs.app/
+payload
+credits.html
+nwjs
+chromedriver
+
+# ignore other files
+ckdb.archive
+ck-server.exe
+.env
+#ck-electron-app
+
+# For Development purpose one
+/server/public/dist/
+/server/mongodb/
+/server/backup/
+/server/log/
+/server/temp/
+/dist/
+/electron/
+/nwjs/
+ammy.exe
+anydesk.exe
+

@@ -22,7 +22,7 @@ function create_dist
 {
     mkdir -p $dir_dist
 
-	# cd dir_client && webpack
+	cd $dir_client && webpack
 
 	cd $dir_server
 	if [ -f $ck_exe ] ; then
