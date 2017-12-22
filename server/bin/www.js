@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'production'
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 require('dotenv').config()
@@ -20,7 +20,7 @@ global.EVENTEMITTER = new EventEmitter();
 
 global.DS = process.platform=="darwin" ? "/" : "\\";
 global.APP_SECRET = process.env.APP_SECRET || "81F44FB42275569BF89A1946CC631"
-global.APP_URL = process.env.APP_URL || "http://localhost:3000"
+global.APP_URL = process.env.APP_URL || "http://127.0.0.1:3000"
 global.DIR_DIST = process.env.DIR_DIST || "."
 global.DIR_TEMP = `${DIR_DIST}${DS}temp`
 global.DIR_BACKUP = `${DIR_DIST}${DS}backup`
@@ -33,7 +33,7 @@ global.APP_NWJS_START_FILE = process.env.APP_NWJS_START_FILE || `${DIR_DIST}${DS
 
 // console.log(DIR_DIST)
 
-global.MONGO_DB_URI = 'mongodb://localhost:27017/ckdb';;
+global.MONGO_DB_URI = 'mongodb://127.0.0.1:27017/ckdb';;
 
 // Iniit Empty Mongoose Connection so we can create shcemas
 global.db = mongoose.connection

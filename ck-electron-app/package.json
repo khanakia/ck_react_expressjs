@@ -44,7 +44,7 @@
       }
     ],
     "win": {
-      "target": "dir",
+      "target": "nsis",
       "icon": "build/icon.ico"
     },
     "nsis": {

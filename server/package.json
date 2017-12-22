@@ -2,19 +2,19 @@
   "name": "ck-server",
   "version": "0.0.0",
   "private": true,
-  "node-main": "./bin/www",
-  "main": "http://localhost:3000",
+  "node-main": "./bin/www.js",
+  "main": "http://127.0.0.1:3000",
   "node-remote": "<all_urls>",
   "permissions": [
     "desktopCapture",
     "chrome-extension://*"
   ],
   "scripts": {
-    "start": "DEBUG=express:* nodemon ./bin/www",
+    "start": "DEBUG=express:* nodemon ./bin/www.js",
     "nw": "nw .",
     "nwjs": "../nwjs.app/Contents/MacOS/nwjs server/.",
-    "start_win": "set DEBUG=express:* && nodemon ./bin/www",
-    "start_win_prod": "set 'NODE_ENV=production' && nodemon ./bin/www",
+    "start_win": "set DEBUG=express:* && nodemon ./bin/www.js",
+    "start_win_prod": "set 'NODE_ENV=production' && nodemon ./bin/www.js",
     "nwjs_win": "..\nwjs\nw.exe server/.",
     "build": "pkg -t node8-win-x86 .",
     "postinstall11": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'public\\bower_components', 'junction') } catch (e) { }\""
@@ -24,7 +24,7 @@
       "public/*"
     ]
   },
-  "bin": "./bin/www",
+  "bin": "./bin/www.js",
   "pkg": {
     "assets": [
       "public/**/*",
@@ -53,6 +53,7 @@
     "base-64": "^0.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.17.1",
+    "compression": "^1.7.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "dotenv": "^4.0.0",

@@ -138,14 +138,13 @@ axios.interceptors.request.use(function (config) {
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
     // numberOfAjaxCAllPending--;
-    
-
     stores.ajaxStore.decrement()
     // if (numberOfAjaxCAllPending == 0) {
     //     //hide loader
     // }
     return response;
 }, function (error) {
+    stores.ajaxStore.decrement()
     return Promise.reject(error);
 });
 

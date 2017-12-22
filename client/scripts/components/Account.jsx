@@ -28,21 +28,8 @@ class Account extends Component {
     }
 
     onFormSubmit = (item) => {
-        console.log(this.props.match.params.id)
         if(typeof this.props.match.params.id!=="undefined" && this.props.match.params.id) {
-            // console.log('1')
-            // this.props.accountStore.account = {}
-
             this.props.accountStore.fetch(this.props.match.params.id)
-        } else {
-            // console.log('2')
-            
-            // this.props.accountStore.fetch(this.props.match.params.id)
-
-            // this.props.accountStore.account = {}
-            
-            this.props.accountStore.fetchList()
-            // this.editItem(item._id)
         }
         this.props.accountStore.fetchList()
     }

@@ -1,6 +1,6 @@
 
 export const APP_TITLE = 'London BetExchange v1.0';
-export const APP_ROOT_HOST = 'http://localhost:3000';
+export const APP_ROOT_HOST = 'http://127.0.0.1:3000';
 
 export const DEFAULT_DATE_FORMAT = "ll"
 export const LOCALSTORAGE_MATCHID = "matchId"

@@ -269,7 +269,7 @@ class MemberForm extends Component {
                         </div>
                     </fieldset>    
                     <div className="mt-3 text-right col-md-101">
-                        <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit} onFocus={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                        <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                         <button className="btn btn-danger btn-sm ml-1" type="button" onClick={this.props.cancelFormClick}><i className="fa fa-undo"></i> Cancel</button>
                     </div>
                 </form>

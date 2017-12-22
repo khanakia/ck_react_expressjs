@@ -11,7 +11,7 @@ window.jQuery = require('./jquery')
 var initInterval = null
 var exeCk = "ck-server.exe"
 var exeMongod = "mongod.exe"
-var localhostUrl = "http://localhost:3000"
+var localhostUrl = "http://127.0.0.1:3000"
 
 module.exports = {
     async init() {
