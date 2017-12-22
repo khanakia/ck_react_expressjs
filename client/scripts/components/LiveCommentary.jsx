@@ -96,6 +96,14 @@ class LiveCommentary extends Component {
         })
     }
 
+
+    renderExtraSessionItems(items) {
+        if(typeof items=="undefined") return null;
+        return items.map((item, i) => {
+            return this.renderSessionItems(item.sessions)
+        })
+    }
+
     render() {
         const item = this.state.item
         return (
@@ -120,6 +128,8 @@ class LiveCommentary extends Component {
                     <table className="table font-weight-bold">
                         <tbody>
                             {this.renderSessionItems(item.Sessions)}
+                            {this.renderExtraSessionItems(item.ExtraSession)}
+
                             {/*<tr>
                                 <td>{item.TITLE} </td>
                                 <td className="skyblue w-70p">{item.BACK}</td>

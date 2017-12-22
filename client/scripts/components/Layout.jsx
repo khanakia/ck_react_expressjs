@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 
 import Header from './Header'
+import AjaxLoader from './AjaxLoader'
 
 
 @inject('globalStore')
@@ -35,6 +36,7 @@ class Layout extends Component {
         return (
             <div className="layout">
                 <Header />
+                <AjaxLoader />
   
                 <main>
                 {this.props.children}

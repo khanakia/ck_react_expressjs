@@ -5,7 +5,7 @@ import { API_URL_METERS } from "../Constant"
 
 export class MeterStoreClass {
 	@observable fetched = false;
-	@observable meterList = [];
+	@observable.shallow meterList = [];
 	
 	fetchList(matchId=null) {
 		axios.get(API_URL_METERS, {

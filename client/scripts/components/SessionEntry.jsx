@@ -227,7 +227,7 @@ class SessionEntry extends Component {
 		this.refs.sessionGrid.selectRowBySessonId(sessionId)
 	}
 	sessionEntry_onFormSubmitted = (response) => {
-		this.refs.entryForm.resetForm()
+		// this.refs.entryForm.resetForm()
 		// console.log(response.session_id)
 		this.fetch(response.session_id)
 

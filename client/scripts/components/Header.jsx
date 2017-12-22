@@ -229,8 +229,8 @@ class Header extends React.Component {
                                         <Link to={APP_URL_PAGE_LIVE_MATCH_SCHEDULE}>Match Schedule</Link>
                                     </li>
                                     <li><a href="#" onClick={this.openLiveCommentaryWindow}>Session Odds</a></li>
-                                    <li><a href="#" onClick={this.openLiveVideo1}>Video Channel 1</a></li>
-                                    <li><a href="#" onClick={this.openLiveVideo2}>Video Channel 2</a></li>
+                                    {/*<li><a href="#" onClick={this.openLiveVideo1}>Video Channel 1</a></li>
+                                    <li><a href="#" onClick={this.openLiveVideo2}>Video Channel 2</a></li>*/}
                                 </ul>
                             </li>
                             <li><a href="#" onClick={this.logout}><i className="fa fa-sign-out"></i> Logout</a></li>

@@ -77,7 +77,7 @@ class SessionEntryForm extends React.Component {
         const dataJson = URI.parseQuery(data)
 
         AccountHelper.canBid(dataJson.account_id, dataJson.amount).then((response) => {
-            console.log(response)
+            // console.log(response)
             var responseData = response.data
 
             if(responseData.canBid) {
@@ -127,9 +127,9 @@ class SessionEntryForm extends React.Component {
         // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
             this.resetForm()
+            this.refs.rate.refs.input.focus()
             this.props.onFormSubmitted(response.data);
 
-            this.refs.rate.refs.input.focus()
             setTimeout(() => {
             }, 400)
             
@@ -171,7 +171,7 @@ class SessionEntryForm extends React.Component {
                         <div className="col-auto">
                             <label>Rate</label>
                             <div>
-                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" ref="rate" name="rate" scale={4} value={item.rate} key={scount} />
+                                <InputDecimal className="form-control form-control-sm w-50p error-hide required number" min="0" ref="rate" name="rate" scale={4} value={item.rate} />
                             </div>
                         </div>
                         <div className="col-auto">

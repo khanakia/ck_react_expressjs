@@ -1,3 +1,5 @@
+import DevTools from 'mobx-react-devtools'
+
 import React from 'react'
 import {
   Router,
@@ -32,6 +34,7 @@ import { BackupStoreClass } from './stores/BackupStoreClass';
 import { ServerStatusStoreClass } from './stores/ServerStatusStoreClass';
 import { UserStoreClass } from './stores/UserStoreClass';
 import { LiveApiStoreClass } from './stores/LiveApiStoreClass';
+import AjaxStoreClass from './stores/AjaxStoreClass';
 
 const routingStore = new RouterStore();
 const globalStore = new GlobalStoreClass();
@@ -69,7 +72,8 @@ const stores = {
   backupStore: backupStore,
   serverStatusStore: serverStatusStore,
   userStore: userStore,
-  liveApiStore: liveApiStore
+  liveApiStore: liveApiStore,
+  ajaxStore: AjaxStoreClass,
 
   // ...other stores
 };
@@ -120,6 +124,31 @@ window.Auth = Auth;
 window.ReactDOM = ReactDOM
 window.React = React
 window.sessionId = localStorage.getItem('sessionId', null);
+window.stores = stores
+
+axios.interceptors.request.use(function (config) {
+    // numberOfAjaxCAllPending++;
+    stores.ajaxStore.increment()
+    // show loader
+    return config;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // numberOfAjaxCAllPending--;
+    
+
+    stores.ajaxStore.decrement()
+    // if (numberOfAjaxCAllPending == 0) {
+    //     //hide loader
+    // }
+    return response;
+}, function (error) {
+    return Promise.reject(error);
+});
+
 
 const Root = () => (
    <Provider {...stores}>
@@ -165,6 +194,7 @@ const Root = () => (
           
       
       </Switch>
+          {/*<DevTools />*/}
 
       
     </div>

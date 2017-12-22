@@ -75,7 +75,7 @@ class JournalEntryGrid extends Component {
                         JournalEntryHelper.delete(dataRecord.uid).then((res) => {
                             this.props.onDataUpdate()
                         }).catch((err)=> {
-                            console.log(err)
+                            // console.log(err)                            
                             toastr.error(err.response.data.message)
                         })
                     }

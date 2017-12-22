@@ -7,7 +7,7 @@ import { API_URL_SESSIONS } from "../Constant"
 
 export class SessionStoreClass {
 	@observable fetched = false;
-	@observable sessionList = [];
+	@observable.shallow sessionList = [];
 	
 	fetchList(matchId=null) {
 		axios.get(API_URL_SESSIONS, {

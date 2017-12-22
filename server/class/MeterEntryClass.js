@@ -201,6 +201,7 @@ module.exports = {
         };
 
         MeterEntryModel.aggregate( [ 
+            { $sort: { created_at: -1} },
             {
                 $match: {
                     meter_id: parseInt(meter_id)

@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 
 export class JournalStoreClass {
 	@observable fetched = false;
-	@observable journalEntriesList = [];
+	@observable.shallow journalEntriesList = [];
 	
 	// fetchEntriesList(params) {
 	// 	axios.get('/journals/entries', {

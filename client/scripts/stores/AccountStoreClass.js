@@ -1,22 +1,21 @@
-import { observable } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 
 import AccountHelper from '../helpers/AccountHelper'
 
 export class AccountStoreClass {
 	@observable fetched = false;
-	@observable account = {};
-	@observable accountList = [];
+	@observable.ref account = {};
+	@observable.shallow accountList = [];
 	
-	
-	fetchList(params={is_company: null}) {
+	@action fetchList(params={is_company: null}) {
         AccountHelper.index(params).then( (res) => {
             this.accountList = res.data
         })
     }
 
-  	fetch(id) {
+  	@action fetch(id) {
 		AccountHelper.show(id).then((res) => {
-		    this.account = res.data
+			this.account = res.data
 		})
   	}
 }

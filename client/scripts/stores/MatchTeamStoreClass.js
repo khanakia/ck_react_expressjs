@@ -4,8 +4,8 @@ import MatchTeamHelper from '../helpers/MatchTeamHelper'
 
 export class MatchTeamStoreClass {
 	@observable fetched = false;
-	@observable matchTeam = {};
-	@observable matchTeamList = [];
+	@observable.ref matchTeam = {};
+	@observable.shallow matchTeamList = [];
 
 	fetchList(matchId) {
 		MatchTeamHelper.index({

@@ -27,15 +27,15 @@ class MatchEntryGrid extends Component {
         var datafields = [
             { name: '_id', type: 'string' },
             { name: 'account_name', type: 'string' },
-            { name: 'rate', type: 'string' },
-            { name: 'amount', type: 'string' },
+            { name: 'rate', type: 'number' },
+            { name: 'amount', type: 'number' },
             { name: 'lk', type: 'string' },
             { name: 'team_name', type: 'string' },
-            { name: 'team_id', type: 'string' },
-            { name: 'account_id', type: 'string' },
-            { name: 'match_id', type: 'string' },
+            { name: 'team_id', type: 'number' },
+            { name: 'account_id', type: 'number' },
+            { name: 'match_id', type: 'number' },
             { name: 'match_team_id', type: 'number' },
-            { name: 'amounts', type: 'string' },
+            { name: 'amounts', type: 'number' },
             { name: 'comm_yn', type: 'boolean' },
             { name: 'is_summarized', type: 'boolean' },
             { name: 'created_at', type: 'date'},
@@ -117,7 +117,7 @@ class MatchEntryGrid extends Component {
             { text: 'Id', datafield: '_id', width: 50 },
             { text: 'Party', datafield: 'account_name', width: 150 },
             { text: 'Rate', datafield: 'rate', width: 100 },
-            { text: 'Amount', datafield: 'amount', width: 100 },
+            { text: 'Amount', datafield: 'amount', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'L/K', datafield: 'lk', width: 50 },
             { text: 'Team', datafield: 'team_name', width: 100 },
         ];
@@ -126,7 +126,8 @@ class MatchEntryGrid extends Component {
             columns.push({
                 text: item.team_name,
                 datafield: item.team_name,
-                width: 100
+                width: 100,
+                cellsformat: 'd2', aggregates: ['sum']
             })
         })
 
@@ -144,6 +145,7 @@ class MatchEntryGrid extends Component {
                   width={"100%"} height={400} source={this.dataAdapter} pageable={false}
                   sortable={true} altrows={true} enabletooltips={false}
                   editable={false} columns={columns} selectionmode={selectionmode}
+                  showstatusbar={true} showaggregates={true} statusbarheight={25}
                   filterable={filterable} showfilterrow={showfilterrow}
                 />
             </div>

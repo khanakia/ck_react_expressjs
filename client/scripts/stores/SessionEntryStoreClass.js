@@ -9,18 +9,18 @@ import { API_URL_SESSION_ENTRIES, API_URL_SESSION_ENTRIES_PLINFO, API_URL_SESSIO
 
 export class SessionEntryStoreClass {
     @observable fetched = false;
-    @observable sessionEntriesList = [];
-    @observable sessionPlInfo = {};
-    @observable sessionWinLossList = [];
+    @observable.shallow sessionEntriesList = [];
+    @observable.ref sessionPlInfo = {};
+    @observable.shallow sessionWinLossList = [];
 
     // this is we are using to scroll to that run in SessionEntryWinLossGrid
     @observable lastEnteredRun = null;
 
-    @observable displayData = {
-        sessionEntriesList: [],
-        sessionPlInfo: {},
-        sessionWinLossList: [],
-    }
+    // @observable displayData = {
+    //     sessionEntriesList: [],
+    //     sessionPlInfo: {},
+    //     sessionWinLossList: [],
+    // }
 
     clearAll() {
         this.sessionEntriesList = []

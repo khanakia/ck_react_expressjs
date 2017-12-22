@@ -9,18 +9,18 @@ import { API_URL_METER_ENTRIES, API_URL_METER_ENTRIES_PLINFO, API_URL_METER_ENTR
 
 export class MeterEntryStoreClass {
     @observable fetched = false;
-    @observable meterEntriesList = [];
-    @observable meterPlInfo = {};
-    @observable meterWinLossList = [];
+    @observable.shallow meterEntriesList = [];
+    @observable.ref meterPlInfo = {};
+    @observable.shallow meterWinLossList = [];
 
     // this is we are using to scroll to that run in meterEntryWinLossGrid
     @observable lastEnteredRun = null;
 
-    @observable displayData = {
-        meterEntriesList: [],
-        meterPlInfo: {},
-        meterWinLossList: [],
-    }
+    // @observable displayData = {
+    //     meterEntriesList: [],
+    //     meterPlInfo: {},
+    //     meterWinLossList: [],
+    // }
 
     clearAll() {
         this.meterEntriesList = []

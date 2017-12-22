@@ -255,6 +255,7 @@ module.exports = {
         };
 
         return SessionEntryModel.aggregate( [ 
+            { $sort: { created_at: -1} },
             {
                 $match: match
             },

@@ -6,9 +6,9 @@ import { API_URL_MATCH_TEAMS } from "../Constant"
 
 export class MatchStoreClass {
 	@observable fetched = false;
-	@observable match = {};
-	@observable matchList = [];
-	@observable teamsList = [];
+	@observable.ref match = {};
+	@observable.shallow matchList = [];
+	@observable.shallow teamsList = [];
 
 	fetchList(params) {
 		MatchHelper.index(params).then((res) => {

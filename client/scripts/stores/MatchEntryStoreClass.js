@@ -7,12 +7,12 @@ import { API_URL_MATCH_ENTRIES, API_URL_MATCH_ENTRIES_PLINFO } from "../Constant
 
 export class MatchEntryStoreClass {
 	@observable fetched = false;
-	@observable match = {};
-	@observable matchPlInfo = {
+	@observable.ref match = {};
+	@observable.ref matchPlInfo = {
 		bookNoList : [],
 		teamsWinLossList : []
 	};
-	@observable entriesList = [];
+	@observable.shallow entriesList = [];
 
 
 	fetchAll(matchId, bookNo=null) {

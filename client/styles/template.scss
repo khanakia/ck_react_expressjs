@@ -40,6 +40,15 @@ main {
 }
 
 
+.progressBar {
+	position: fixed;
+    background: #f9edbe;
+    left: 50%;
+    top: 0;
+    padding: 0 10px;
+    font-weight: bold;
+}
+
 /* UTILITIES */
 .hidden {
 	display: none;

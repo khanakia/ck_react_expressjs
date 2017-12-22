@@ -24,7 +24,7 @@ class JournalEntry extends Component {
         }
 
 
-        axios.get("/others/create_book_account")
+        // axios.get("/others/create_book_account")
 
         this.initMouseTrap()
 
@@ -39,8 +39,9 @@ class JournalEntry extends Component {
     componentWillReceiveProps(nextProps) {
         // console.log(nextProps.match.params.id, this.props.match.params.id)
         if(nextProps.match.params.account_id!==this.props.match.params.account_id) {
-            this.props.journalEntryStore.fetchListByAccount(nextProps.match.params.account_id, this.refs.showMondayFinalChk.checked)
-            this.props.journalEntryStore.fetchAccountBalanceObject(nextProps.match.params.account_id)
+            this.props.journalEntryStore.fetchAll(nextProps.match.params.account_id, this.refs.showMondayFinalChk.checked)
+            // this.props.journalEntryStore.fetchListByAccount(nextProps.match.params.account_id, this.refs.showMondayFinalChk.checked)
+            // this.props.journalEntryStore.fetchAccountBalanceObject(nextProps.match.params.account_id)
         }
     }
 
@@ -58,8 +59,9 @@ class JournalEntry extends Component {
 
 
     fetch = () => {
-        this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
-        this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
+        this.props.journalEntryStore.fetchAll(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+        // this.props.journalEntryStore.fetchListByAccount(this.props.match.params.account_id, this.refs.showMondayFinalChk.checked)
+        // this.props.journalEntryStore.fetchAccountBalanceObject(this.props.match.params.account_id)
     }
 
 
@@ -132,18 +134,18 @@ class JournalEntry extends Component {
         // console.log(message)
 
 
-        const cbClass = selectedAccCurrentBal >= 0 ? ' red1' : ' green1';
-        const obClass = selectedAccMonFinalBal >= 0 ? ' red1' : ' green1';
+        const cbClass = selectedAccCurrentBal >= 0 ? ' green1' : ' red1';
+        const obClass = selectedAccMonFinalBal >= 0 ? ' green1' : ' red1';
         return (
             <div className="page mx-2">
                 <div className="row info-heading-block">
                     <div className="col-md-6">
                         <label>Opening Balance: </label>
-                        <span className={"amount" + cbClass}>{selectedAccMonFinalBal}</span>
+                        <span className={"amount" + obClass}>{selectedAccMonFinalBal}</span>
                     </div>
                     <div className="col-md-6 text-right">
                         <label>Current Balance: </label>
-                        <span className={"amount" + obClass}>{selectedAccCurrentBal}</span>
+                        <span className={"amount" + cbClass}>{selectedAccCurrentBal}</span>
                     </div>
                     {/*<div className="col-auto">
                         <label>Grand Total: </label>

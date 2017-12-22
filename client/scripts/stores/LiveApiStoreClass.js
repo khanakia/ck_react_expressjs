@@ -5,7 +5,7 @@ import { API_URL_LIVE_MATCHSCHEDULES } from "../Constant"
 export class LiveApiStoreClass {
 	@observable fetched = false;
 	
-	@observable matchScheduleList = [];
+	@observable.shallow matchScheduleList = [];
 	
 	fetchMatchScheduleList(params={}) {
 		// axios.get(API_URL_LIVE_MATCHSCHEDULES, {

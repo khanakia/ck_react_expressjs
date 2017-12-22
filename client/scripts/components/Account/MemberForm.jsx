@@ -130,8 +130,8 @@ class MemberForm extends Component {
                                 </div>
                             </div>
                             {Array.apply(0, Array(2)).map( (x, i) => { 
-                                var account_id = (item.match_comm_accounts[i] == undefined) ? '' : item.match_comm_accounts[i]['account_id']; 
-                                var match_comm = (item.match_comm_accounts[i] == undefined) ? 0 : item.match_comm_accounts[i]['match_comm']; 
+                                var account_id = (item.match_comm_accounts.length==0 || item.match_comm_accounts[i] == undefined) ? '' : item.match_comm_accounts[i]['account_id']; 
+                                var match_comm = (item.match_comm_accounts.length==0 || item.match_comm_accounts[i] == undefined) ? 0 : item.match_comm_accounts[i]['match_comm']; 
                                 return (
                                     <div className="row" key={`${item.id}_key_${i}`}>
                                         <div className="col-md-1">
@@ -161,8 +161,8 @@ class MemberForm extends Component {
                                 </div>
                             </div>
                             {Array.apply(0, Array(1)).map( (x, i) => { 
-                                var account_id = (item.meter_comm_accounts[i] == undefined) ? '' : item.meter_comm_accounts[i]['account_id']; 
-                                var meter_comm = (item.meter_comm_accounts[i] == undefined) ? 0 : item.meter_comm_accounts[i]['meter_comm']; 
+                                var account_id = (item.meter_comm_accounts.length==0 || item.meter_comm_accounts[i] == undefined) ? '' : item.meter_comm_accounts[i]['account_id']; 
+                                var meter_comm = (item.meter_comm_accounts.length==0 || item.meter_comm_accounts[i] == undefined) ? 0 : item.meter_comm_accounts[i]['meter_comm']; 
                                 return (
                                     <div className="row" key={`${item.id}_key_${i}`}>
                                         <div className="col-md-1">
@@ -192,8 +192,8 @@ class MemberForm extends Component {
                                 </div>
                             </div>
                             {Array.apply(0, Array(2)).map( (x, i) => { 
-                                var account_id = (item.sess_comm_accounts[i] == undefined) ? '' : item.sess_comm_accounts[i]['account_id']; 
-                                var sess_comm = (item.sess_comm_accounts[i] == undefined) ? 0 : item.sess_comm_accounts[i]['sess_comm']; 
+                                var account_id = (item.sess_comm_accounts.length==0 || item.sess_comm_accounts[i] == undefined) ? '' : item.sess_comm_accounts[i]['account_id']; 
+                                var sess_comm = (item.sess_comm_accounts.length==0 || item.sess_comm_accounts[i] == undefined) ? 0 : item.sess_comm_accounts[i]['sess_comm']; 
                                 return (
                                     <div className="row" key={`${item.id}_key_${i}`}>
                                         <div className="col-md-1">
@@ -232,10 +232,10 @@ class MemberForm extends Component {
                                 </div>
                             </div>
                             {Array.apply(0, Array(3)).map( (x, i) => { 
-                                var account_id = (item.patti[i] == undefined) ? '' : item.patti[i]['account_id']; 
-                                var match = (item.patti[i] == undefined) ? 0 : item.patti[i]['match']; 
-                                var session = (item.patti[i] == undefined) ? 0 : item.patti[i]['session']; 
-                                var meter = (item.patti[i] == undefined) ? 0 : item.patti[i]['meter']; 
+                                var account_id = (item.patti.length==0 || item.patti[i] == undefined) ? '' : item.patti[i]['account_id']; 
+                                var match = (item.patti.length==0 || item.patti[i] == undefined) ? 0 : item.patti[i]['match']; 
+                                var session = (item.patti.length==0 || item.patti[i] == undefined) ? 0 : item.patti[i]['session']; 
+                                var meter = (item.patti.length==0 || item.patti[i] == undefined) ? 0 : item.patti[i]['meter']; 
                                 return (
                                     <div className="row" key={`${item.id}_key_${i}`}>
                                         <div className="col-md-1">

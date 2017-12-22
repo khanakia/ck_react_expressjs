@@ -16,15 +16,15 @@ export class ReportStoreClass {
 	@observable fetched = false;
 	
 	
-	@observable accountBalanceList = [];
-	@observable plMatchAccountWiseList = [];
-	@observable plMatchAccountWise_MatchSummaryList = [];
-	@observable plMatchWiseList = [];
-	@observable journalSummaryList = [];
-	@observable connectListMatches = [];
-	@observable connectReportList = [];
-	@observable activityLogList = [];
-	@observable beforeDeclarationList = [];
+	@observable.shallow accountBalanceList = [];
+	@observable.shallow plMatchAccountWiseList = [];
+	@observable.shallow plMatchAccountWise_MatchSummaryList = [];
+	@observable.shallow plMatchWiseList = [];
+	@observable.shallow journalSummaryList = [];
+	@observable.shallow connectListMatches = [];
+	@observable.shallow connectReportList = [];
+	@observable.shallow activityLogList = [];
+	@observable.shallow beforeDeclarationList = [];
 
 
 	fetchAccountBalanceList() {
