@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { inject, observer } from 'mobx-react';
+
+@inject('sessionEntryStore')
+@observer
 class SessionInfoBlock extends Component {
     constructor(props) {
         super(props)
@@ -15,7 +19,11 @@ class SessionInfoBlock extends Component {
 
 
     render() {
-        const item = Object.assign({}, this.defaultItem, this.props.plInfo)
+
+        const {sessionPlInfo} = this.props.sessionEntryStore
+
+        // const item = Object.assign({}, this.defaultItem, this.props.plInfo)
+        const item = Object.assign({}, this.defaultItem, sessionPlInfo)
 
         return (
             <div>

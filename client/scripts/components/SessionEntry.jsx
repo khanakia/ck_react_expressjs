@@ -12,7 +12,7 @@ import SessionForm from './Session/SessionForm'
 @inject('globalStore')
 @inject('matchStore')
 @inject('sessionStore')
-@inject('sessionEntryStore')
+// @inject('sessionEntryStore')
 @inject('accountStore')
 @observer
 class SessionEntry extends Component {
@@ -70,7 +70,8 @@ class SessionEntry extends Component {
     }
 
     fetch = (sessionId) => {
-    	this.props.sessionEntryStore.fetchAll(sessionId)
+    	// this.props.sessionEntryStore.fetchAll(sessionId)
+        stores.sessionEntryStore.fetchAll(sessionId)
     }
 
 	//// Sessions Functions =======================================
@@ -231,7 +232,8 @@ class SessionEntry extends Component {
 		// console.log(response.session_id)
 		this.fetch(response.session_id)
 
-		this.props.sessionEntryStore.lastEnteredRun = response.runs
+        stores.sessionEntryStore.lastEnteredRun = response.runs
+		// this.props.sessionEntryStore.lastEnteredRun = response.runs
 	}
 
 	entryGrid_onEditButtonClick = (data) => {
@@ -246,7 +248,7 @@ class SessionEntry extends Component {
     	
     	const {selectedSessionId} = this.props.globalStore
     	const {sessionList} = this.props.sessionStore
-    	const {sessionEntriesList, sessionPlInfo, sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
+    	// const {sessionEntriesList, sessionPlInfo, sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
         const { accountList } = this.props.accountStore
 
     	// console.log(selectedSessionId)
@@ -255,7 +257,7 @@ class SessionEntry extends Component {
             <div>
             	<div className="row info-heading-block">
             		<div className="col-md-12">
-		         		<SessionInfoBlock plInfo={sessionPlInfo} />
+		         		<SessionInfoBlock />
             		</div>
             	</div>
             	<div className="row mt-2 mb-2">
@@ -269,11 +271,12 @@ class SessionEntry extends Component {
 				</div>         			
          		<div className="row sessionGridsRow">
          			<div className="acol acol1">
-         				<SessionEntryGrid ref="entryGrid" entriesList={sessionEntriesList}
+         				<SessionEntryGrid ref="entryGrid"
+                                filterable={false} showfilterrow={false}
          						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
          			</div>
          			<div className="acol acol2">
-         				<SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
+         				<SessionEntryWinLossGrid ref="winlossGrid" />
          			</div>
          			
          			<div className="acol acol3">

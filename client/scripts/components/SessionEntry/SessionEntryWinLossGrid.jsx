@@ -1,6 +1,10 @@
 import React, { Component } from "react";
+import { inject, observer } from 'mobx-react';
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
+
+@inject('sessionEntryStore')
+@observer
 class SessionEntryWinLossGrid extends Component {
     constructor(props) {
         super(props);
@@ -13,13 +17,24 @@ class SessionEntryWinLossGrid extends Component {
         lastEnteredRun: null
     }
 
+    componentWillMount() {
+        this.initDataAdapter()
+    }
+
     componentDidMount() {
-        window.abc = this
+        // window.abc = this
     }
 
     componentDidUpdate() {
+
+        const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
+
+        this.source.localdata = sessionWinLossList.slice()
+        this.dataAdapter.dataBind()
+
         // console.log(this.props.lastEnteredRun)
-        this.scrollToRow(this.props.lastEnteredRun)
+        // this.scrollToRow(this.props.lastEnteredRun)
+        this.scrollToRow(lastEnteredRun)
     }
 
     scrollToRow(index) {
@@ -44,7 +59,9 @@ class SessionEntryWinLossGrid extends Component {
         this.refs.jqxgrid.updatebounddata();
     }
 
-    render() {
+    initDataAdapter() {
+         const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
+
 
         var cellclassname_Amt = function(row, column, value, data) {
             // console.log(row, column , value, data)
@@ -59,16 +76,17 @@ class SessionEntryWinLossGrid extends Component {
             { name: 'amount', type: 'string' },
         ];
 
-        let source = {
+        this.source = {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            localdata: this.props.entriesList.slice(),
+            // localdata: this.props.entriesList.slice(),
+            localdata: sessionWinLossList.slice(),
         };
 
-        this.dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
-        let columns = [
+        this.columns = [
             { text: 'Runs', datafield: 'runs', width: 60, cellclassname: cellclassname_Amt },
             {
                 text: 'Amount',
@@ -77,14 +95,19 @@ class SessionEntryWinLossGrid extends Component {
                 cellclassname: cellclassname_Amt
             }
         ];
+    }
+
+    render() {
+
+       const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
 
         return (
             <div>
-                <JqxGrid ref="jqxgrid" key={Math.random()}
+                <JqxGrid ref="jqxgrid" key11={Math.random()}
                     source={this.dataAdapter}
                     width={'100%'} height={400} 
                     sortable={false} altrows={false} enabletooltips={false} 
-                    editable={false} columns={columns} 
+                    editable={false} columns={this.columns} 
                     filterable={false} showfilterrow={false} pagesize={100} pageable={false} />
             </div>
         );

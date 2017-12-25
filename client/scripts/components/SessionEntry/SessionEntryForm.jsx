@@ -126,6 +126,7 @@ class SessionEntryForm extends React.Component {
         const dataJson = URI.parseQuery(data)
         // console.log(dataJson)
         SessionEntryHelper.save(dataJson, this.state.item._id).then((response) => {
+            toastr.success('Successfully Saved')
             this.resetForm()
             this.refs.rate.refs.input.focus()
             this.props.onFormSubmitted(response.data);

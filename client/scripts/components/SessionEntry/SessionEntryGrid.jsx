@@ -1,8 +1,11 @@
 import React, { Component } from "react";
+import { inject, observer } from 'mobx-react';
+
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import SessionEntryHelper from '../../helpers/SessionEntryHelper'
 
-
+@inject('sessionEntryStore')
+@observer
 class SessionEntryGrid extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +25,10 @@ class SessionEntryGrid extends Component {
     }
 
     componentDidUpdate() {
-        this.source.localdata = this.props.entriesList.slice()
+        const {sessionEntriesList} = this.props.sessionEntryStore
+
+        // this.source.localdata = this.props.entriesList.slice()
+        this.source.localdata = sessionEntriesList.slice()
         this.dataAdapter.dataBind()
     }
 
@@ -32,6 +38,9 @@ class SessionEntryGrid extends Component {
     }
 
     initDataAdapter() {
+
+        const {sessionEntriesList} = this.props.sessionEntryStore
+
         var datafields = [
             { name: '_id', type: 'string' },
             { name: 'rate', type: 'number' },
@@ -58,7 +67,9 @@ class SessionEntryGrid extends Component {
             datatype: 'json',
             datafields: datafields,
             id: '_id',
-            localdata: this.props.entriesList.slice(),
+            // localdata: this.props.entriesList.slice(),
+            localdata: sessionEntriesList.slice(),
+            
         };
 
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
@@ -85,6 +96,7 @@ class SessionEntryGrid extends Component {
                     var r = confirm("Are you sure!", ' ');
                     if (r == true) {
                         SessionEntryHelper.delete(dataRecord.uid).then((res) => {
+                            toastr.success('Successfully Deleted')
                             this.props.onDataUpdate()
                         }).catch((err)=> {
                             toastr.error(err.response.data.message)
@@ -133,11 +145,12 @@ class SessionEntryGrid extends Component {
     }
 
     render() {
+        const {sessionEntriesList} = this.props.sessionEntryStore
         const { filterable, showfilterrow, selectionmode } = this.props
 
         return (
             <div>
-                <JqxGrid ref="jqxgrid" key={Math.random()}
+                <JqxGrid ref="jqxgrid" key11={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={true} enabletooltips={true}
