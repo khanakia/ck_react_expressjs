@@ -34,9 +34,9 @@ class SessionEntryGrid extends Component {
         let el = document.querySelector('#sessionEntryGrid'); 
         let headers = el.querySelectorAll('.jqx-grid-column-header');
         let lastHeader = headers[headers.length -1];
-        if(lastHeader && lastHeader.parentElement.previousElementSibling) {
-            lastHeader.parentElement.remove();
-        }
+        lastHeader.parentElement.remove();
+        // if(lastHeader && lastHeader.parentElement.previousElementSibling) {
+        // }
     }
 
     refresh = () => {
