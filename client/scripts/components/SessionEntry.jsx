@@ -43,7 +43,8 @@ class SessionEntry extends Component {
     	if(this.props.globalStore.selectedSessionId) {
     		this.fetch(this.props.globalStore.selectedSessionId)
     	} else {            
-            this.props.sessionEntryStore.clearAll()
+            // this.props.sessionEntryStore.clearAll()
+            stores.sessionEntryStore.clearAll()
         }
 
 
@@ -272,7 +273,7 @@ class SessionEntry extends Component {
          		<div className="row sessionGridsRow">
          			<div className="acol acol1">
          				<SessionEntryGrid ref="entryGrid"
-                                filterable={false} showfilterrow={false}
+                                filterable={true} showfilterrow={true}
          						onEditButtonClick={this.entryGrid_onEditButtonClick} onDataUpdate={this.entryGrid_onDataUpdate} />
          			</div>
          			<div className="acol acol2">

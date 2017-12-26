@@ -5,6 +5,7 @@ import MatchEntryHelper from '../../helpers/MatchEntryHelper'
 class MatchEntryGrid extends Component {
     constructor(props) {
         super(props);
+        this.hasInit = false
     }
 
     static defaultProps = {
@@ -18,11 +19,34 @@ class MatchEntryGrid extends Component {
         selectionmode: 'singlerow'
     }
 
-    refresh = () => {        
-        this.dataAdapter.dataBind()
+    componentWillMount() {
+        // this.initDataAdapter()
     }
 
-    render() {
+    componentDidUpdate() {
+        // const {sessionEntriesList} = this.props.sessionEntryStore
+
+        this.source.localdata = this.props.entriesList.slice()
+        // this.source.localdata = sessionEntriesList.slice()
+        this.dataAdapter.dataBind()
+
+        let el = document.querySelector('#matchEntryGrid'); 
+        if(el) {
+            let headers = el.querySelectorAll('.jqx-grid-column-header');
+            let lastHeader = headers[headers.length -1];
+            if(lastHeader && lastHeader.parentElement.previousElementSibling) {
+                lastHeader.parentElement.remove();
+            }
+        }
+    }
+
+    // refresh = () => {        
+    //     this.dataAdapter.dataBind()
+    // }
+
+
+    initDataAdapter = () => {
+        // console.log('inIT')
         const teamsList = this.props.teamsList
         var datafields = [
             { name: '_id', type: 'string' },
@@ -50,16 +74,16 @@ class MatchEntryGrid extends Component {
             })
         }
 
-        let source = {
+        this.source = {
             datatype: 'json',
             id: '_id',
             localdata: this.props.entriesList.slice(),
             datafields: datafields,
         };
 
-        this.dataAdapter = new $.jqx.dataAdapter(source);
+        this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
-        let columns = [{
+        this.columns = [{
                 text: '',
                 datafield: 'Delete',
                 columntype: 'button',
@@ -122,8 +146,8 @@ class MatchEntryGrid extends Component {
             { text: 'Team', datafield: 'team_name', width: 100 },
         ];
 
-        teamsList.map(function(item, i) {
-            columns.push({
+        teamsList.map((item, i) => {
+            this.columns.push({
                 text: item.team_name,
                 datafield: item.team_name,
                 width: 100,
@@ -131,20 +155,32 @@ class MatchEntryGrid extends Component {
             })
         })
 
-        columns.push(
+        this.columns.push(
                 { text: 'Comm YN', datafield: 'comm_yn', width: 100, columntype: 'checkbox', filtertype:'bool' },
                 { text: 'Is Summarized', datafield: 'is_summarized', width: 100, columntype: 'checkbox', filtertype:'bool'},
                 { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
             )
+    }
+
+    render() {
+        const teamsList = this.props.teamsList
+        if(teamsList.length==0) {
+            return null
+        }
+
+        if(teamsList.length>0 && !this.hasInit) {
+            this.hasInit = true
+            this.initDataAdapter()
+        } 
 
         const { filterable, showfilterrow, selectionmode } = this.props
         return (
-            <div>
-                <JqxGrid key={Math.random()}
+            <div id="matchEntryGrid">
+                <JqxGrid key11={Math.random()}
                   ref="jqxgrid"
                   width={"100%"} height={400} source={this.dataAdapter} pageable={false}
                   sortable={true} altrows={true} enabletooltips={false}
-                  editable={false} columns={columns} selectionmode={selectionmode}
+                  editable={false} columns={this.columns} selectionmode={selectionmode}
                   showstatusbar={true} showaggregates={true} statusbarheight={25}
                   filterable={filterable} showfilterrow={showfilterrow}
                 />

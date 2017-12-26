@@ -131,8 +131,8 @@ class SessionEntryForm extends React.Component {
             this.refs.rate.refs.input.focus()
             this.props.onFormSubmitted(response.data);
 
-            setTimeout(() => {
-            }, 400)
+            // setTimeout(() => {
+            // }, 400)
             
         }).catch((err) => {
             // console.log(err)

@@ -103,7 +103,7 @@ class SessionEntryWinLossGrid extends Component {
 
         return (
             <div>
-                <JqxGrid ref="jqxgrid" key11={Math.random()}
+                <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter}
                     width={'100%'} height={400} 
                     sortable={false} altrows={false} enabletooltips={false} 

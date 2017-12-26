@@ -20,7 +20,7 @@ import { API_URL_MATCH_ABANDON, API_URL_MATCH_UNABANDON , API_URL_MATCH_UNDECLAR
 @inject('matchStore')
 @inject('matchEntryStore')
 @inject('sessionStore')
-@inject('sessionEntryStore')
+// @inject('sessionEntryStore')
 @inject('accountStore')
 @observer
 class MatchEntry extends React.Component {
@@ -51,8 +51,6 @@ class MatchEntry extends React.Component {
     }
 
     fetch = () => {
-        // this.props.matchEntryStore.fetchPlInfo(this.props.matchId, this.getBookNo())
-        // this.props.matchEntryStore.fetchList(this.props.matchId, this.getBookNo())
         this.props.matchEntryStore.fetchAll(this.props.matchId, this.getBookNo())
 
         
@@ -90,7 +88,6 @@ class MatchEntry extends React.Component {
         let mainDemoContainer = document.getElementById('footerContainer');
             let widgetContainer = document.createElement('div');
             mainDemoContainer.appendChild(widgetContainer);
-            // console.log(this.props.matchEntryStore.matchPlInfo.teamsWinLossList.length)
             render(<MatchDeclare teamList={this.props.matchStore.teamsList} onChange={this.onDeclareChange} />, widgetContainer);
     }
 
@@ -178,14 +175,14 @@ class MatchEntry extends React.Component {
     comboSessionOnClose = (e) => {
         const sessionId = (this.refs.sessionEntryForm.refs.comboSession.getSelectedValue())
         this.props.globalStore.setSessionId(sessionId)
-        this.props.sessionEntryStore.fetchAll(sessionId)
+        stores.sessionEntryStore.fetchAll(sessionId)
     }
     sessionEntry_onFormSubmitted = (response) => {
         this.refs.sessionEntryForm.resetForm()
-        this.props.sessionEntryStore.fetchAll(response.session_id)
+        stores.sessionEntryStore.fetchAll(response.session_id)
 
         console.log(response)
-        this.props.sessionEntryStore.lastEnteredRun = response.runs
+        stores.sessionEntryStore.lastEnteredRun = response.runs
     }
 
     
@@ -206,7 +203,7 @@ class MatchEntry extends React.Component {
         // For Session Form
         const {selectedSessionId} = this.props.globalStore
         const {sessionList} = this.props.sessionStore
-        const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
+        // const {sessionWinLossList, lastEnteredRun} = this.props.sessionEntryStore
         
 
         const { accountList } = this.props.accountStore
@@ -255,7 +252,7 @@ class MatchEntry extends React.Component {
                                     teamsList={teamsList} />
                             </div>
                             <div className="acol acol2">
-                               <SessionEntryWinLossGrid ref="winlossGrid" entriesList={sessionWinLossList} lastEnteredRun={lastEnteredRun} />
+                               <SessionEntryWinLossGrid ref="winlossGrid"  />
                             </div>
                         </div>
                     </div>

@@ -30,6 +30,13 @@ class SessionEntryGrid extends Component {
         // this.source.localdata = this.props.entriesList.slice()
         this.source.localdata = sessionEntriesList.slice()
         this.dataAdapter.dataBind()
+
+        let el = document.querySelector('#sessionEntryGrid'); 
+        let headers = el.querySelectorAll('.jqx-grid-column-header');
+        let lastHeader = headers[headers.length -1];
+        if(lastHeader && lastHeader.parentElement.previousElementSibling) {
+            lastHeader.parentElement.remove();
+        }
     }
 
     refresh = () => {
@@ -149,7 +156,7 @@ class SessionEntryGrid extends Component {
         const { filterable, showfilterrow, selectionmode } = this.props
 
         return (
-            <div>
+            <div id="sessionEntryGrid">
                 <JqxGrid ref="jqxgrid" key11={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
