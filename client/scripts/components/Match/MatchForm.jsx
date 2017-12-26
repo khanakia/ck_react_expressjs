@@ -47,7 +47,10 @@ class MatchForm extends Component {
         MatchHelper.save(data, this.props.item._id).then((res) => {
             toastr.success('Successfully Saved.')
             // console.log(res);
-            this.refs.match_name.value = ''
+
+            if(!this.props.item._id) {
+                this.refs.match_name.value = ''                
+            }
             this.refs.match_name.focus()
             this.props.onSubmit(res.data)
         }).catch(function(error) {
@@ -78,7 +81,7 @@ class MatchForm extends Component {
                         <div className="form-group col-auto">
                             <label className="col-form-label">&nbsp;</label>
                             <div>
-                                <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit} onFocus={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
+                                <button className="btn btn-primary btn-sm" type="button" onClick={this.onSubmit}><i className="fa fa-floppy-o"></i> Save</button>
                                 <button className="btn btn-danger btn-sm ml-1" type="button" onClick={()=>this.props.cancelFormClick()}><i className="fa fa-undo"></i> Cancel</button>
                             </div>
                         </div>

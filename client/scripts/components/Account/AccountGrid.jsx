@@ -27,6 +27,14 @@ class AccountGrid extends Component {
         this.dataAdapter.dataBind()
         // this.refs.jqxgrid.refresh()
         // this.refs.jqxgrid.updatebounddata('cells')
+
+        
+        let headers = document.querySelectorAll('.jqx-grid-column-header');
+        let lastHeader = headers[headers.length -1];
+        if(lastHeader && lastHeader.parentElement.previousElementSibling) {
+            lastHeader.parentElement.remove();
+        }
+    
     }
 
     componentDidMount() {
@@ -150,7 +158,7 @@ class AccountGrid extends Component {
                     width={"100%"} height={540} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={true} enabletooltips={true}
                     editable={false} 
-                    filterable={false} showfilterrow={false} />
+                    filterable={true} showfilterrow={true} />
             </div>
         );
     }
