@@ -95,10 +95,11 @@ class ReportPlMatchAccountWise_MatchSummary extends Component {
 
 
         let initrowdetails = (index, parentElement, gridElement, record) => {
-            console.log(index, parentElement, gridElement, record)
+            // console.log(index, parentElement, gridElement, record)
             let grid = $($(parentElement).children()[0]);
             let grid1 = ($(parentElement).children()[0]);
             if (grid != null) {
+                console.log(record)
                 render(<ReportPlMatchAccountWise_Entries ref_type={record.ref_type} ref_id={record.ref_id} account_id={record.account_id} key={Math.random()} /> , grid1);
             }
            // return 'dsfds'

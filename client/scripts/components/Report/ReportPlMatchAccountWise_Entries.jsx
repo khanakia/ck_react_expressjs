@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 
 import MatchEntryGrid from '../MatchEntry/MatchEntryGrid.jsx'
+import ReportMatchEntryGrid from './ReportMatchEntryGrid'
 import SessionEntryGrid from '../SessionEntry/SessionEntryGrid'
 
 
@@ -62,7 +63,7 @@ class ReportPlMatchAccountWise_Entries extends Component {
 
     renderMatchEntryGrid = () => {
         return (
-            <MatchEntryGrid ref="matchGrid" 
+            <ReportMatchEntryGrid ref="matchGrid" 
                         entriesList={this.state.entriesList}
                         filterable = {false}
                         showfilterrow = {false}

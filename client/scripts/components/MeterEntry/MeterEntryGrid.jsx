@@ -131,7 +131,7 @@ class MeterEntryGrid extends Component {
         
         return (
             <div>
-                <JqxGrid ref="jqxgrid" key={Math.random()}
+                <JqxGrid ref="jqxgrid" key11={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={true} enabletooltips={true}
