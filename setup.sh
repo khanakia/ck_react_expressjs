@@ -1,5 +1,6 @@
 #!/bin/bash
 ck_exe="ck-server.exe"
+ck_exe1="ck-server1.exe"
 # pwd1=$(pwd)
 pwd1="D:\EasyPHP-DevServer-14.1VC11\data\localweb\node_js\ck_nodejs_app"
 dir_dist="${pwd1}/dist"
@@ -21,6 +22,16 @@ function press_enter
 function create_dist
 {
     mkdir -p $dir_dist
+
+    cd $dir_dist
+    if [ -f $ck_exe ] ; then
+        rm -f $ck_exe
+    fi
+    if [ -f $ck_exe1 ] ; then
+        rm -f $ck_exe1
+    fi
+
+
 
 	cd $dir_client && webpack
 
