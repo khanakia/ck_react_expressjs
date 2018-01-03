@@ -19,17 +19,27 @@ class MdiMatch extends Component {
 	}
 
 	componentDidMount() {
-		window.$mdiTab = $(this.refs.mdiTab)
 
 		const matchId = this.props.match.params.id
 		localStorage.setItem(LOCALSTORAGE_MATCHID, matchId)
 	    this.props.matchStore.fetch(matchId)
 
-		this.init()
+	    if(this.refs.mdiTab) {
+			window.$mdiTab = $(this.refs.mdiTab)
+			this.init()
+			this.mdiTabRendered = true
+	    }
 	    
 	}
 
 	componentDidUpdate() {
+		if(this.refs.mdiTab && !this.mdiTabRendered) {
+			console.log('abc')
+			window.$mdiTab = $(this.refs.mdiTab)
+			this.init()
+			this.mdiTabRendered = true
+	    }
+
 		// GlobalHelper.mousetrapFormInit()
 	}
 
@@ -55,6 +65,13 @@ class MdiMatch extends Component {
 	    });
 
 	    $mdiTab.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
+	    	
+	    	setTimeout(() => {
+	    		$('#matchEntryGrid .jqx-grid-header').children().filter(":not(:eq(-1))").filter(":not(:eq(-1))").remove()
+	    		// console.log('called')
+	    	}, 500)
+
 		  	var href = jQuery(e.target).attr('href');
 		  	// console.log(href)
 		  	if(href=="#pills-match") {

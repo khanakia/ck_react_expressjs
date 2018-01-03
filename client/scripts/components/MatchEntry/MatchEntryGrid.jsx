@@ -30,14 +30,21 @@ class MatchEntryGrid extends Component {
         // this.source.localdata = sessionEntriesList.slice()
         this.dataAdapter.dataBind()
 
-        let el = document.querySelector('#matchEntryGrid'); 
-        if(el) {
-            let headers = el.querySelectorAll('.jqx-grid-column-header');
-            let lastHeader = headers[headers.length -1];
-            if(lastHeader && lastHeader.parentElement.previousElementSibling) {
-                lastHeader.parentElement.remove();
-            }
-        }
+        
+        $('#matchEntryGrid .jqx-grid-header').children().filter(":not(:eq(-1))").filter(":not(:eq(-1))").remove()
+        
+
+        // let el = document.querySelector('#matchEntryGrid'); 
+        // if(el) {
+        //     console.log('removed')
+        //     let headers = el.querySelectorAll('.jqx-grid-column-header');
+        //     console.log(headers.length)
+        //     let lastHeader = headers[headers.length -1];
+        //     // if(lastHeader && lastHeader.parentElement.previousElementSibling) {
+        //     if(lastHeader) {                
+        //         lastHeader.parentElement.remove();
+        //     }
+        // }
     }
 
     // refresh = () => {        
