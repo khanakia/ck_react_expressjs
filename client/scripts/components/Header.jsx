@@ -93,7 +93,8 @@ class Header extends React.Component {
         }
     }
 
-    openLiveVideo1() {
+    openLiveVideo1(e) {
+        e.preventDefault();
         if (typeof electron !== 'undefined') {
             var win = new electron.remote.BrowserWindow({
               webPreferences: {
@@ -109,7 +110,8 @@ class Header extends React.Component {
         }
     }
 
-    openLiveVideo2() {
+    openLiveVideo2(e) {
+        e.preventDefault();
         if (typeof electron !== 'undefined') {
             var win = new electron.remote.BrowserWindow({
               webPreferences: {
