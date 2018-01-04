@@ -194,7 +194,7 @@ module.exports = {
                 if(!item.account_id) return null
                 var comm_amt = Math.abs(sessionEntry.amount) * item.sess_comm/100
                 
-                comm_amt = -1 * comm_amt
+                // comm_amt = -1 * comm_amt
                 
                 com_amt_total += comm_amt
                 var n = `Comm (${item.sess_comm}%) - ${narration_party}`
@@ -681,7 +681,7 @@ module.exports = {
             await Promise.all(account.match_comm_accounts.map(async (item) => {
                 if(!item.account_id) return null
                 var comm_amt = Math.abs(amountForComm) * item.match_comm/100
-                comm_amt = -1 * comm_amt
+                // comm_amt = -1 * comm_amt
                 
                 com_amt_total += comm_amt
                 var n = `Comm (${item.match_comm}%) - ${narration_party}`

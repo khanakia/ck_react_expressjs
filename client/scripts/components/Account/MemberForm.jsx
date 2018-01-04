@@ -188,7 +188,9 @@ class MemberForm extends Component {
                                     <label className="col-form-label">Session Comm To:</label>
                                 </div>
                                 <div className="col-md-3">
-                                    <label className="col-form-label">Session Comm.(%): <TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} /></label>
+                                    <label className="col-form-label">Session Comm.(%): 
+                                        {/*<TooltipQuestion content={Messages.ACCOUNT_ENTRY_PAY_RECEIVE} />*/}
+                                    </label>
                                 </div>
                             </div>
                             {Array.apply(0, Array(2)).map( (x, i) => { 
