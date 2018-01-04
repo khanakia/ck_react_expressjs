@@ -113,8 +113,8 @@ export const API_URL_EXPORTS_PL_MATCHWISE = API_URL_EXPORTS + '/pl_matchwise'
 
 
 export const LIST_COMM_TYPE = [
-    { id: "net", text: "Net" },
-    { id: "entrywise", text: "Entry Wise" }
+    { id: "entrywise", text: "Entry Wise" },
+    { id: "net", text: "Net" }
 ]
 
 export const LIST_STATUS_BOOLEAN = [

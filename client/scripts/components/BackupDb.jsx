@@ -20,7 +20,10 @@ class BackupDb extends Component {
             toastr.success(res.data.message)
             this.props.backupStore.fetchDbBackupList()
         })
-        .catch(() => this.fetched = false);
+        .catch((err) => {
+            console.log(err.response.data)
+            toastr.error('Backup Failed')
+        });
     }
 
 

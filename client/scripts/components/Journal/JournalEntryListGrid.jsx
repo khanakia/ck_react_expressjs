@@ -50,17 +50,17 @@ class JournalEntryListGrid extends Component {
 
         let columns = [
             { text: 'Id', datafield: '_id', width: 50 },
-            { text: 'Match Id', datafield: 'match_id', width: 100 },
+            { text: 'Match Id', datafield: 'match_id', width: 70 },
             { text: 'Ref. Type', datafield: 'ref_type', width: 100 },
-            { text: 'Ref. Id', datafield: 'ref_id', width: 100 },
+            { text: 'Ref. Id', datafield: 'ref_id', width: 70 },
             { text: 'Created At', datafield: 'created_at', width: 200, cellsformat: 'dd/MM/yyyy Thh:mm tt' },
-            { text: 'Account', datafield: 'account_name', width: 150 },
-            { text: 'Type', datafield: 'type', width: 100 },
-            { text: 'Narration', datafield: 'narration', width: 500 },
+            { text: 'Account', datafield: 'account_name', width: 100 },
+            { text: 'Type', datafield: 'type', width: 90 },
             { text: 'Debit', datafield: 'dr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Credit', datafield: 'cr_amt', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Is Monday Final', datafield: 'is_monday_final', width: 100, columntype: 'checkbox', filterable: false },
+            { text: 'Narration', datafield: 'narration', width: 500 },
         ];
 
         return (

@@ -24,7 +24,7 @@ router.get('/backup_db', function(req, res, next) {
 		res.send(data)
 		// res.send(data);
 	}).catch((err)=>{
-		res.send(err)
+		res.status(404).send(err)
 	})
 })
 

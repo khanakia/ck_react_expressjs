@@ -58,16 +58,16 @@ class ReportPlMatchWise extends Component {
         this.dataAdapter = new $.jqx.dataAdapter(this.source);
 
         this.columns = [
-            { text: 'MatchId', datafield: 'match_id', width: 100 },
-            { text: 'Match Name', datafield: 'match_name', width: 150 },
-            { text: 'Match - Comm', datafield: 'comm_match', width: 150, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'MatchId', datafield: 'match_id', width: 70 },
+            { text: 'Match Name', datafield: 'match_name', width: 130 },
+            { text: 'Match - Comm', datafield: 'comm_match', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Match - Patti', datafield: 'patti_match', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Match - PL', datafield: 'pl_match', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'Session - Comm', datafield: 'comm_session', width: 150, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'Session - Patti', datafield: 'patti_session', width: 150, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'Session - PL', datafield: 'pl_session', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'Meter - Comm', datafield: 'comm_meter', width: 150, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'Meter - Patti', datafield: 'patti_meter', width: 150, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Sess - Comm', datafield: 'comm_session', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Sess - Patti', datafield: 'patti_session', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Sess - PL', datafield: 'pl_session', width: 70, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Meter - Comm', datafield: 'comm_meter', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
+            { text: 'Meter - Patti', datafield: 'patti_meter', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Meter - PL', datafield: 'pl_meter', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
             { text: 'Balance', datafield: 'bal', width: 100, cellsformat: 'd2', aggregates: ['sum']  },
         ];

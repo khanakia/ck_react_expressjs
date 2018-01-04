@@ -73,7 +73,20 @@ class ReportConnectGrid extends Component {
         return null;
     }
 
-    
+    printReport = () => {
+        var gridContent = this.refs.jqxgrid.exportdata('html');
+
+        var win = new electron.remote.BrowserWindow({
+                show:false 
+            })
+
+        win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
+        win.webContents.on('did-finish-load', () => {
+            win.webContents.print({silent: true}, function(error, data) {  
+            })
+        })
+
+    }
 
     render() {
         // console.log(this.props.entriesList.slice())
@@ -128,13 +141,14 @@ class ReportConnectGrid extends Component {
             <div>
                 <div className="mt-3 mb-1 text-left">
                     <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
+                    <button ref='printBtn' onClick={this.printReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-print"></i> Print</button>
                 </div>
                 <div className="row mx-w-900px">
                     <div className="col-md-12">
                         <JqxGrid key={Math.random()} ref="jqxgrid" 
                                 width={ "100%"} height={500} source={this.dataAdapter} 
-                                pageable={false} sortable={false} altrows={true} enabletooltips={false} selectionmode={'multiplecells'}
-                                editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
+                                pageable={false} sortable={false} altrows={false} enabletooltips={false}
+                                editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                                 showstatusbar={true} showaggregates={true} statusbarheight={25}/>
 
                         <div className="row mt-3">

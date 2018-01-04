@@ -118,7 +118,7 @@ class MatchGrid extends Component {
                 filterable: false,
                 exportable: false,
                 cellclassname: function (row, column, value, data) {
-                     if(data.is_declared && data.is_abandoned) {
+                     if(data.is_declared || data.is_abandoned) {
                         return "jqx_cell_disabled"
                      }
                 },
@@ -145,6 +145,11 @@ class MatchGrid extends Component {
                 width: 50,
                 filterable: false,
                 exportable: false,
+                cellclassname: function (row, column, value, data) {
+                     if(data.is_declared || data.is_abandoned) {
+                        return "jqx_cell_disabled"
+                     }
+                },
                 cellsrenderer: () => {
                     return 'Edit';
                 },

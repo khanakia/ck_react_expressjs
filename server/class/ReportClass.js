@@ -108,6 +108,8 @@ module.exports = {
 
     async balanceSheetGrid(items) {
         var items = await this.balanceSheet()
+        items = _.sortBy(items, ['account_name']);
+
         var items_pos = _.filter(items, function(o) { return o.bal > 0; });
         var items_neg = _.filter(items, function(o) { return o.bal < 0; });
 
@@ -872,6 +874,13 @@ module.exports = {
                 patti_amt: item.patti_amt,
                 after_patti: item.bal - item.patti_amt,
                 empty: '',
+                account_id1: null,
+                account_name1: null,
+                bal1: 0,
+                patti_amt1: 0,
+                after_patti1: 0,
+                tally: null,
+                tally1: null
             }
         })
 
@@ -882,6 +891,15 @@ module.exports = {
                 bal1: item1.bal,
                 patti_amt1: item1.patti_amt,
                 after_patti1: item1.bal - item1.patti_amt,
+
+                account_id: null,
+                account_name: null,
+                bal: 0,
+                patti_amt: 0,
+                after_patti: null,
+                empty: '',
+                tally: null,
+                tally1: null
             })
         })
 

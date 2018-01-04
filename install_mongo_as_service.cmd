@@ -9,8 +9,8 @@
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 SET ME=%~n0
-:: set MY_DIR=%~dp0
-set MY_DIR=C:\Program Files (x86)\London BetExchange\
+set MY_DIR=%~dp0
+:: set MY_DIR=C:\Program Files (x86)\London BetExchange\
 
 
 CALL sc.exe create MongoDB1 binPath= "\"%MY_DIR%mongodb\mongod.exe\" --service --dbpath \"%MY_DIR%mongodb\data\" --logpath \"%MY_DIR%mongodb\log\log.txt\" --storageEngine=mmapv1" DisplayName= "MongoDB1" start= "auto"

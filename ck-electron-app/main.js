@@ -64,7 +64,7 @@ function createWindow () {
 
       if (mainWindow.isFocused()) {
          
-          globalShortcut.register('CommandOrControl+T', () => {
+          globalShortcut.register('CommandOrControl+Shift+T', () => {
             console.log('CommandOrControl+X is pressed')
             openNewWindow()
           })

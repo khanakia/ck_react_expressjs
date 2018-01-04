@@ -32,6 +32,38 @@ class ReportBalanceSheetGrid extends Component {
     
     }
 
+
+    printReport = () => {
+        var gridContent = this.refs.jqxgrid.exportdata('html');
+
+        var win = new electron.remote.BrowserWindow({
+                show:false 
+            })
+
+        win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
+        win.webContents.on('did-finish-load', () => {
+              win.webContents.print({silent: true}, function(error, data) {
+              
+              })
+            // console.log(document.body.innerHTML)
+        })
+        // win.webContents.print()
+        // var gridContent = this.refs.jqxgrid.exportdata('html');
+        // var newWindow = window.open('', '', 'width=800, height=500'),
+        // document = newWindow.document.open(),
+        // pageContent =
+        //     '<!DOCTYPE html>\n' +
+        //     '<html>\n' +
+        //     '<head>\n' +
+        //     '<meta charset="utf-8" />\n' +
+        //     '<title>jQWidgets Grid</title>\n' +
+        //     '</head>\n' +
+        //     '<body>\n' + gridContent + '\n</body>\n</html>';
+        // document.write(pageContent);
+        // document.close();
+        // newWindow.print();
+    }
+
     cellclass(row, columnfield, value) {
         if (value < 0) {
             return 'red';
@@ -78,11 +110,12 @@ class ReportBalanceSheetGrid extends Component {
             <div>
                 <div className="mb-1 text-right">
                     <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
+                    <button ref='printBtn' onClick={this.printReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-print"></i> Print</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 
                         width={ "600"} height={600} source={this.dataAdapter} 
                         pageable={false} sortable={false} altrows={false} enabletooltips={false}
-                        editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
+                        editable={false} columns={columns} filterable={true} showfilterrow={true} columnsresize={true} 
                         showstatusbar={true} showaggregates={true} statusbarheight={25}/>
             </div>
         );

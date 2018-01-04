@@ -104,6 +104,8 @@ module.exports = {
     async restoreDb(dirName) {
         if(!dirName) return false
 
+        await db.dropDatabase()
+    
         var platform = process.platform
 
         var command = `cd ${DIR_BACKUP} && ..\\mongodb\\mongorestore --db ckdb --drop --gzip --dir ${dirName}/ckdb`

@@ -155,7 +155,7 @@ class AccountGrid extends Component {
             <div>
          		<JqxGrid ref="jqxgrid" key1={Math.random()}
                    source={this.dataAdapter} columns={this.columns} selectionmode={'singlecell'}
-                    width={"100%"} height={540} pageable={false} pagermode={'simple'} pagesize={1000}
+                    width={"100%"} height={640} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={true} altrows={true} enabletooltips={true}
                     editable={false} 
                     filterable={true} showfilterrow={true} />
