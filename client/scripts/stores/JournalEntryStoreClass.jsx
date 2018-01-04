@@ -20,9 +20,9 @@ export class JournalEntryStoreClass {
         ])
         .then(axios.spread(action((res1, res2) => {            
             this.journalEntriesList = res1.data
-            this.selectedAccMonFinalBal = res2.data.monFinalBal
-            this.selectedAccBal = res2.data.totalBal
-            this.selectedAccCurrentBal = res2.data.currentBal
+            this.selectedAccMonFinalBal = parseFloat(res2.data.monFinalBal).toFixed(2)
+            this.selectedAccBal = parseFloat(res2.data.totalBal).toFixed(2)
+            this.selectedAccCurrentBal = parseFloat(res2.data.currentBal).toFixed(2)
 
         })));
     }

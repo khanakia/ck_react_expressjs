@@ -41,9 +41,9 @@ class ReportConnectGrid extends Component {
         bal1 = (typeof bal1.sum == "undefined") ? 0 : bal1.sum
         console.log(bal)
         var gtotal = bal + bal1
-        this.refs.total_profit.innerHTML = bal
-        this.refs.total_loss.innerHTML = bal1
-        this.refs.grand_total.innerHTML = gtotal
+        this.refs.total_profit.innerHTML = parseFloat(bal).toFixed(2)
+        this.refs.total_loss.innerHTML = parseFloat(bal1).toFixed(2)
+        this.refs.grand_total.innerHTML = parseFloat(gtotal).toFixed(2)
     }
 
     refresh = () => {

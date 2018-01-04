@@ -4,7 +4,7 @@ import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 
 import MatchEntryGrid from '../MatchEntry/MatchEntryGrid.jsx'
 import ReportMatchEntryGrid from './ReportMatchEntryGrid'
-import SessionEntryGrid from '../SessionEntry/SessionEntryGrid'
+import ReportSessionEntryGrid from './ReportSessionEntryGrid'
 
 
 import {
@@ -74,7 +74,7 @@ class ReportPlMatchAccountWise_Entries extends Component {
 
     renderSessionEntryGrid = () => {
         return (
-            <SessionEntryGrid ref="entryGrid" 
+            <ReportSessionEntryGrid ref="entryGrid" 
                         entriesList={this.state.entriesList}
                         filterable = {false}
                         showfilterrow = {false}

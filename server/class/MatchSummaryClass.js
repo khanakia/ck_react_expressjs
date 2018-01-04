@@ -82,9 +82,27 @@ module.exports = {
         var final_amount = -1 * sessionEntry.amount
 
         // if yes then funter is winner else looser
-        if((sessionEntry.yn=="Y" && sessionEntry.runs<=declared_runs) || (sessionEntry.yn=="N" && sessionEntry.runs > declared_runs)){
-            final_amount = sessionEntry.rate * sessionEntry.amount
-        } 
+
+        if(sessionEntry.yn=="Y") {
+            if((sessionEntry.runs<=declared_runs)){
+                // winner
+                final_amount =  sessionEntry.rate * sessionEntry.amount
+            } else {
+                // loser
+                final_amount = -1 *sessionEntry.amount
+            }
+
+        } else {
+            if((sessionEntry.runs > declared_runs)){
+                // Winner
+                final_amount = sessionEntry.amount
+            } else {
+                //loser
+                final_amount = -1 * sessionEntry.rate * sessionEntry.amount
+            }
+        }
+
+
 
         sessionEntry.final_amount = final_amount
         sessionEntry.is_declared = true
@@ -175,6 +193,9 @@ module.exports = {
             await Promise.all(account.sess_comm_accounts.map(async (item) => {
                 if(!item.account_id) return null
                 var comm_amt = Math.abs(sessionEntry.amount) * item.sess_comm/100
+                
+                comm_amt = -1 * comm_amt
+                
                 com_amt_total += comm_amt
                 var n = `Comm (${item.sess_comm}%) - ${narration_party}`
                 // var jeitem2 = await this.createJournalEntryItem(journalItem._id, companyAccountId, item.account_id, comm_amt, "Commission", false, n)
@@ -660,7 +681,8 @@ module.exports = {
             await Promise.all(account.match_comm_accounts.map(async (item) => {
                 if(!item.account_id) return null
                 var comm_amt = Math.abs(amountForComm) * item.match_comm/100
-
+                comm_amt = -1 * comm_amt
+                
                 com_amt_total += comm_amt
                 var n = `Comm (${item.match_comm}%) - ${narration_party}`
                 var jeitem2 = await JournalEntryClass.createJournalEntryItem1({

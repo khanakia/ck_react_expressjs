@@ -477,7 +477,8 @@ module.exports = {
         if(!args.matchId || !args.accountId) return data;
 
         var connectList = await this.connectListMatches()
-        connectList = _.filter(connectList, {match_id: 1})
+        connectList = _.filter(connectList, {match_id: parseInt(args.matchId)})
+        return connectList
         var journalSummary = await this.journalSummaryByAccountAndMatch({matchId: args.matchId, accounId: args.accountId })
 
 
@@ -873,14 +874,7 @@ module.exports = {
                 bal: item.bal,
                 patti_amt: item.patti_amt,
                 after_patti: item.bal - item.patti_amt,
-                empty: '',
-                account_id1: null,
-                account_name1: null,
-                bal1: 0,
-                patti_amt1: 0,
-                after_patti1: 0,
-                tally: null,
-                tally1: null
+                empty: ''
             }
         })
 
@@ -891,15 +885,6 @@ module.exports = {
                 bal1: item1.bal,
                 patti_amt1: item1.patti_amt,
                 after_patti1: item1.bal - item1.patti_amt,
-
-                account_id: null,
-                account_name: null,
-                bal: 0,
-                patti_amt: 0,
-                after_patti: null,
-                empty: '',
-                tally: null,
-                tally1: null
             })
         })
 

@@ -13,6 +13,7 @@ var ActivityLogClass = require('../class/ActivityLogClass')
 module.exports = {
     async save(item, id=null) {
 
+
         var session = await SessionModel.findOne({_id: item.session_id})
         if(session.is_declared) {
             throw(ResponseHelper.error(400, 'Session is declared already.'))
@@ -63,6 +64,11 @@ module.exports = {
 
         var win_amt = win_amt_subtotal = item.rate * item.amount
         var loose_amt = loose_amt_subtotal = item.amount
+
+        if(item.yn=='N') {
+            loose_amt = loose_amt_subtotal = item.rate * item.amount
+            win_amt = win_amt_subtotal = item.amount
+        }
         
         // var sess_comm = account.sess_comm;
         // var sess_comm_to = account.sess_comm_to==null ? item.account_id : account.sess_comm_to;
