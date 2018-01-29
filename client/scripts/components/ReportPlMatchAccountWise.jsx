@@ -92,8 +92,8 @@ class ReportPlMatchAccountWise extends Component {
             { text: 'Match Name', datafield: 'match_name', width: 150 },
             { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account Name', datafield: 'account_name', width: 150 },
-            { text: 'P/L', datafield: 'pl_bal', width: 100 },
-            { text: 'Total Comm.', datafield: 'pl_comm', width: 100 },
+            { text: 'P/L', datafield: 'pl_bal', width: 100 , cellsformat: 'd2' },
+            { text: 'Total Comm.', datafield: 'pl_comm', width: 100 , cellsformat: 'd2' },
             // { text: 'Balance', datafield: 'bal', width: 100 },
         ];
     }

@@ -27,14 +27,14 @@ class JournalEntryGrid extends Component {
 
     initDataAdapter() {
         var datafields = [
-            { name: '_id', type: 'string' },
+            { name: '_id', type: 'number' },
             { name: 'account_name', type: 'string' },
-            { name: 'dr_amt', type: 'string' },
-            { name: 'cr_amt', type: 'string' },
-            { name: 'bal', type: 'string' },
+            { name: 'dr_amt', type: 'number' },
+            { name: 'cr_amt', type: 'number' },
+            { name: 'bal', type: 'number' },
             { name: 'narration', type: 'string' },
-            { name: 'account_id', type: 'string' },
-            { name: 'journal_id', type: 'string' },
+            { name: 'account_id', type: 'number' },
+            { name: 'journal_id', type: 'number' },
             { name: 'created_at', type: 'date' },
             { name: 'is_monday_final', type: 'boolean' },
             { name: 'locked', type: 'boolean' },

@@ -145,7 +145,10 @@ class MatchEntryGrid extends Component {
                     this.props.onEditButtonClick(dataRecord);
                 }
             },
-            { text: 'Id', datafield: '_id', width: 50 },
+            { text: 'Id', datafield: '_id', width: 50,  aggregates: ['count'], aggregatesrenderer: function (aggregates, column, element) {
+                          return 'C: ' + aggregates['count'];
+                      }
+            },
             { text: 'Party', datafield: 'account_name', width: 150 },
             { text: 'Rate', datafield: 'rate', width: 100 },
             { text: 'Amount', datafield: 'amount', width: 100, cellsformat: 'd2', aggregates: ['sum'] },
@@ -183,8 +186,9 @@ class MatchEntryGrid extends Component {
         const { filterable, showfilterrow, selectionmode } = this.props
         return (
             <div id="matchEntryGrid">
-                <JqxGrid key11={Math.random()}
+                <JqxGrid key={Math.random()}
                   ref="jqxgrid"
+                  columnsresize={true}
                   width={"100%"} height={400} source={this.dataAdapter} pageable={false}
                   sortable={true} altrows={true} enabletooltips={false}
                   editable={false} columns={this.columns} selectionmode={selectionmode}

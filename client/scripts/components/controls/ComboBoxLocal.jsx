@@ -14,6 +14,7 @@ class ComboBoxLocal extends Component {
         onSelect: function() {},
         onClose: function() {},
         selectedValue: null,
+        autoComplete: false
     }
 
     componentWillMount() {
@@ -102,7 +103,7 @@ class ComboBoxLocal extends Component {
                       <input type="hidden" ref="nameInput" name={this.props.field_name} />
                       <input type="hidden" ref="idInput" name={this.props.field_id} />
                       <JqxComboBox ref='Combo'
-                            autoComplete={true} searchMode={'startswithignorecase'}
+                            autoComplete={this.props.autoComplete} searchMode={'startswithignorecase'}
                           width={this.props.width} height={22} selectedIndex={-1} source={this.dataAdapter}
                           displayMember={this.props.displayMember} valueMember={this.props.valueMember}
                       />

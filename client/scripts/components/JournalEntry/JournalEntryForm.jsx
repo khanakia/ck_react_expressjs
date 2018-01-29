@@ -101,7 +101,7 @@ class JournalEntryForm extends React.Component {
         JournalEntryHelper.accountBalance(accountId)
             .then((res) => {
                 this.setState({
-                    account_bal: res.data.totalBal
+                    account_bal: parseFloat(res.data.totalBal).toFixed(2)
                 })
             })
         // console.log(accountId)

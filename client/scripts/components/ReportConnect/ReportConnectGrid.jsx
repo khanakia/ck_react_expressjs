@@ -17,7 +17,7 @@ class ReportConnectGrid extends Component {
         this.dataAdapter.dataBind()
         this.refs.jqxgrid.on('cellendedit', (event) => {
             var args = event.args;
-            console.log(args)
+            // console.log(args)
             if(args.datafield=='tally') {
                 this.refs.jqxgrid.selectcell(args.rowindex, 'account_name')
                 this.refs.jqxgrid.selectcell(args.rowindex, 'bal')
@@ -31,15 +31,15 @@ class ReportConnectGrid extends Component {
                 this.refs.jqxgrid.selectcell(args.rowindex, 'after_patti1')
             }
 
-            console.log(args.value)
+            // console.log(args.value)
         });
 
-        var bal = (this.refs.jqxgrid.getcolumnaggregateddata('bal', ['sum']))
-        var bal1 = (this.refs.jqxgrid.getcolumnaggregateddata('bal1', ['sum']))
+        var bal = (this.refs.jqxgrid.getcolumnaggregateddata('after_patti', ['sum']))
+        var bal1 = (this.refs.jqxgrid.getcolumnaggregateddata('after_patti1', ['sum']))
 
         bal = (typeof bal.sum == "undefined") ? 0 : bal.sum
         bal1 = (typeof bal1.sum == "undefined") ? 0 : bal1.sum
-        console.log(bal)
+        // console.log(bal)
         var gtotal = bal + bal1
         this.refs.total_profit.innerHTML = parseFloat(bal).toFixed(2)
         this.refs.total_loss.innerHTML = parseFloat(bal1).toFixed(2)
@@ -73,20 +73,20 @@ class ReportConnectGrid extends Component {
         return null;
     }
 
-    printReport = () => {
-        var gridContent = this.refs.jqxgrid.exportdata('html');
+    // printReport = () => {
+    //     var gridContent = this.refs.jqxgrid.exportdata('html');
 
-        var win = new electron.remote.BrowserWindow({
-                show:false 
-            })
+    //     var win = new electron.remote.BrowserWindow({
+    //             show:false 
+    //         })
 
-        win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
-        win.webContents.on('did-finish-load', () => {
-            win.webContents.print({silent: true}, function(error, data) {  
-            })
-        })
+    //     win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
+    //     win.webContents.on('did-finish-load', () => {
+    //         win.webContents.print({silent: true}, function(error, data) {  
+    //         })
+    //     })
 
-    }
+    // }
 
     render() {
         // console.log(this.props.entriesList.slice())
@@ -128,27 +128,27 @@ class ReportConnectGrid extends Component {
             // { text: 'AccountId', datafield: 'account_id', width: 100 },
             { text: 'Account', datafield: 'account_name', width: 150, editable:false },
             { text: 'Amount', datafield: 'bal', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2'},
+            { text: 'With Patti', datafield: 'after_patti', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
             { text: '', datafield: 'empty', width: 50, editable:false, filterable: false, cellclassname: () => { return 'emptyseparator'; } },
             // { text: 'AccountId', datafield: 'account_id1', width: 100 },
             { text: 'Tally', datafield: 'tally1', width: 50, columntype: 'checkbox', editable: true  },
             { text: 'Account', datafield: 'account_name1', width: 150, editable:false },
             { text: 'Amount', datafield: 'bal1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum'] },
-            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2'},
+            { text: 'With Patti', datafield: 'after_patti1', width: 100, editable:false, cellclassname: this.cellclass, cellsformat: 'd2', aggregates: ['sum']},
         ];
 
         return (
             <div>
                 <div className="mt-3 mb-1 text-left">
-                    <button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
-                    <button ref='printBtn' onClick={this.printReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-print"></i> Print</button>
+                    {/*<button ref='pdfExport' onClick={this.props.exportReportClick} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>*/}
+                    <button ref='printBtn' onClick={this.props.printReportFn} className="btn btn-sm btn-primary mr-1"><i className="fa fa-print"></i> Print</button>
                 </div>
                 <div className="row mx-w-900px">
                     <div className="col-md-12">
                         <JqxGrid key={Math.random()} ref="jqxgrid" 
                                 width={ "100%"} height={500} source={this.dataAdapter} 
                                 pageable={false} sortable={false} altrows={false} enabletooltips={false}
-                                editable={false} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
+                                editable={true} columns={columns} filterable={false} showfilterrow={false} columnsresize={true} 
                                 showstatusbar={true} showaggregates={true} statusbarheight={25}/>
 
                         <div className="row mt-3">

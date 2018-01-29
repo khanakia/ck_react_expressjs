@@ -654,13 +654,15 @@ module.exports = {
 
             // Distribute Commission
             var narration1 = narration
-            var amountForComm = 0
+            var amountForComm_pos = amountForComm_neg  = 0
             if(account.match_comm_type=="entrywise") {
-                amountForComm = amount_neg
+                amountForComm_pos = amount_pos
+                amountForComm_neg = amount_neg
                 narration1 = `Comm Entrywise (${account.match_comm}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
 
             } else {
-                amountForComm = amount;
+                amountForComm_pos = amount
+                amountForComm_neg = amount
                 narration1 = `Comm Net (${account.match_comm}%) - (Party: ${account._id} - ${account.account_name}) ` + narration
             }
 
@@ -680,7 +682,12 @@ module.exports = {
             var com_amt_total = 0
             await Promise.all(account.match_comm_accounts.map(async (item) => {
                 if(!item.account_id) return null
-                var comm_amt = Math.abs(amountForComm) * item.match_comm/100
+
+                if(item.match_comm >= 0) {
+                    var comm_amt = Math.abs(amountForComm_neg) * item.match_comm/100
+                } else {
+                    var comm_amt = Math.abs(amountForComm_pos) * item.match_comm/100
+                }
                 // comm_amt = -1 * comm_amt
                 
                 com_amt_total += comm_amt

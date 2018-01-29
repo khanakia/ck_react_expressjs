@@ -16,12 +16,21 @@ class AllMatchGrid extends Component {
     }
 
     componentWillMount() {
-        this.initDataAdapter()        
+        this.initDataAdapter()
+
+    }
+
+    componentDidMount() {
+        this.refs.jqxgrid.on('rowselect', (event) => {
+            this.props.connectReportFn()
+        });
     }
 
     componentDidUpdate() {
         this.source.localdata = this.props.entriesList.slice()
         this.dataAdapter.dataBind()
+
+        $('#allMatchGrid .jqx-grid-header').children().filter(":not(:eq(-1))").filter(":not(:eq(-1))").remove()
     }
 
     getSelectedRowsData = () => {
@@ -70,11 +79,11 @@ class AllMatchGrid extends Component {
     render() {
 
         return (
-            <div>
+            <div id="allMatchGrid">
          		<JqxGrid ref="jqxgrid" source={this.dataAdapter} columns={this.columns} 
                     width={"100%"} height={550} 
          			pageable={false} sortable={true} altrows={true} enabletooltips={true} 
-         			editable={false}  filterable={false} showfilterrow={false}
+         			editable={false}  filterable={true} showfilterrow={true}
                     selectionmode={'checkbox'} />
             </div>
         );

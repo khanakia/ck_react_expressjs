@@ -18,6 +18,36 @@ module.exports = {
         var filePath = `${DIR_TEMP}/${fileName}`
         var fileDownloadUrl = `${APP_URL}/temp/${fileName}`
         await fs.writeFile(filePath, csv);
+
+
+
+        try {
+            var bal = 0;
+            var bal1 = 0;
+            
+            _.map(items, (item) => {
+                var itembal = +item.bal || 0
+                var itembal1 = +item.bal1 || 0
+                bal += itembal
+                bal1 += itembal1
+
+            })
+            var gtotal = bal1 + bal
+
+
+            // return { items : items, bal: bal, bal1: bal1, gtotal: gtotal};
+
+            var htmlData = ''
+            await app.render('report_bsheet', { items : items, bal: bal, bal1: bal1, gtotal: gtotal}, function(err, html) {
+                htmlData = html
+                console.log('DDD', html)
+            })
+            
+            var filePathHTML = `${DIR_TEMP}/report_bsheet.html`
+            await fs.writeFile(filePathHTML, htmlData);
+        } catch(e) {
+            console.log(e)
+        }
         
         return {
             fileName: fileName,
@@ -63,6 +93,7 @@ module.exports = {
     },
 
     async report_connectReport(filters=[]) {
+
         var items = await ReportClass.connectReport(filters)
         var fieldNames = ['Account', 'Bal', 'With Patti', 'Account', 'Bal', 'With Patti'];
         var fields = ['account_name', 'bal', 'after_patti', 'account_name1', 'bal1', 'after_patti1'];
@@ -73,6 +104,38 @@ module.exports = {
         var fileDownloadUrl = `${APP_URL}/temp/${fileName}`
         await fs.writeFile(filePath, csv);
         
+        
+        
+        try {
+            var bal = 0;
+            var bal1 = 0;
+            
+            _.map(items, (item) => {
+                var itembal = +item.after_patti || 0
+                var itembal1 = +item.after_patti1 || 0
+                bal += itembal
+                bal1 += itembal1
+
+            })
+            var gtotal = bal1 + bal
+
+
+            // return { items : items, title: title, bal: bal, bal1: bal1, gtotal: gtotal};
+
+            var title = _.map(filters, 'name').join(' / ');
+            var htmlData = ''
+            await app.render('report_connect', { items : items, title: title, bal: bal, bal1: bal1, gtotal: gtotal}, function(err, html) {
+                htmlData = html
+                // console.log('DDD', html)
+            })
+
+            var filePathHTML = `${DIR_TEMP}/report.html`
+            await fs.writeFile(filePathHTML, htmlData);
+        } catch(e) {
+            console.log(e)
+        }
+        
+        // return htmlData
         return {
             fileName: fileName,
             filePath: filePath,

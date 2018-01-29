@@ -118,7 +118,7 @@ module.exports = {
             newItems[i] = {
                 account_id: item.account_id,
                 account_name: item.account_name,
-                bal: item.bal,
+                bal: parseFloat(item.bal).toFixed(2),
                 empty: '',
                 account_id1: '',
                 account_name1: '',
@@ -134,7 +134,7 @@ module.exports = {
                 empty: '',
                 account_id1: item1.account_id,
                 account_name1: item1.account_name,
-                bal1: item1.bal,
+                bal1: parseFloat(item1.bal).toFixed(2),
             })
         })
 
@@ -478,7 +478,7 @@ module.exports = {
 
         var connectList = await this.connectListMatches()
         connectList = _.filter(connectList, {match_id: parseInt(args.matchId)})
-        return connectList
+        // return connectList
         var journalSummary = await this.journalSummaryByAccountAndMatch({matchId: args.matchId, accounId: args.accountId })
 
 
@@ -833,7 +833,8 @@ module.exports = {
                     ref_type: "$journal.ref_type",
                     match_name: "$match.match_name",
                     bal : 1,
-                    patti_amt: 1
+                    patti_amt: 1,
+                    type: 1
                 }
             },
 
@@ -852,8 +853,22 @@ module.exports = {
                     "account_id" : { $first: "$account_id"  },
                     "account_name" : { $first: "$account_name"  },
                     'bal': { 
-                            '$sum': '$bal'
+                            '$sum': {
+                                '$cond': [
+                                    // { '$gt': ['$calcs.favteam_subtotal', 0]}, 
+                                    { "$and" : [
+                                           { "$ne": [ "$type", "Patti" ] },
+                                       ]
+                                    },
+
+                                    {$multiply: ['$bal', 1] }, 
+                                    0
+                                ]
+                            }
                     },
+                    // 'bal': { 
+                    //         '$sum': '$bal'
+                    // },
                     'patti_amt': { 
                         '$sum': '$patti_amt'
                     },
@@ -864,16 +879,18 @@ module.exports = {
         var items = await JournalEntryModel.aggregate(aggregate);
 
         var items_pos = _.filter(items, function(o) { return o.bal > 0; });
+        items_pos = _.sortBy(items_pos, ['account_name'])
         var items_neg = _.filter(items, function(o) { return o.bal < 0; });
+        items_neg = _.sortBy(items_neg, ['account_name'])
 
         var newItems = [];
         items_pos.map((item, i) => {
             newItems[i] = {
                 account_id: item.account_id,
                 account_name: item.account_name,
-                bal: item.bal,
-                patti_amt: item.patti_amt,
-                after_patti: item.bal - item.patti_amt,
+                bal: parseFloat(item.bal).toFixed(2),
+                patti_amt: parseFloat(item.patti_amt).toFixed(2),
+                after_patti: parseFloat(item.bal - item.patti_amt).toFixed(2),
                 empty: ''
             }
         })
@@ -882,9 +899,9 @@ module.exports = {
             newItems[i] = Object.assign({}, newItems[i], {
                 account_id1: item1.account_id,
                 account_name1: item1.account_name,
-                bal1: item1.bal,
-                patti_amt1: item1.patti_amt,
-                after_patti1: item1.bal - item1.patti_amt,
+                bal1: parseFloat(item1.bal).toFixed(2),
+                patti_amt1: parseFloat(item1.patti_amt).toFixed(2),
+                after_patti1: parseFloat(item1.bal - item1.patti_amt).toFixed(2),
             })
         })
 

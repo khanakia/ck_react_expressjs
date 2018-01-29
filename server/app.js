@@ -154,4 +154,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+global.app = app
 module.exports = app;

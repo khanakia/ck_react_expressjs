@@ -138,7 +138,10 @@ class SessionEntryGrid extends Component {
                     this.props.onEditButtonClick(dataRecord);
                 }
             },
-            { text: 'Id', datafield: '_id', width: 70 },
+            { text: 'Id', datafield: '_id', width: 50,  aggregates: ['count'], aggregatesrenderer: function (aggregates, column, element) {
+                          return 'C: ' + aggregates['count'];
+                      }
+            },
             { text: 'Party', datafield: 'account_name', width: 120 },
             { text: 'Rate', datafield: 'rate', width: 60, cellsformat: 'd2' },
             { text: 'Runs', datafield: 'runs', width: 60 },
@@ -162,7 +165,7 @@ class SessionEntryGrid extends Component {
 
         return (
             <div id="sessionEntryGrid">
-                <JqxGrid ref="jqxgrid" key11={Math.random()}
+                <JqxGrid ref="jqxgrid" key={Math.random()}
                     source={this.dataAdapter} columns={this.columns}
                     width={"100%"} height={400} pageable={false} pagermode={'simple'} pagesize={1000}
                     sortable={false} altrows={true} enabletooltips={true}

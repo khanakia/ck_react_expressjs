@@ -1,0 +1,71 @@
+<div class="main">
+	<h4>Connect Report of Matches</h4>
+	<p class="title"><%= title %></p>
+	<table>
+		<thead>
+		<tr>
+		    <th>Account</th>
+		    <th>Amount</th> 
+		    <th>Wit Patti</th>
+		    <th></th>
+		    <th>Account</th>
+		    <th>Amount</th> 
+		    <th>Wit Patti</th>
+		</tr>
+		</thead>
+		<% for(var i=0; i<items.length; i++) {%>
+	  		<tr>
+			    <td><%= items[i]['account_name'] %></td>
+			    <td><%= items[i]['bal'] %></td>
+			    <td><%= items[i]['after_patti'] %></td>
+			    <td></td>
+			    <td><%= items[i]['account_name1'] %></td>
+			    <td><%= items[i]['bal1'] %></td>
+			    <td><%= items[i]['after_patti1'] %></td>
+	  		</tr>
+		<% } %>
+
+		<tfoot>
+			<tr>
+			    <th></th>
+			    <th></th> 
+			    <th><%= parseFloat(bal).toFixed(2) %></th>
+			    <th></th>
+			    <th></th>
+			    <th></th> 
+			    <th><%= parseFloat(bal1).toFixed(2) %></th>
+			</tr>
+		</tfoot>
+	</table>
+
+	<p class="gtotal"><strong>Grand Total:</strong> <%= parseFloat(gtotal).toFixed(2) %></p>
+</div>
+<style>
+	table {
+    	border-collapse: collapse;
+    	width: 100%;
+	}
+
+	table, th, td {
+	    border: 1px solid black;
+	    padding: 5px;
+	    font-size: 14px;
+	    text-align: left;
+	}
+
+	td {
+		font-size: 14px;
+	}
+
+	.main {
+		max-width: 700px;
+	}
+
+	.title {
+		font-weight: bold;
+		font-size: 12px;
+	}
+	.gtotal {
+		text-align: center
+	}
+</style>

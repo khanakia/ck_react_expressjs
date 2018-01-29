@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { APP_ROOT_HOST } from "../../Constant"
 
 import JqxGrid from '../jqwidgets-react/react_jqxgrid.js';
 import ExportHelper from '../../helpers/ExportHelper'
@@ -20,48 +21,65 @@ class ReportBalanceSheetGrid extends Component {
         this.dataAdapter.dataBind()
     }
 
-    exportReport = () => {
+    exportReport = (cb) => {
         // this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
         
         // axios.get('/exportreports/balance_sheet', {
         // })
         ExportHelper.exportBalanceSheet()
         .then((res) => {
-            window.location.href = res.data.fileDownloadUrl  
+            // window.location.href = res.data.fileDownloadUrl  
+            if (typeof cb === "function") {
+                cb();
+            }
         })
     
     }
 
 
-    printReport = () => {
-        var gridContent = this.refs.jqxgrid.exportdata('html');
+    // printReport = () => {
+    //     var gridContent = this.refs.jqxgrid.exportdata('html');
 
-        var win = new electron.remote.BrowserWindow({
-                show:false 
-            })
+    //     var win = new electron.remote.BrowserWindow({
+    //             show:false 
+    //         })
 
-        win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
-        win.webContents.on('did-finish-load', () => {
-              win.webContents.print({silent: true}, function(error, data) {
+    //     win.loadURL("data:text/html;charset=utf-8," + encodeURI(gridContent))
+    //     win.webContents.on('did-finish-load', () => {
+    //           win.webContents.print({silent: true}, function(error, data) {
               
-              })
-            // console.log(document.body.innerHTML)
+    //           })
+    //         // console.log(document.body.innerHTML)
+    //     })
+    //     // win.webContents.print()
+    //     // var gridContent = this.refs.jqxgrid.exportdata('html');
+    //     // var newWindow = window.open('', '', 'width=800, height=500'),
+    //     // document = newWindow.document.open(),
+    //     // pageContent =
+    //     //     '<!DOCTYPE html>\n' +
+    //     //     '<html>\n' +
+    //     //     '<head>\n' +
+    //     //     '<meta charset="utf-8" />\n' +
+    //     //     '<title>jQWidgets Grid</title>\n' +
+    //     //     '</head>\n' +
+    //     //     '<body>\n' + gridContent + '\n</body>\n</html>';
+    //     // document.write(pageContent);
+    //     // document.close();
+    //     // newWindow.print();
+    // }
+
+    printReport = () => {
+        this.exportReport(() => {
+            var win = new electron.remote.BrowserWindow({
+                    show:true
+                })
+
+            win.loadURL(APP_ROOT_HOST + "/temp/report_bsheet.html")
+            win.webContents.on('did-finish-load', () => {
+                win.webContents.print({silent: true}, function(error, data) {  
+                })
+            })
         })
-        // win.webContents.print()
-        // var gridContent = this.refs.jqxgrid.exportdata('html');
-        // var newWindow = window.open('', '', 'width=800, height=500'),
-        // document = newWindow.document.open(),
-        // pageContent =
-        //     '<!DOCTYPE html>\n' +
-        //     '<html>\n' +
-        //     '<head>\n' +
-        //     '<meta charset="utf-8" />\n' +
-        //     '<title>jQWidgets Grid</title>\n' +
-        //     '</head>\n' +
-        //     '<body>\n' + gridContent + '\n</body>\n</html>';
-        // document.write(pageContent);
-        // document.close();
-        // newWindow.print();
     }
 
     cellclass(row, columnfield, value) {
@@ -109,7 +127,7 @@ class ReportBalanceSheetGrid extends Component {
         return (
             <div>
                 <div className="mb-1 text-right">
-                    <button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>
+                    {/*<button ref='pdfExport' onClick={this.exportReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-file-text-o"></i> Export</button>*/}
                     <button ref='printBtn' onClick={this.printReport} className="btn btn-sm btn-primary mr-1"><i className="fa fa-print"></i> Print</button>
                 </div>
                 <JqxGrid key={Math.random()} ref="jqxgrid" 

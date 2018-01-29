@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 
+import { APP_ROOT_HOST } from "../Constant"
+
 import AllMatchGrid from './ReportConnect/AllMatchGrid'
 import ReportConnectGrid from './ReportConnect/ReportConnectGrid'
 import TooltipQuestion from './controls/TooltipQuestion';
@@ -27,22 +29,33 @@ class ReportConnect extends Component {
     }
 
 
-    exportConnectReport = () => {
-        // this.refs.jqxgrid.exportdata('pdf', 'balance_sheet');
-
+    exportConnectReport = (cb) => {
         var filters = this.refs.allMatchGrid.getSelectedRowsData()
 
-        // axios({
-        // method: 'post',
-        //   url: "/exportreports/connect_report",
-        //   data: filters
-        // })
         ExportHelper.exportConnectReport(filters)
         .then((res) => {
-            window.location.href = res.data.fileDownloadUrl  
+            if (typeof cb === "function") {
+                cb();
+            }
+            // window.location.href = res.data.fileDownloadUrl  
         })
 
     }
+
+    printReport = () => {
+        this.exportConnectReport(() => {
+            var win = new electron.remote.BrowserWindow({
+                    show:true
+                })
+
+            win.loadURL(APP_ROOT_HOST + "/temp/report.html")
+            win.webContents.on('did-finish-load', () => {
+                win.webContents.print({silent: true}, function(error, data) {  
+                })
+            })
+        })
+    }
+
 
     render() {
         // const {matchList} = this.props.matchStore
@@ -54,11 +67,11 @@ class ReportConnect extends Component {
                 <h6><i className="fa fa-bar-chart"></i> Report - Connect <TooltipQuestion content={Messages.ABOUT_REPORT_CONNECT} /></h6>
                 <div className="row">
                     <div className="col-md-4">
-                        <button className="btn btn-sm btn-primary" onClick={this.connectReport}>Connect</button>
-                        <AllMatchGrid ref="allMatchGrid" entriesList={connectListMatches}  />
+                        <button className="btn btn-sm btn-primary mb-1" onClick={this.connectReport}>Connect</button>
+                        <AllMatchGrid ref="allMatchGrid" entriesList={connectListMatches} connectReportFn={this.connectReport} />
                     </div>
                     <div className="col-md-8">
-                        <ReportConnectGrid entriesList={connectReportList} exportReportClick={this.exportConnectReport} />
+                        <ReportConnectGrid entriesList={connectReportList} exportReportClick={this.exportConnectReport} printReportFn={this.printReport}  />
                     </div>
 
                 </div>
